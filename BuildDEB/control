@@ -1,0 +1,11 @@
+Package: PyLibSuitETECSA
+Version: 0.1.0
+License: GNU General Public License v3
+Architecture: all
+Maintainer: MarilaSoft<marilasoft@gmail.com>
+Installed-Size: 52429
+Section: ETECSA Nauta tools
+Priority: optional
+Depends: python3 (>=3.9), requests (>=2.22.0), python3-bs4 (>=4.8.2-1)
+Homepage: https://github.com/marilasoft/PyLibSuitETECSA
+Description: PyLibSuitETECSA fue creada con el objetivo de ofrecer un api que interactúe con los servicios de ETECSA, para facilitar el desarrollo de aplicaciones Python que faciliten y/o enriquezcan la gestión de los servicios ofrecidos por portales como el Portal de Usuario y el Portal Cautivo de nauta, ahorrándoles tiempo, esfuerzos, neuronas y código a los desarrolladores.
