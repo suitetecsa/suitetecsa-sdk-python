@@ -52,7 +52,7 @@ class UserPortal:
                "account_type": "tipo de cuenta", "service_type": "iipo de servicio", "credit": "saldo disponible",
                "time": "tiempo disponible de la cuenta", "mail_account": "cuenta de correo"}
 
-    _re_fail_reason = re.compile("toastr\.error\('(?P<reason>[^']*?)'\)")
+    _re_fail_reason = re.compile(r"toastr\.error\('(?P<reason>[^']*?)'\)")
 
     @classmethod
     def __raise_if_error(cls, r, action):
@@ -60,8 +60,11 @@ class UserPortal:
             raise cls.__up_exceptions[action](f"Fallo al realizar la operacion: {r.status_code} - {r.reason}")
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
+        script_text = soup.find_all("script")[-1].get_text().strip()
+        match = cls._re_fail_reason.match(script_text)
 
-        if cls.__url[action] not in r.url:
+        if match:
+            soup = bs4.BeautifulSoup(match.group("reason"), 'html.parser')
             raise cls.__up_exceptions[action](cls.__find_errors(soup))
 
     @classmethod
@@ -121,10 +124,10 @@ class UserPortal:
         soup = bs4.BeautifulSoup(r.text, "html.parser")
 
         if "user_info" not in r.url:
-            script_text = soup.find_all("script")[-1].get_text()
+            script_text = soup.find_all("script")[-1].get_text().strip()
 
             match = cls._re_fail_reason.match(script_text)
-            soup = bs4.BeautifulSoup(match and match.groupdict().get("reason"))
+            soup = bs4.BeautifulSoup(match.group("reason"))
             raise LoginException(
                 f'Fallo el inicio de sesion: {cls.__find_errors(soup)}'
             )
@@ -325,7 +328,7 @@ class Nauta(object):
 
     CHECK_PAGE = "http://www.cubadebate.cu"
     LOGIN_DOMAIN = b"secure.etecsa.net"
-    _re_login_fail_reason = re.compile('alert\("(?P<reason>[^"]*?)"\)')
+    _re_login_fail_reason = re.compile(r'alert\("(?P<reason>[^"]*?)"\)')
 
     @classmethod
     def _get_inputs(cls, form_soup):
@@ -393,12 +396,12 @@ class Nauta(object):
 
         if "online.do" not in r.url:
             soup = bs4.BeautifulSoup(r.text, "html.parser")
-            script_text = soup.find_all("script")[-1].get_text()
+            script_text = soup.find_all("script")[-1].get_text().strip()
 
             match = cls._re_login_fail_reason.match(script_text)
             raise LoginException(
                 "Fallo el inicio de sesion: {}".format(
-                    match and match.groupdict().get("reason")
+                    match.group("reason")
                 )
             )
 
