@@ -63,7 +63,7 @@ class UserPortalClient:
         self.session.__dict__.update(
             UserPortal.get_user_info(
                 self.session
-            )
+            ).__dict__
         )
 
         self.session.save()
@@ -79,7 +79,7 @@ class UserPortalClient:
         self.session.__dict__.update(
             UserPortal.get_user_info(
                 self.session
-            )
+            ).__dict__
         )
 
         self.session.save()
