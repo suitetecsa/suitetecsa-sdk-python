@@ -25,7 +25,7 @@ __all__ = [
 ]
 
 __name__ = "libsuitetecsa"
-__version__ = "0.1.0"
+__version__ = "0.1.2"
 __keywords__ = "ETECSA nauta tools"
 __license__ = "GNU GPLv3"
 
