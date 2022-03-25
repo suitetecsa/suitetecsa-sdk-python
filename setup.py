@@ -10,14 +10,6 @@ def get_about():
     return scope
 
 
-def get_requirements():
-    with open("requirements.txt") as fd:
-        requirements = []
-        for line in fd.readlines():
-            requirements.append(line.strip())
-        return requirements
-
-
 def get_readme():
     """
         Get the long description from the README file
@@ -39,12 +31,17 @@ setup(
     url=about["__url__"],
     author=about["__author__"],
     author_email=about["__email__"],
+    license="GNU General Public License v3",
+    platforms=["Unix"],
     classifiers=[
         "Topic :: Internet",
-        "License :: OSI Approved :: GNU General Public License v3",
-        "Programming Language :: Python"
+        "License :: OSI Approved :: GNU General Public License v3 or later "
+        "(GPLv3+)",
+        "Programming Language :: Python :: 3",
+        "Development Status :: 4 - Beta",
+        "Operating System :: Unix"
     ],
     keywords=about["__keywords__"],
     packages=find_packages(),
-    install_requires=get_requirements(),
+    install_requires=["requests~=2.27.1", "beautifulsoup4~=4.10.0"],
 )
