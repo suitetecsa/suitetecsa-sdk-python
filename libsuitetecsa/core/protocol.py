@@ -19,8 +19,9 @@ from datetime import date
 import bs4
 import requests
 
-from libsuitetecsa.core.exception import GetInfoException, TransferException, ChangePasswordException, \
-    RechargeException, PreLoginException, LoginException, NautaException, LogoutException
+from libsuitetecsa.core.exception import GetInfoException, TransferException, \
+    ChangePasswordException, RechargeException, PreLoginException, \
+    LoginException, NautaException, LogoutException
 from libsuitetecsa.core.models import User, Transfer, Connection, Recharge
 from libsuitetecsa.core.session import UserPortalSession, NautaSession
 
@@ -43,21 +44,30 @@ class UserPortal:
              "transfer_detail_list": "useraaa/transfer_detail_list/",
              "service_detail_list": "useraaa/service_detail_list/",
              "logout": "user/logout"}
-    __up_exceptions = {"user_info": GetInfoException, "recharge": RechargeException,
-                       "transfer": TransferException, "service_detail": GetInfoException,
-                       "recharge_detail": GetInfoException, "transfer_detail": GetInfoException,
+    __up_exceptions = {"user_info": GetInfoException,
+                       "recharge": RechargeException,
+                       "transfer": TransferException,
+                       "service_detail": GetInfoException,
+                       "recharge_detail": GetInfoException,
+                       "transfer_detail": GetInfoException,
                        "change_password": ChangePasswordException,
                        "change_email_password": ChangePasswordException}
-    __attrs = {"username": "usuario", "block_date": "fecha de bloqueo", "delete_date": "fecha de eliminación",
-               "account_type": "tipo de cuenta", "service_type": "iipo de servicio", "credit": "saldo disponible",
-               "time": "tiempo disponible de la cuenta", "mail_account": "cuenta de correo"}
+    __attrs = {"username": "usuario", "block_date": "fecha de bloqueo",
+               "delete_date": "fecha de eliminación",
+               "account_type": "tipo de cuenta",
+               "service_type": "tipo de servicio",
+               "credit": "saldo disponible",
+               "time": "tiempo disponible de la cuenta",
+               "mail_account": "cuenta de correo"}
 
     _re_fail_reason = re.compile(r"toastr\.error\('(?P<reason>[^']*?)'\)")
 
     @classmethod
     def __raise_if_error(cls, r, action):
         if not r.ok:
-            raise cls.__up_exceptions[action](f"Fallo al realizar la operacion: {r.status_code} - {r.reason}")
+            raise cls.__up_exceptions[action](
+                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
+            )
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
         script_text = soup.find_all("script")[-1].get_text().strip()
@@ -72,7 +82,8 @@ class UserPortal:
         error = soup.find("li", {"class": "msg_error"})
         if error:
             if error.text.startswith("Se han detectado algunos errores."):
-                return [msg.text for msg in soup.find_all("li", {"class": "sub-message"})]
+                return [msg.text for msg in
+                        soup.find_all("li", {"class": "sub-message"})]
             else:
                 return error.text
 
@@ -85,7 +96,8 @@ class UserPortal:
 
     @staticmethod
     def get_captcha(session: UserPortalSession) -> bytes:
-        return session.requests_session.get("https://www.portal.nauta.cu/captcha/?").content
+        return session.requests_session.get(
+            "https://www.portal.nauta.cu/captcha/?").content
 
     @staticmethod
     def __get_csrf(soup: bs4.BeautifulSoup):
@@ -106,7 +118,8 @@ class UserPortal:
         return session
 
     @classmethod
-    def login(cls, session: UserPortalSession, username: str, password: str, captcha_code: str):
+    def login(cls, session: UserPortalSession, username: str, password: str,
+              captcha_code: str):
         r = session.requests_session.post(
             f'{cls.BASE_URL}user/login/es-es',
             {
@@ -119,7 +132,8 @@ class UserPortal:
         )
 
         if not r.ok:
-            raise LoginException(f"Fallo el inicio de sesion: {r.status_code} - {r.reason}")
+            raise LoginException(
+                f"Fallo el inicio de sesión: {r.status_code} - {r.reason}")
 
         soup = bs4.BeautifulSoup(r.text, "html.parser")
 
@@ -129,10 +143,11 @@ class UserPortal:
             match = cls._re_fail_reason.match(script_text)
             soup = bs4.BeautifulSoup(match.group("reason"))
             raise LoginException(
-                f'Fallo el inicio de sesion: {cls.__find_errors(soup)}'
+                f'Fallo el inicio de sesión: {cls.__find_errors(soup)}'
             )
 
-        return User(**{key: cls.__get_attr__(cls.__attrs[key], soup) for key in cls.__attrs.keys()})
+        return User(**{key: cls.__get_attr__(cls.__attrs[key], soup) for key in
+                       cls.__attrs.keys()})
 
     @classmethod
     def get_user_info(cls, session: UserPortalSession):
@@ -144,7 +159,8 @@ class UserPortal:
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
 
-        return User(**{key: cls.__get_attr__(cls.__attrs[key], soup) for key in cls.__attrs.keys()})
+        return User(**{key: cls.__get_attr__(cls.__attrs[key], soup) for key in
+                       cls.__attrs.keys()})
 
     @classmethod
     def recharge(cls, session: UserPortalSession, recharge_code: str):
@@ -158,7 +174,8 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
     @classmethod
-    def transfer(cls, session: UserPortalSession, mount_to_transfer: str, account_to_transfer: str, password: str):
+    def transfer(cls, session: UserPortalSession, mount_to_transfer: str,
+                 account_to_transfer: str, password: str):
         action = "up_transfer"
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url[action],
@@ -171,7 +188,8 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
     @classmethod
-    def change_password(cls, session: UserPortalSession, old_password: str, new_password: str):
+    def change_password(cls, session: UserPortalSession, old_password: str,
+                        new_password: str):
         action = "change_password"
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url[action],
@@ -184,7 +202,8 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
     @classmethod
-    def change_email_password(cls, session: UserPortalSession, old_password: str, new_password: str):
+    def change_email_password(cls, session: UserPortalSession,
+                              old_password: str, new_password: str):
         action = "change_email_password"
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url[action],
@@ -197,7 +216,8 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
     @classmethod
-    def get_lasts(cls, session: UserPortalSession, action: str = "connections", large: int = 5):
+    def get_lasts(cls, session: UserPortalSession, action: str = "connections",
+                  large: int = 5):
         actions = {"connections": cls.get_connections,
                    "recharges": cls.get_recharges,
                    "transfers": cls.get_transfers}
@@ -223,7 +243,8 @@ class UserPortal:
         return lasts[:large]
 
     @classmethod
-    def get_connections(cls, session: UserPortalSession, year: int, month: int):
+    def get_connections(cls, session: UserPortalSession, year: int,
+                        month: int):
         year_month = f'{year}-{month}'
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url["service_detail_list"] + year_month,
@@ -233,16 +254,23 @@ class UserPortal:
         )
         if not r.ok:
             raise cls.__up_exceptions["service_detail"](
-                f"Fallo al realizar la operacion: {r.status_code} - {r.reason}"
+                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
             )
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
 
         if cls.__url["service_detail_list"] not in r.url:
-            raise cls.__up_exceptions["service_detail"](cls.__find_errors(soup))
+            raise cls.__up_exceptions["service_detail"](
+                cls.__find_errors(soup))
 
-        soup = bs4.BeautifulSoup(r.text, 'html.parser').find("table",
-                                                             {"class": "striped bordered highlight responsive-table"})
+        soup = bs4.BeautifulSoup(
+            r.text, 'html.parser'
+        ).find(
+            "table",
+            {
+                "class": "striped bordered highlight responsive-table"
+            }
+        )
         if soup:
             trs = soup.find_all("tr")
             trs.pop(0)
@@ -251,7 +279,8 @@ class UserPortal:
                                duration=tr.find_all("td")[2].text,
                                upload=tr.find_all("td")[3].text,
                                download=tr.find_all("td")[4].text,
-                               import_=tr.find_all("td")[5].text) for tr in trs]
+                               import_=tr.find_all("td")[5].text) for tr in
+                    trs]
 
     @classmethod
     def get_recharges(cls, session: UserPortalSession, year: int, month: int):
@@ -264,16 +293,23 @@ class UserPortal:
         )
         if not r.ok:
             raise cls.__up_exceptions["recharge_detail"](
-                f"Fallo al realizar la operacion: {r.status_code} - {r.reason}"
+                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
             )
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
 
         if cls.__url["recharge_detail_list"] not in r.url:
-            raise cls.__up_exceptions["recharge_detail"](cls.__find_errors(soup))
+            raise cls.__up_exceptions["recharge_detail"](
+                cls.__find_errors(soup))
 
-        soup = bs4.BeautifulSoup(r.text, 'html.parser').find("table",
-                                                             {"class": "striped bordered highlight responsive-table"})
+        soup = bs4.BeautifulSoup(
+            r.text, 'html.parser'
+        ).find(
+            "table",
+            {
+                "class": "striped bordered highlight responsive-table"
+            }
+        )
         if soup:
             trs = soup.find_all("tr")
             trs.pop(0)
@@ -293,16 +329,23 @@ class UserPortal:
         )
         if not r.ok:
             raise cls.__up_exceptions["transfer_detail"](
-                f"Fallo al realizar la operacion: {r.status_code} - {r.reason}"
+                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
             )
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
 
         if cls.__url["transfer_detail_list"] not in r.url:
-            raise cls.__up_exceptions["transfer_detail"](cls.__find_errors(soup))
+            raise cls.__up_exceptions["transfer_detail"](
+                cls.__find_errors(soup))
 
-        soup = bs4.BeautifulSoup(r.text, 'html.parser').find("table",
-                                                             {"class": "striped bordered highlight responsive-table"})
+        soup = bs4.BeautifulSoup(
+            r.text, 'html.parser'
+        ).find(
+            "table",
+            {
+                "class": "striped bordered highlight responsive-table"
+            }
+        )
         if soup:
             trs = soup.find_all("tr")
             trs.pop(0)
@@ -348,7 +391,7 @@ class Nauta(object):
             if NautaSession.is_logged_in():
                 raise PreLoginException("Hay una session abierta")
             else:
-                raise PreLoginException("Hay una conexion activa")
+                raise PreLoginException("Hay una conexión activa")
 
         session = NautaSession()
 
@@ -388,7 +431,7 @@ class Nauta(object):
 
         if not r.ok:
             raise LoginException(
-                "Fallo el inicio de sesion: {} - {}".format(
+                "Fallo el inicio de sesión: {} - {}".format(
                     r.status_code,
                     r.reason
                 )
@@ -400,7 +443,7 @@ class Nauta(object):
 
             match = cls._re_login_fail_reason.match(script_text)
             raise LoginException(
-                "Fallo el inicio de sesion: {}".format(
+                "Fallo el inicio de sesión: {}".format(
                     match.group("reason")
                 )
             )
@@ -429,7 +472,7 @@ class Nauta(object):
         response = session.requests_session.get(logout_url)
         if not response.ok:
             raise LogoutException(
-                "Fallo al cerrar la sesion: {} - {}".format(
+                "Fallo al cerrar la sesión: {} - {}".format(
                     response.status_code,
                     response.reason
                 )
@@ -437,7 +480,7 @@ class Nauta(object):
 
         if "SUCCESS" not in response.text.upper():
             raise LogoutException(
-                "Fallo al cerrar la sesion: {}".format(
+                "Fallo al cerrar la sesión: {}".format(
                     response.text[:100]
                 )
             )
@@ -473,7 +516,7 @@ class Nauta(object):
 
         if not r.ok:
             raise NautaException(
-                "Fallo al obtener la informacion del usuario: {} - {}".format(
+                "Fallo al obtener la información del usuario: {} - {}".format(
                     r.status_code,
                     r.reason
                 )
@@ -481,15 +524,19 @@ class Nauta(object):
 
         if "secure.etecsa.net" not in r.url:
             raise NautaException(
-                "No se puede obtener el credito del usuario mientras esta online"
+                "No se puede obtener el crédito del usuario mientras esta "
+                "online"
             )
 
         soup = bs4.BeautifulSoup(r.text, "html.parser")
-        credit_tag = soup.select_one("#sessioninfo > tbody:nth-child(1) > tr:nth-child(2) > td:nth-child(2)")
+        credit_tag = soup.select_one(
+            "#sessioninfo > tbody:nth-child(1) > tr:nth-child(2) > "
+            "td:nth-child(2)")
 
         if not credit_tag:
             raise NautaException(
-                "Fallo al obtener el credito del usuario: no se encontro la informacion"
+                "Fallo al obtener el crédito del usuario: no se encontró la "
+                "información"
             )
 
         return credit_tag.get_text().strip()

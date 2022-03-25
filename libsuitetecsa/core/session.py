@@ -24,10 +24,17 @@ from libsuitetecsa import appdata_path
 
 class SessionObject(object):
     SESSION_FILE = None
-    headers_ = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-                'Accept-Encoding': 'gzip, deflate, br',
-                'Accept-Language': 'es-MX,es;q=0.8,en-US;q=0.5,en;q=0.3',
-                'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:97.0) Gecko/20100101 Firefox/97.0'}
+    headers_ = {
+        'Accept': 'text/html,application/xhtml+xml,'
+                  'application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'es-MX,es;q=0.8,en-US;q=0.5,en;q=0.3',
+        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; '
+                      'rv:97.0) Gecko/20100101 Firefox/97.0'
+    }
+
+    def __init__(self):
+        self.requests_session = self.__class__._create_requests_session()
 
     @classmethod
     def _create_requests_session(cls):
@@ -62,7 +69,7 @@ class SessionObject(object):
         self.requests_session.cookies.save()
         try:
             os.remove(self.__class__.SESSION_FILE)
-        except:
+        except FileNotFoundError:
             pass
 
     @classmethod
@@ -73,9 +80,9 @@ class SessionObject(object):
 class NautaSession(SessionObject):
     SESSION_FILE = os.path.join(appdata_path, "nauta-session")
 
-    def __init__(self,  login_action=None, csrfhw=None, wlanuserip=None, attribute_uuid=None):
-        self.requests_session = self.__class__._create_requests_session()
-
+    def __init__(self, login_action=None, csrfhw=None, wlanuserip=None,
+                 attribute_uuid=None):
+        super().__init__()
         self.login_action = login_action
         self.csrfhw = csrfhw
         self.wlanuserip = wlanuserip
@@ -86,8 +93,7 @@ class UserPortalSession(SessionObject):
     SESSION_FILE = os.path.join(appdata_path, "user-portal-session")
 
     def __init__(self, csrf=None):
-        self.requests_session = self.__class__._create_requests_session()
-
+        super().__init__()
         self.csrf = csrf
 
         self.block_date = None
