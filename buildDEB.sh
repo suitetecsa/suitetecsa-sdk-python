@@ -1,13 +1,37 @@
-#!/bin/sh
-mkdir -p PyLibSuitETECSA_0.1.0-1_all//DEBIAN
-cp BuildDEB/* PyLibSuitETECSA_0.1.0-1_all//DEBIAN
-mkdir -p PyLibSuitETECSA_0.1.0-1_all/usr/lib/python3/dist-packages/libsuitetecsa/core/
-cp libsuitetecsa/__init__.py PyLibSuitETECSA_0.1.0-1_all/usr/lib/python3/dist-packages/libsuitetecsa/__init__.py
-cp libsuitetecsa/__about__.py PyLibSuitETECSA_0.1.0-1_all/usr/lib/python3/dist-packages/libsuitetecsa/__about__.py
-cp libsuitetecsa/api.py PyLibSuitETECSA_0.1.0-1_all/usr/lib/python3/dist-packages/libsuitetecsa/api.py
-cp libsuitetecsa/core/exception.py PyLibSuitETECSA_0.1.0-1_all/usr/lib/python3/dist-packages/libsuitetecsa/core/exception.py
-cp libsuitetecsa/core/__init__.py PyLibSuitETECSA_0.1.0-1_all/usr/lib/python3/dist-packages/libsuitetecsa/core/__init__.py
-cp libsuitetecsa/core/models.py PyLibSuitETECSA_0.1.0-1_all/usr/lib/python3/dist-packages/libsuitetecsa/core/models.py
-chmod 775 -R PyLibSuitETECSA_0.1.0-1_all//DEBIAN/
-dpkg-deb -b PyLibSuitETECSA_0.1.0-1_all/
-rm -r PyLibSuitETECSA_0.1.0-1_all/
+#!/usr/bin/env bash
+
+app_name=PyLibSuitETECSA
+app_version=0.1.2
+module_name=libsuitetecsa
+
+temp_dir=$app_name'_'$app_version'_all'
+debian_dir="$temp_dir//DEBIAN"
+
+if [ -d $debian_dir ]; then
+  echo "El directorio existe."
+else
+  mkdir -p $debian_dir
+fi
+
+cp BuildDEB/* $debian_dir
+
+dirs=($(find $module_name/ -type d))
+for i in "${dirs[@]}"; do
+    if [ "$(basename "$i")" == __pycache__ ]; then
+        echo "$i"
+        rm -rf "$i"
+    else
+        mkdir -p $temp_dir/usr/lib/python3/site-packages/"$i"
+    fi
+done
+
+files=($(find $module_name/ -type f))
+for i in "${files[@]}"; do
+    if [ "${i:(-3)}" == .py ]; then
+        cp "$i" $temp_dir/usr/lib/python3/site-packages/"$i"
+    fi
+done
+
+chmod 775 -R $debian_dir
+dpkg-deb -b $temp_dir
+rm -r $temp_dir
