@@ -55,13 +55,11 @@ class UserPortalClient:
         if not self.session:
             self.init_session()
 
-        self.session.__dict__.update(
-            UserPortal.login(
-                self.session,
-                self.username,
-                self.password,
-                captcha_code
-            ).__dict__
+        UserPortal.login(
+            self.session,
+            self.username,
+            self.password,
+            captcha_code
         )
 
         self.session.save()
@@ -79,10 +77,8 @@ class UserPortalClient:
             recharge_code
         )
 
-        self.session.__dict__.update(
-            UserPortal.get_user_info(
-                self.session
-            ).__dict__
+        UserPortal.get_user_info(
+            self.session
         )
 
         self.session.save()
@@ -101,10 +97,8 @@ class UserPortalClient:
             self.password
         )
 
-        self.session.__dict__.update(
-            UserPortal.get_user_info(
-                self.session
-            ).__dict__
+        UserPortal.get_user_info(
+            self.session
         )
 
         self.session.save()
@@ -187,6 +181,20 @@ class UserPortalClient:
             month
         )
 
+    def get_quotes_fund(self, year: int, month: int):
+        """
+        Devuelve las recargas hechas al servicio nauta Hogar en el periodo
+        mes-año especificado.
+        :param year: Año en el que buscar.
+        :param month: Mes en el que buscar.
+        :return: Lista de NautaHomePaid en el periodo solicitado.
+        """
+        return UserPortal.get_quotes_fund(
+            self.session,
+            year,
+            month
+        )
+
     def __enter__(self):
         pass
 
@@ -194,18 +202,22 @@ class UserPortalClient:
         pass
 
     @property
-    def block_date(self):
+    def is_nauta_home(self):
+        return self.session.is_nauta_home
+
+    @property
+    def blocking_date(self):
         """
         :return: Fecha de bloqueo de la cuenta registrada.
         """
-        return self.session.block_date if self.session else None
+        return self.session.blocking_date if self.session else None
 
     @property
-    def delete_date(self):
+    def date_of_elimination(self):
         """
         :return: Fecha de eliminación de la cuenta registrada.
         """
-        return self.session.delete_date if self.session else None
+        return self.session.date_of_elimination if self.session else None
 
     @property
     def account_type(self):
@@ -241,6 +253,58 @@ class UserPortalClient:
         :return: Cuenta de correo asociada a la cuenta registrada.
         """
         return self.session.mail_account if self.session else None
+
+    @property
+    def offer(self):
+        return self.session.offer if self.session else None
+
+    @property
+    def monthly_fee(self):
+        return self.session.monthly_fee if self.session else None
+
+    @property
+    def download_speeds(self):
+        return self.session.download_speeds if self.session else None
+
+    @property
+    def upload_speeds(self):
+        return self.session.upload_speeds if self.session else None
+
+    @property
+    def phone(self):
+        return self.session.phone if self.session else None
+
+    @property
+    def link_identifiers(self):
+        return self.session.link_identifiers if self.session else None
+
+    @property
+    def link_status(self):
+        return self.session.link_status if self.session else None
+
+    @property
+    def activation_date(self):
+        return self.session.activation_date if self.session else None
+
+    @property
+    def blocking_date_home(self):
+        return self.session.blocking_date_home if self.session else None
+
+    @property
+    def date_of_elimination_home(self):
+        return self.session.date_of_elimination_home if self.session else None
+
+    @property
+    def quota_fund(self):
+        return self.session.quota_fund if self.session else None
+
+    @property
+    def voucher(self):
+        return self.session.voucher if self.session else None
+
+    @property
+    def debt(self):
+        return self.session.debt if self.session else None
 
 
 class NautaClient(object):

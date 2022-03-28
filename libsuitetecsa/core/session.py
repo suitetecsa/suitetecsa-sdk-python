@@ -96,10 +96,53 @@ class UserPortalSession(SessionObject):
         super().__init__()
         self.csrf = csrf
 
-        self.block_date = None
-        self.delete_date = None
+        # Attrs for normal nauta account
+        self.blocking_date = None
+        self.date_of_elimination = None
         self.account_type = None
         self.service_type = None
         self.credit = None
         self.time = None
         self.mail_account = None
+
+        # Attrs for nauta home account
+        self.offer = None
+        self.monthly_fee = None
+        self.download_speeds = None
+        self.upload_speeds = None
+        self.phone = None
+        self.link_identifiers = None
+        self.link_status = None
+        self.activation_date = None
+        self.blocking_date_home = None
+        self.date_of_elimination_home = None
+        self.quota_fund = None
+        self.voucher = None
+        self.debt = None
+
+    @property
+    def is_nauta_home(self):
+        return bool(self.offer)
+
+
+class ShopSession(SessionObject):
+    SESSION_FILE = os.path.join(appdata_path, "shop-session")
+    headers_ = {
+        "Host": "www.tienda.etecsa.cu",
+        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) "
+                      "Gecko/20100101 Firefox/98.0",
+        "Accept": "application/json, text/plain, */*",
+        "Accept-Language": "es-MX,es;q=0.8,en-US;q=0.5,en;q=0.3",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Content-Type": "application/json;charset=utf-8",
+        "Origin": "https://www.tienda.etecsa.cu",
+        "Connection": "keep-alive",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+        "Cache-Control": "max-age=0",
+        "TE": "trailers"
+    }
+
+    def __init__(self):
+        super().__init__()

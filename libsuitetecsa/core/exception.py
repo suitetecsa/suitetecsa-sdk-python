@@ -47,3 +47,11 @@ class GetInfoException(Exception):
 
 class NautaException(Exception):
     pass
+
+
+class NotLoggedIn(Exception):
+    pass
+
+
+class NotNautaHomeAccount(Exception):
+    pass

@@ -21,8 +21,9 @@ import requests
 
 from libsuitetecsa.core.exception import GetInfoException, TransferException, \
     ChangePasswordException, RechargeException, PreLoginException, \
-    LoginException, NautaException, LogoutException
-from libsuitetecsa.core.models import User, Transfer, Connection, Recharge
+    LoginException, NautaException, LogoutException, NotNautaHomeAccount
+from libsuitetecsa.core.models import User, Transfer, Connection, Recharge, \
+    QuotePaid
 from libsuitetecsa.core.session import UserPortalSession, NautaSession
 
 
@@ -39,6 +40,11 @@ class UserPortal:
              "recharge_detail": "useraaa/recharge_detail/",
              "recharge_detail_summary": "useraaa/recharge_detail_summary/",
              "recharge_detail_list": "useraaa/recharge_detail_list/",
+             "nautahogarpaid_detail": "useraaa/nautahogarpaid_detail/",
+             "nautahogarpaid_detail_summary":
+                 "useraaa/nautahogarpaid_detail_summary/",
+             "nautahogarpaid_detail_list":
+                 "useraaa/nautahogarpaid_detail_list/",
              "transfer_detail": "useraaa/transfer_detail/",
              "transfer_detail_summary": "useraaa/transfer_detail_summary/",
              "transfer_detail_list": "useraaa/transfer_detail_list/",
@@ -49,16 +55,31 @@ class UserPortal:
                        "transfer": TransferException,
                        "service_detail": GetInfoException,
                        "recharge_detail": GetInfoException,
+                       "nautahogarpaid_detail": GetInfoException,
                        "transfer_detail": GetInfoException,
                        "change_password": ChangePasswordException,
                        "change_email_password": ChangePasswordException}
-    __attrs = {"username": "usuario", "block_date": "fecha de bloqueo",
-               "delete_date": "fecha de eliminación",
+    __attrs = {"username": "usuario",
                "account_type": "tipo de cuenta",
                "service_type": "tipo de servicio",
                "credit": "saldo disponible",
                "time": "tiempo disponible de la cuenta",
-               "mail_account": "cuenta de correo"}
+               "mail_account": "cuenta de correo",
+               "offer": "oferta",
+               "monthly_fee": "cuota mensual",
+               "download_speeds": "velocidad de bajada",
+               "upload_speeds": "velocidad de subida",
+               "phone": "teléfono",
+               "link_identifiers": "identificador del enlace",
+               "link_status": "estado del enlace",
+               "activation_date": "fecha de activación",
+               "blocking_date": "fecha de bloqueo",
+               "date_of_elimination": "fecha de eliminación",
+               "blocking_date_home": "fecha de bloqueo",
+               "date_of_elimination_home": "fecha de eliminación",
+               "quota_fund": "fondo de cuota",
+               "voucher": "bono",
+               "debt": "deuda"}
 
     _re_fail_reason = re.compile(r"toastr\.error\('(?P<reason>[^']*?)'\)")
 
@@ -118,8 +139,12 @@ class UserPortal:
         return session
 
     @classmethod
-    def login(cls, session: UserPortalSession, username: str, password: str,
-              captcha_code: str):
+    def login(
+            cls, session: UserPortalSession,
+            username: str,
+            password: str,
+            captcha_code: str
+    ):
         r = session.requests_session.post(
             f'{cls.BASE_URL}user/login/es-es',
             {
@@ -145,9 +170,14 @@ class UserPortal:
             raise LoginException(
                 f'Fallo el inicio de sesión: {cls.__find_errors(soup)}'
             )
-
-        return User(**{key: cls.__get_attr__(cls.__attrs[key], soup) for key in
-                       cls.__attrs.keys()})
+        session.__dict__.update(
+            **{
+                key: cls.__get_attr__(
+                    key,
+                    soup
+                )
+                for key in cls.__attrs.keys()}
+        )
 
     @classmethod
     def get_user_info(cls, session: UserPortalSession):
@@ -158,9 +188,16 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
-
-        return User(**{key: cls.__get_attr__(cls.__attrs[key], soup) for key in
-                       cls.__attrs.keys()})
+        account_info = {
+            key: cls.__get_attr__(
+                key,
+                soup
+            )
+            for key in cls.__attrs.keys()}
+        session.__dict__.update(
+            **account_info
+        )
+        return User(**account_info)
 
     @classmethod
     def recharge(cls, session: UserPortalSession, recharge_code: str):
@@ -174,8 +211,12 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
     @classmethod
-    def transfer(cls, session: UserPortalSession, mount_to_transfer: str,
-                 account_to_transfer: str, password: str):
+    def transfer(
+            cls, session: UserPortalSession,
+            mount_to_transfer: str,
+            account_to_transfer: str,
+            password: str
+    ):
         action = "up_transfer"
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url[action],
@@ -188,8 +229,11 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
     @classmethod
-    def change_password(cls, session: UserPortalSession, old_password: str,
-                        new_password: str):
+    def change_password(
+            cls, session: UserPortalSession,
+            old_password: str,
+            new_password: str
+    ):
         action = "change_password"
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url[action],
@@ -202,8 +246,11 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
     @classmethod
-    def change_email_password(cls, session: UserPortalSession,
-                              old_password: str, new_password: str):
+    def change_email_password(
+            cls, session: UserPortalSession,
+            old_password: str,
+            new_password: str
+    ):
         action = "change_email_password"
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url[action],
@@ -216,11 +263,15 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
     @classmethod
-    def get_lasts(cls, session: UserPortalSession, action: str = "connections",
-                  large: int = 5):
+    def get_lasts(
+            cls, session: UserPortalSession,
+            action: str = "connections",
+            large: int = 5
+    ):
         actions = {"connections": cls.get_connections,
                    "recharges": cls.get_recharges,
-                   "transfers": cls.get_transfers}
+                   "transfers": cls.get_transfers,
+                   "quotes_fund": cls.get_quotes_fund}
 
         year = date.today().year
         month = date.today().month
@@ -243,9 +294,12 @@ class UserPortal:
         return lasts[:large]
 
     @classmethod
-    def get_connections(cls, session: UserPortalSession, year: int,
-                        month: int):
-        year_month = f'{year}-{month}'
+    def get_connections(
+            cls, session: UserPortalSession,
+            year: int,
+            month: int
+    ):
+        year_month = f'{year}-{month:02}'
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url["service_detail_list"] + year_month,
             {"csrf": cls.__get_csrf_(session, "service_detail"),
@@ -284,7 +338,7 @@ class UserPortal:
 
     @classmethod
     def get_recharges(cls, session: UserPortalSession, year: int, month: int):
-        year_month = f'{year}-{month}'
+        year_month = f'{year}-{month:02}'
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url["recharge_detail_list"] + year_month,
             {"csrf": cls.__get_csrf_(session, "recharge_detail"),
@@ -313,14 +367,57 @@ class UserPortal:
         if soup:
             trs = soup.find_all("tr")
             trs.pop(0)
-            return [Recharge(start_session=tr.find_all("td")[0].text,
-                             end_session=tr.find_all("td")[1].text,
-                             duration=tr.find_all("td")[2].text,
-                             upload=tr.find_all("td")[3].text) for tr in trs]
+            return [Recharge(date=tr.find_all("td")[0].text,
+                             import_=tr.find_all("td")[1].text,
+                             channel=tr.find_all("td")[2].text,
+                             type_=tr.find_all("td")[3].text) for tr in trs]
+
+    @classmethod
+    def get_quotes_fund(
+            cls, session: UserPortalSession,
+            year: int,
+            month: int
+    ):
+        if not session.is_nauta_home:
+            raise NotNautaHomeAccount(
+                "Esta cuenta no esta asociada al servicio Nauta Hogar."
+            )
+
+        year_month = f'{year}-{month:02}'
+
+        r = session.requests_session.post(
+            cls.BASE_URL + cls.__url["nautahogarpaid_detail_list"] +
+            year_month,
+            {"csrf": cls.__get_csrf_(session, "nautahogarpaid_detail"),
+             "year_month": year_month,
+             "list_type": "nautahogarpaid_detail"}
+        )
+        if not r.ok:
+            raise cls.__up_exceptions["nautahogarpaid_detail"](
+                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
+            )
+        soup = bs4.BeautifulSoup(
+            r.text, 'html.parser'
+        ).find(
+            "table",
+            {
+                "class": "striped bordered highlight responsive-table"
+            }
+        )
+        if soup:
+            trs = soup.find_all("tr")
+            trs.pop(0)
+            return [
+                QuotePaid(date=tr.find_all("td")[0].text,
+                          import_=tr.find_all("td")[1].text,
+                          channel=tr.find_all("td")[2].text,
+                          office=tr.find_all("td")[3].text,
+                          type_=tr.find_all("td")[4].text) for tr in trs
+            ]
 
     @classmethod
     def get_transfers(cls, session: UserPortalSession, year: int, month: int):
-        year_month = f'{year}-{month}'
+        year_month = f'{year}-{month:02}'
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url["transfer_detail_list"] + year_month,
             {"csrf": cls.__get_csrf_(session, "transfer_detail"),
@@ -349,14 +446,25 @@ class UserPortal:
         if soup:
             trs = soup.find_all("tr")
             trs.pop(0)
-            return [Transfer(start_session=tr.find_all("td")[0].text,
-                             end_session=tr.find_all("td")[1].text,
-                             duration=tr.find_all("td")[2].text) for tr in trs]
+            return [
+                Transfer(date=tr.find_all("td")[0].text,
+                         import_=tr.find_all("td")[1].text,
+                         destiny_account=tr.find_all("td")[2].text)
+                for tr in trs
+            ]
 
     @staticmethod
-    def __get_attr__(attr: str, soup) -> str:
+    def __get_attr__(attr: str, soup: bs4.BeautifulSoup) -> str:
+        if attr == "blocking_date_home" or attr == "date_of_elimination_home":
+            index = 1
+        else:
+            index = 0
+        count = 0
         for div in soup.find_all("div", {"class": "col s12 m6"}):
-            if div.find("h5").text.strip().lower() == attr:
+            if div.find("h5").text.strip().lower() == UserPortal.__attrs[attr]:
+                if index == 1 and count == 0:
+                    count = 1
+                    continue
                 return div.find("p").text
 
 

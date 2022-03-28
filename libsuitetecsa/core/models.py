@@ -71,6 +71,14 @@ class Recharge(object):
                         int(hours), int(minutes), int(seconds))
 
 
+class QuotePaid(Recharge):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.office = None
+        self.__dict__.update(kwargs)
+
+
 class Transfer(object):
 
     def __init__(self, **kwargs):
