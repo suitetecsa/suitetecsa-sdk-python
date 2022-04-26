@@ -127,7 +127,7 @@ class UserPortalClient:
             new_passwrd
         )
 
-    def get_lasts(self, action: str = "connections", large: int = 5):
+    def get_lasts(self, action: str = UserPortal.ACTION_CONNECTIONS, large: int = 5):
         """
         Devuelve las últimas `large` `action` realizadas por la cuenta.
         :param action: Acciones u operaciones que se requieren.
