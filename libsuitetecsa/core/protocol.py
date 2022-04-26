@@ -23,15 +23,18 @@ import requests
 from libsuitetecsa.core.exception import GetInfoException, TransferException, \
     ChangePasswordException, RechargeException, PreLoginException, \
     LoginException, NautaException, LogoutException, NotNautaHomeAccount
-from libsuitetecsa.core.models import User, Transfer, Connection, Recharge, \
+from libsuitetecsa.core.models import Transfer, Connection, Recharge, \
     QuotePaid
 from libsuitetecsa.core.session import UserPortalSession, NautaSession
 from libsuitetecsa.core.utils import USER_PORTAL, find_errors
 
 
 class UserPortal:
+    
+    # Url base del portal de usuario de nauta.
     BASE_URL = "https://www.portal.nauta.cu/"
 
+    # Lista de urls del portal de nsuario de nauta.
     __url = {"login": "user/login/es-es",
              "user_info": "useraaa/user_info",
              "recharge": "useraaa/recharge_account",
@@ -52,6 +55,8 @@ class UserPortal:
              "transfer_detail_list": "useraaa/transfer_detail_list/",
              "service_detail_list": "useraaa/service_detail_list/",
              "logout": "user/logout"}
+    
+    # Excepciones disparadas por esta clase.
     __up_exceptions = {"user_info": GetInfoException,
                        "recharge": RechargeException,
                        "transfer": TransferException,
@@ -62,6 +67,8 @@ class UserPortal:
                        "change_password": ChangePasswordException,
                        "change_email_password": ChangePasswordException,
                        "login": LoginException}
+    
+    # Diccionario usado para extraer información de la cuenta logueada.
     __attrs = {"username": "usuario",
                "account_type": "tipo de cuenta",
                "service_type": "tipo de servicio",
@@ -84,10 +91,8 @@ class UserPortal:
                "voucher": "bono",
                "debt": "deuda"}
 
-    _re_fail_reason = re.compile(r"toastr\.error\('(?P<reason>[^']*?)'\)")
-
     @classmethod
-    def __raise_if_error(cls, r: requests.Response, action: str):
+    def __raise_if_error(cls, r: requests.Response, action: str) -> None:
         if not r.ok:
             raise cls.__up_exceptions[action](
                 f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
