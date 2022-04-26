@@ -15,6 +15,7 @@
 
 import re
 from datetime import date
+from typing import Union
 
 import bs4
 import requests
@@ -177,16 +178,23 @@ class UserPortal:
         )
 
     @classmethod
-    def recharge(cls, session: UserPortalSession, recharge_code: str):
-        action = "recharge"
+    def __post_action(cls, session: UserPortalSession, data: dict, action: str):
         r = session.requests_session.post(
             cls.BASE_URL + cls.__url[action],
-            {"csrf": cls.__get_csrf_(session, action),
-             "recharge_code": recharge_code,
-             "btn_submit": ""}
+            json=data
         )
         cls.__raise_if_error(r, action)
-
+    
+    @classmethod
+    def recharge(cls, session: UserPortalSession, recharge_code: str):
+        action = "recharge"
+        data = {
+            "csrf": cls.__get_csrf_(session, action),
+            "recharge_code": recharge_code,
+            "btn_submit": ""
+        }
+        cls.__post_action(session, data, action)
+        
     @classmethod
     def transfer(
             cls, session: UserPortalSession,
@@ -195,15 +203,14 @@ class UserPortal:
             password: str
     ):
         action = "up_transfer"
-        r = session.requests_session.post(
-            cls.BASE_URL + cls.__url[action],
-            {"csrf": cls.__get_csrf_(session, action),
-             "transfer": mount_to_transfer,
-             "password_user": password,
-             "id_cuenta": account_to_transfer,
-             "action": "checkdata"}
-        )
-        cls.__raise_if_error(r, action)
+        data = {
+            "csrf": cls.__get_csrf_(session, action),
+            "transfer": mount_to_transfer,
+            "password_user": password,
+            "id_cuenta": account_to_transfer,
+            "action": "checkdata"
+        }
+        cls.__post_action(session, data, action)
 
     @classmethod
     def change_password(
@@ -212,15 +219,14 @@ class UserPortal:
             new_password: str
     ):
         action = "change_password"
-        r = session.requests_session.post(
-            cls.BASE_URL + cls.__url[action],
-            {"csrf": cls.__get_csrf_(session, action),
-             "old_password": old_password,
-             "new_password": new_password,
-             "repeat_new_password": new_password,
-             "btn_submit": ""}
-        )
-        cls.__raise_if_error(r, action)
+        data = {
+            "csrf": cls.__get_csrf_(session, action),
+            "old_password": old_password,
+            "new_password": new_password,
+            "repeat_new_password": new_password,
+            "btn_submit": ""
+        }
+        cls.__post_action(session, data, action)
 
     @classmethod
     def change_email_password(
@@ -229,15 +235,14 @@ class UserPortal:
             new_password: str
     ):
         action = "change_email_password"
-        r = session.requests_session.post(
-            cls.BASE_URL + cls.__url[action],
-            {"csrf": cls.__get_csrf_(session, action),
-             "old_password": old_password,
-             "new_password": new_password,
-             "repeat_new_password": new_password,
-             "btn_submit": ""}
-        )
-        cls.__raise_if_error(r, action)
+        data = {
+            "csrf": cls.__get_csrf_(session, action),
+            "old_password": old_password,
+            "new_password": new_password,
+            "repeat_new_password": new_password,
+            "btn_submit": ""
+        }
+        cls.__post_action(session, data, action)
 
     @classmethod
     def get_lasts(
@@ -271,40 +276,72 @@ class UserPortal:
         return lasts[:large]
 
     @classmethod
-    def get_connections(
-            cls, session: UserPortalSession,
-            year: int,
-            month: int
-    ):
+    def __get_action(
+        cls, session: UserPortalSession,
+        year: int,
+        month: int,
+        action: str
+    ) -> Union[bs4.ResultSet, None]:
+        actions = {
+            "connections": {
+                "base": "service_detail",
+                "list": "service_detail_list",
+                "summary": "service_detail_summary"
+            },
+            "recharges": {
+                "base": "recharge_detail",
+                "list": "recharge_detail_list",
+                "summary": "recharge_detail_summary"
+            },
+            "quotes_funds": {
+                "base": "nautahogarpaid_detail",
+                "list": "nautahogarpaid_detail_list",
+                "summary": "nautahogarpaid_detail_summary"
+            },
+            "transfers": {
+                "base": "transfer_detail",
+                "list": "transfer_detail_list",
+                "summary": "transfer_detail_summary"
+            }
+        }
+
         year_month = f'{year}-{month:02}'
         r = session.requests_session.post(
-            cls.BASE_URL + cls.__url["service_detail_list"] + year_month,
-            {"csrf": cls.__get_csrf_(session, "service_detail"),
-             "year_month": year_month,
-             "list_type": "service_detail"}
+            cls.BASE_URL + cls.__url[actions[action]["list"]] + year_month,
+            {
+                "csrf": cls.__get_csrf_(session, actions[action]["base"]),
+                "year_month": year_month,
+                "list_type": actions[action]["base"]
+            }
         )
         if not r.ok:
-            raise cls.__up_exceptions["service_detail"](
+            raise cls.__up_exceptions[actions[action]["base"]](
                 f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
             )
-
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
-
-        if cls.__url["service_detail_list"] not in r.url:
-            raise cls.__up_exceptions["service_detail"](
-                cls.__find_errors(soup))
-
-        soup = bs4.BeautifulSoup(
-            r.text, 'html.parser'
-        ).find(
+        if cls.__url[actions[action]["list"]] not in r.url:
+            raise cls.__up_exceptions[actions[action]["base"]](
+                find_errors(soup, USER_PORTAL)
+            )
+        table = soup.find(
             "table",
             {
                 "class": "striped bordered highlight responsive-table"
             }
         )
-        if soup:
+        if table:
             trs = soup.find_all("tr")
             trs.pop(0)
+            return trs
+  
+    @classmethod
+    def get_connections(
+            cls, session: UserPortalSession,
+            year: int,
+            month: int
+    ):
+        trs = cls.__get_action(session, year, month, "connections")
+        if trs:
             return [Connection(start_session=tr.find_all("td")[0].text,
                                end_session=tr.find_all("td")[1].text,
                                duration=tr.find_all("td")[2].text,
@@ -315,35 +352,8 @@ class UserPortal:
 
     @classmethod
     def get_recharges(cls, session: UserPortalSession, year: int, month: int):
-        year_month = f'{year}-{month:02}'
-        r = session.requests_session.post(
-            cls.BASE_URL + cls.__url["recharge_detail_list"] + year_month,
-            {"csrf": cls.__get_csrf_(session, "recharge_detail"),
-             "year_month": year_month,
-             "list_type": "recharge_detail"}
-        )
-        if not r.ok:
-            raise cls.__up_exceptions["recharge_detail"](
-                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
-            )
-
-        soup = bs4.BeautifulSoup(r.text, 'html.parser')
-
-        if cls.__url["recharge_detail_list"] not in r.url:
-            raise cls.__up_exceptions["recharge_detail"](
-                cls.__find_errors(soup))
-
-        soup = bs4.BeautifulSoup(
-            r.text, 'html.parser'
-        ).find(
-            "table",
-            {
-                "class": "striped bordered highlight responsive-table"
-            }
-        )
-        if soup:
-            trs = soup.find_all("tr")
-            trs.pop(0)
+        trs = cls.__get_action(session, year, month, "recharges")
+        if trs:
             return [Recharge(date=tr.find_all("td")[0].text,
                              import_=tr.find_all("td")[1].text,
                              channel=tr.find_all("td")[2].text,
@@ -360,30 +370,8 @@ class UserPortal:
                 "Esta cuenta no esta asociada al servicio Nauta Hogar."
             )
 
-        year_month = f'{year}-{month:02}'
-
-        r = session.requests_session.post(
-            cls.BASE_URL + cls.__url["nautahogarpaid_detail_list"] +
-            year_month,
-            {"csrf": cls.__get_csrf_(session, "nautahogarpaid_detail"),
-             "year_month": year_month,
-             "list_type": "nautahogarpaid_detail"}
-        )
-        if not r.ok:
-            raise cls.__up_exceptions["nautahogarpaid_detail"](
-                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
-            )
-        soup = bs4.BeautifulSoup(
-            r.text, 'html.parser'
-        ).find(
-            "table",
-            {
-                "class": "striped bordered highlight responsive-table"
-            }
-        )
-        if soup:
-            trs = soup.find_all("tr")
-            trs.pop(0)
+        trs = cls.__get_action(session, year, month, "quotes_funds")
+        if trs:
             return [
                 QuotePaid(date=tr.find_all("td")[0].text,
                           import_=tr.find_all("td")[1].text,
@@ -394,35 +382,8 @@ class UserPortal:
 
     @classmethod
     def get_transfers(cls, session: UserPortalSession, year: int, month: int):
-        year_month = f'{year}-{month:02}'
-        r = session.requests_session.post(
-            cls.BASE_URL + cls.__url["transfer_detail_list"] + year_month,
-            {"csrf": cls.__get_csrf_(session, "transfer_detail"),
-             "year_month": year_month,
-             "list_type": "transfer_detail"}
-        )
-        if not r.ok:
-            raise cls.__up_exceptions["transfer_detail"](
-                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
-            )
-
-        soup = bs4.BeautifulSoup(r.text, 'html.parser')
-
-        if cls.__url["transfer_detail_list"] not in r.url:
-            raise cls.__up_exceptions["transfer_detail"](
-                cls.__find_errors(soup))
-
-        soup = bs4.BeautifulSoup(
-            r.text, 'html.parser'
-        ).find(
-            "table",
-            {
-                "class": "striped bordered highlight responsive-table"
-            }
-        )
-        if soup:
-            trs = soup.find_all("tr")
-            trs.pop(0)
+        trs = cls.__get_action(session, year, month, "transfers")
+        if trs:
             return [
                 Transfer(date=tr.find_all("td")[0].text,
                          import_=tr.find_all("td")[1].text,
