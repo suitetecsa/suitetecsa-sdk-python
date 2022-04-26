@@ -34,6 +34,12 @@ class UserPortal:
     # Url base del portal de usuario de nauta.
     BASE_URL = "https://www.portal.nauta.cu/"
 
+    # Constantes
+    ACTION_CONNECTIONS = "connections"
+    ACTION_RECHARGES = "recharges"
+    ACTION_TRANSFERS = "transfers"
+    ACTION_QUOTES_FUNDS = "quotes_funds"
+
     # Lista de urls del portal de nsuario de nauta.
     __url = {"login": "user/login/es-es",
              "user_info": "useraaa/user_info",
@@ -252,13 +258,15 @@ class UserPortal:
     @classmethod
     def get_lasts(
             cls, session: UserPortalSession,
-            action: str = "connections",
+            action: str = ACTION_CONNECTIONS,
             large: int = 5
     ):
-        actions = {"connections": cls.get_connections,
-                   "recharges": cls.get_recharges,
-                   "transfers": cls.get_transfers,
-                   "quotes_fund": cls.get_quotes_fund}
+        actions = {
+            cls.ACTION_CONNECTIONS: cls.get_connections,
+            cls.ACTION_RECHARGES: cls.get_recharges,
+            cls.ACTION_TRANSFERS: cls.get_transfers,
+            cls.ACTION_QUOTES_FUNDS: cls.get_quotes_fund
+        }
 
         year = date.today().year
         month = date.today().month
@@ -288,22 +296,22 @@ class UserPortal:
         action: str
     ) -> Union[bs4.ResultSet, None]:
         actions = {
-            "connections": {
+            cls.ACTION_CONNECTIONS: {
                 "base": "service_detail",
                 "list": "service_detail_list",
                 "summary": "service_detail_summary"
             },
-            "recharges": {
+            cls.ACTION_RECHARGES: {
                 "base": "recharge_detail",
                 "list": "recharge_detail_list",
                 "summary": "recharge_detail_summary"
             },
-            "quotes_funds": {
+            cls.ACTION_QUOTES_FUNDS: {
                 "base": "nautahogarpaid_detail",
                 "list": "nautahogarpaid_detail_list",
                 "summary": "nautahogarpaid_detail_summary"
             },
-            "transfers": {
+            cls.ACTION_TRANSFERS: {
                 "base": "transfer_detail",
                 "list": "transfer_detail_list",
                 "summary": "transfer_detail_summary"
