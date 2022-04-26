@@ -36,7 +36,7 @@ def __find_in_user_portal(soup: bs4.BeautifulSoup) -> Union[list, str, None]:
         ] if error.text.startswith(VARIOUS_ERRORS) else error.text
 
 
-def find_errors(soup: bs4.BeautifulSoup, portal: str = "user_portal") -> Union[list, str, None]:
+def find_errors(soup: bs4.BeautifulSoup, portal: str = USER_PORTAL) -> Union[list, str, None]:
     script_text = soup.find_all("script")[-1].get_text().strip()
 
     match = _re_fail_reason[portal].match(script_text)
