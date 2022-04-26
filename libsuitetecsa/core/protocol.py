@@ -25,6 +25,7 @@ from libsuitetecsa.core.exception import GetInfoException, TransferException, \
 from libsuitetecsa.core.models import User, Transfer, Connection, Recharge, \
     QuotePaid
 from libsuitetecsa.core.session import UserPortalSession, NautaSession
+from libsuitetecsa.core.utils import USER_PORTAL, find_errors
 
 
 class UserPortal:
@@ -58,7 +59,8 @@ class UserPortal:
                        "nautahogarpaid_detail": GetInfoException,
                        "transfer_detail": GetInfoException,
                        "change_password": ChangePasswordException,
-                       "change_email_password": ChangePasswordException}
+                       "change_email_password": ChangePasswordException,
+                       "login": LoginException}
     __attrs = {"username": "usuario",
                "account_type": "tipo de cuenta",
                "service_type": "tipo de servicio",
@@ -84,29 +86,16 @@ class UserPortal:
     _re_fail_reason = re.compile(r"toastr\.error\('(?P<reason>[^']*?)'\)")
 
     @classmethod
-    def __raise_if_error(cls, r, action):
+    def __raise_if_error(cls, r: requests.Response, action: str):
         if not r.ok:
             raise cls.__up_exceptions[action](
                 f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
             )
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
-        script_text = soup.find_all("script")[-1].get_text().strip()
-        match = cls._re_fail_reason.match(script_text)
-
-        if match:
-            soup = bs4.BeautifulSoup(match.group("reason"), 'html.parser')
-            raise cls.__up_exceptions[action](cls.__find_errors(soup))
-
-    @classmethod
-    def __find_errors(cls, soup):
-        error = soup.find("li", {"class": "msg_error"})
-        if error:
-            if error.text.startswith("Se han detectado algunos errores."):
-                return [msg.text for msg in
-                        soup.find_all("li", {"class": "sub-message"})]
-            else:
-                return error.text
+        errors = find_errors(soup, USER_PORTAL)
+        if errors:
+            raise cls.__up_exceptions[action](errors)
 
     @classmethod
     def __get_csrf_(cls, session: UserPortalSession, action: str) -> str:
@@ -121,11 +110,11 @@ class UserPortal:
             "https://www.portal.nauta.cu/captcha/?").content
 
     @staticmethod
-    def __get_csrf(soup: bs4.BeautifulSoup):
+    def __get_csrf(soup: bs4.BeautifulSoup) -> str:
         return soup.find("input", {"name": "csrf"}).attrs["value"]
 
     @classmethod
-    def create_session(cls):
+    def create_session(cls) -> UserPortalSession:
         session = UserPortalSession()
 
         resp = session.requests_session.get(f'{cls.BASE_URL}user/login/es-es')
@@ -144,7 +133,7 @@ class UserPortal:
             username: str,
             password: str,
             captcha_code: str
-    ):
+    ) -> None:
         r = session.requests_session.post(
             f'{cls.BASE_URL}user/login/es-es',
             {
@@ -156,20 +145,10 @@ class UserPortal:
             }
         )
 
-        if not r.ok:
-            raise LoginException(
-                f"Fallo el inicio de sesión: {r.status_code} - {r.reason}")
+        cls.__raise_if_error(r, "login")
 
         soup = bs4.BeautifulSoup(r.text, "html.parser")
 
-        if "user_info" not in r.url:
-            script_text = soup.find_all("script")[-1].get_text().strip()
-
-            match = cls._re_fail_reason.match(script_text)
-            soup = bs4.BeautifulSoup(match.group("reason"))
-            raise LoginException(
-                f'Fallo el inicio de sesión: {cls.__find_errors(soup)}'
-            )
         session.__dict__.update(
             **{
                 key: cls.__get_attr__(
@@ -180,7 +159,7 @@ class UserPortal:
         )
 
     @classmethod
-    def get_user_info(cls, session: UserPortalSession):
+    def load_user_info(cls, session: UserPortalSession):
         action = "user_info"
         r = session.requests_session.get(
             cls.BASE_URL + cls.__url[action]
@@ -188,16 +167,14 @@ class UserPortal:
         cls.__raise_if_error(r, action)
 
         soup = bs4.BeautifulSoup(r.text, 'html.parser')
-        account_info = {
+        session.__dict__.update(
+            **{
             key: cls.__get_attr__(
                 key,
                 soup
             )
             for key in cls.__attrs.keys()}
-        session.__dict__.update(
-            **account_info
         )
-        return User(**account_info)
 
     @classmethod
     def recharge(cls, session: UserPortalSession, recharge_code: str):
@@ -479,7 +456,6 @@ class Nauta(object):
 
     CHECK_PAGE = "http://www.cubadebate.cu"
     LOGIN_DOMAIN = b"secure.etecsa.net"
-    _re_login_fail_reason = re.compile(r'alert\("(?P<reason>[^"]*?)"\)')
 
     @classmethod
     def _get_inputs(cls, form_soup):
@@ -487,14 +463,14 @@ class Nauta(object):
             _["name"]: _.get("value", default=None)
             for _ in form_soup.select("input[name]")
         }
-
+    
     @classmethod
     def is_connected(cls):
         r = requests.get(cls.CHECK_PAGE)
         return cls.LOGIN_DOMAIN not in r.content
 
     @classmethod
-    def create_session(cls):
+    def create_session(cls) -> NautaSession:
         if cls.is_connected():
             if NautaSession.is_logged_in():
                 raise PreLoginException("Hay una session abierta")
