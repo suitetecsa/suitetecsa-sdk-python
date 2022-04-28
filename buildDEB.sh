@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 app_name=PyLibSuitETECSA
-app_version=0.1.2
+app_version=0.1.3b1
 module_name=libsuitetecsa
 
 temp_dir=$app_name'_'$app_version'_all'
