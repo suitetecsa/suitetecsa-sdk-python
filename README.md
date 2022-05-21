@@ -13,22 +13,24 @@ necesarias para la gestión de cuentas asociadas al servicio Nauta Hogar. Se me 
 implementación de dichas funciones, ya que no poseo este servicio.
 
 ## Usando UserPortalClient
-```python
-from libsuitetecsa.api import UserPortalClient  # se importa el cliente para el portal de usuario de nauta
 
-user_portal_cli = UserPortalClient(             # se instancia el cliente
+```python
+from PyLibSuitETECSA.api import UserPortalClient  # se importa el cliente para el portal de usuario de nauta
+
+user_portal_cli = UserPortalClient(  # se instancia el cliente
     "usuario@nauta.com.cu",
     "Contraseña"
 )
 
-user_portal_cli.init_session()                  # se inicia la session donde se guardan las cookies y datos
+user_portal_cli.init_session()  # se inicia la session donde se guardan las cookies y datos
 
 with open("captcha_img.png", 'wb') as fp:
     fp.write(user_portal_cli.captcha_as_bytes)  # se guarda la imagen captcha
 
 user_portal_cli.login(input("captcha_code: "))  # se inicia sesión en el portal
 
-print(user_portal_cli.credit)                   # se imprime en pantalla el saldo de la cuenta logueada
+print(
+    user_portal_cli.credit)  # se imprime en pantalla el saldo de la cuenta logueada
 
 ```
 ## Métodos y propiedades de UserPortalClient
@@ -227,20 +229,21 @@ print(user_portal_cli.credit)                   # se imprime en pantalla el sald
 __Nota__: Los `métodos` y `propiedades` disponibles para `Nauta` también lo están para `Nauta Hogar`.
 
 ## Usando NautaClient
+
 ```python
 import time
 
-from libsuitetecsa.api import NautaClient   # se importa el cliente para el portal cautivo de nauta
+from PyLibSuitETECSA.api import NautaClient  # se importa el cliente para el portal cautivo de nauta
 
-nauta_ci = NautaClient(                     # se instancia el cliente
+nauta_ci = NautaClient(  # se instancia el cliente
     "usuario@nauta.com.cu",
     "Contraseña"
 )
 
-nauta_ci.init_session()                     # se inicia la session donde se guardan las cookies y datos
+nauta_ci.init_session()  # se inicia la session donde se guardan las cookies y datos
 
-with nauta_ci.login():                      # se inicia sesión en el portal y se mantiene abierta durante un minuto
-    print(nauta_ci.remaining_time)    
+with nauta_ci.login():  # se inicia sesión en el portal y se mantiene abierta durante un minuto
+    print(nauta_ci.remaining_time)
     time.sleep(60)
 
 ```
@@ -270,4 +273,6 @@ Si te gusta el proyecto dale una estrella para que otros lo encuentren más fác
 ```text
 requests~=2.27.1
 beautifulsoup4~=4.10.0
+pytest~=7.1.2
+setuptools~=60.2.0
 ```

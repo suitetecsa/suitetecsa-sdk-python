@@ -12,25 +12,3 @@
 #  #
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-__all__ = [
-    "__name__",
-    "__author__",
-    "__email__",
-    "__version__",
-    "__url__",
-    "__description__",
-    "__keywords__",
-    "__license__",
-]
-
-__name__ = "libsuitetecsa"
-__version__ = "0.1.3-BETA1"
-__keywords__ = "ETECSA nauta tools"
-__license__ = "GNU GPLv3"
-
-__author__ = "Lesly Cintra Laza"
-__email__ = "lesclaz95@gmail.com"
-__url__ = "https://github.com/marilasoft/PyLibSuitETECSA"
-
-__description__ = "Python API para los servicios de ETECSA"

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+    <!-- CSS  -->
+
+    <link rel="shortcut icon" type="images/x-icon" href="https://www.portal.nauta.cu/media/img/nauta.gif">
+    <title>nauta. Transferencias</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="copyright" content="">
+    <script type="text/javascript">
+        var url_base = 'https://www.portal.nauta.cu/';
+    </script>
+    <link type="text/css" href="transfer_detail_files/icon.css" rel="stylesheet" media=""><link type="text/css" href="transfer_detail_files/materialize.css" rel="stylesheet" media="screen,projection"><link type="text/css" href="transfer_detail_files/toastr.css" rel="stylesheet" media="screen,projection"><link type="text/css" href="transfer_detail_files/mailtip.css" rel="stylesheet" media="screen,projection"><link type="text/css" href="transfer_detail_files/style.css" rel="stylesheet" media="screen,projection"></head>
+<body>
+    <header>
+    <div class="navbar-fixed">
+        <nav class="orange" role="navigation">
+            <div class="nav-wrapper">
+                <div class="left paralelogramo hide-on-med-and-down"><img class="etecsa-logo responsive-img" src="transfer_detail_files/etecsa-logo-blanco50x50.png">
+                </div>
+                <a id="logo-container" href="#" class="brand-logo"><img class="nauta-logo" src="transfer_detail_files/logo-nauta-45.png">
+                </a>
+                <span class="hide-on-med-and-down title-blue title-portal">Portal de usuario</span>
+
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a class="tooltipped" data-position="bottom" data-delay="50" href="https://www.portal.nauta.cu/nauta/change_lang/en-en" data-tooltip="English" data-tooltip-id="38b89c8a-2f1f-88cb-9bd8-1564536822f4"><i class="mdi-action-language small"></i></a>                    </li>
+                    <li>
+                        <a class="tooltipped contact_info" data-position="bottom" data-delay="50" data-tooltip="Información de contacto" href="https://www.portal.nauta.cu/nauta/contact_info" data-tooltip-id="f6ad3504-22ac-48ba-5e47-36d47eff6919">
+                            <i class="mdi-communication-quick-contacts-dialer"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="help tooltipped" data-position="bottom" data-delay="50" href="https://www.portal.nauta.cu/help/general" data-tooltip="Ayuda" data-tooltip-id="80f9b02d-8cd1-c846-0911-14c6a533cd74">
+                            <i class="mdi-action-help"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.portal.nauta.cu/user/logout" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Salir" data-tooltip-id="884e240d-d2cb-541f-530f-938acaacd14b"><i class="mdi-content-clear"></i></a>
+                    </li>
+                </ul>
+                                <ul id="nav-mobile" class="side-nav" style="left: -250px;">
+                    <li class="center-align etecsa-grey"><img src="transfer_detail_files/logo-etecsa_2.png" class="responsive-img etecsa-logo-2"></li>
+                    <li class="no-padding "><a class="collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/useraaa/user_info"><i class="mdi-action-account-circle"></i><span>Mi cuenta</span></a></li><li class="no-padding "><a class="collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/useraaa/recharge_account"><i class="mdi-maps-local-atm"></i><span>Recargar cuenta</span></a></li><li class="no-padding ">
+                        <ul class="collapsible collapsible-accordion etecsa-blue-text">
+                            <li>
+                                <a class="collapsible-header etecsa-blue-text" href="#">Cambiar contraseña<i class="mdi-action-lock-open"></i></a>
+                                <div class="collapsible-body" style="">
+                                    <ul><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/change_password">Cuenta de acceso</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/email/change_password">Cuenta de correo</a></li></ul></div></li></ul></li><li class="no-padding active">
+                        <ul class="collapsible collapsible-accordion etecsa-blue-text">
+                            <li>
+                                <a class="collapsible-header etecsa-blue-text" href="#">Detalle de operaciones<i class="mdi-action-view-list"></i></a>
+                                <div class="collapsible-body" style="">
+                                    <ul><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/service_detail">Conexiones</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/recharge_detail">Recargas</a></li><li class="etecsa-blue-text active"><a href="https://www.portal.nauta.cu/useraaa/transfer_detail">Transferencias</a></li></ul></div></li></ul></li><li class="no-padding ">
+                        <ul class="collapsible collapsible-accordion etecsa-blue-text">
+                            <li>
+                                <a class="collapsible-header etecsa-blue-text" href="#">Transferir saldo<i class="mdi-action-input"></i></a>
+                                <div class="collapsible-body" style="">
+                                    <ul><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/transfer_balance">A otra cuenta nauta</a></li></ul></div></li></ul></li>                    <li class="separator etecsa-blue-text"></li>
+                    <li class="no-padding etecsa-blue-text"><a class="collapsible-header" href="https://www.portal.nauta.cu/nauta/change_lang/en-en"><i class="mdi-action-language small"></i><span>English</span></a></li>
+                    <li class="no-padding"><a class="contact_info collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/nauta/contact_info"><i class="mdi-communication-quick-contacts-dialer small"></i><span>Información de contacto</span></a>
+                    </li>
+                    <li class="no-padding"><a class="help collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/help/general"><i class="mdi-action-help small"></i><span>Ayuda</span></a></li>
+                    <li class="no-padding"><a class="collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/user/logout"><i class="mdi-content-clear small"></i><span>Salir</span></a></li>
+                </ul>
+                <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </nav>
+        <nav class="white hide-on-med-and-down" id="icon-nav">
+            <div class="nav-wrapper">
+                <ul class="right hide-on-med-and-down">
+                    <li class=""><a href="https://www.portal.nauta.cu/useraaa/user_info" class="etecsa-blue-text"><i class="mdi-action-account-circle"></i><span>Mi cuenta</span></a></li><li class=""><a href="https://www.portal.nauta.cu/useraaa/recharge_account" class="etecsa-blue-text"><i class="mdi-maps-local-atm"></i><span>Recargar cuenta</span></a></li><li class="">
+                        <a class="etecsa-blue-text dropdown-button" data-beloworigin="true" href="#" data-activates="dropdown_useraaa_change_password_group"><i class="mdi-action-lock-open"></i><span>Cambiar contraseña<i class="mdi-navigation-arrow-drop-down right"></i></span></a><ul id="dropdown_useraaa_change_password_group" class="dropdown-content etecsa-blue-text"><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/change_password">Cuenta de acceso</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/email/change_password">Cuenta de correo</a></li></ul>
+                        </li><li class="active">
+                        <a class="etecsa-blue-text dropdown-button" data-beloworigin="true" href="#" data-activates="dropdown_useraaa_detail"><i class="mdi-action-view-list"></i><span>Detalle de operaciones<i class="mdi-navigation-arrow-drop-down right"></i></span></a><ul id="dropdown_useraaa_detail" class="dropdown-content etecsa-blue-text"><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/service_detail">Conexiones</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/recharge_detail">Recargas</a></li><li class="etecsa-blue-text active"><a href="https://www.portal.nauta.cu/useraaa/transfer_detail">Transferencias</a></li></ul>
+                        </li><li class="">
+                        <a class="etecsa-blue-text dropdown-button" data-beloworigin="true" href="#" data-activates="dropdown_useraaa_transfer"><i class="mdi-action-input"></i><span>Transferir saldo<i class="mdi-navigation-arrow-drop-down right"></i></span></a><ul id="dropdown_useraaa_transfer" class="dropdown-content etecsa-blue-text"><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/transfer_balance">A otra cuenta nauta</a></li></ul>
+                        </li>                </ul>
+            </div>
+        </nav>
+    </div>
+
+</header>
+    <div id="content" class="container"><script lang="javascript">
+
+</script>
+<div id="form">
+    <div class="row">
+        <div class="col x12">
+            <h3>Transferencias</h3>
+            <p class="sub-title">Visualizar el detalle de las transferencias realizadas desde su cuenta de acceso</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col s12 m12 l 12">
+            <div class="card-panel">
+                <div class="row">
+                    <form name="service_detail" id="service_detail" method="post" action="transfer_detail_summary" class="col s12">
+                        <input type="hidden" name="csrf" value="security62862b94db69a">                        <div class="row">
+                            <div class="input-field col s12 m6">
+                                <div class="select-wrapper"><span class="caret">▼</span><input type="text" class="select-dropdown" readonly="true" data-activates="select-options-247dd96e-f5e4-7d2f-bcc7-d8716266e803" value="Mayo"><ul id="select-options-247dd96e-f5e4-7d2f-bcc7-d8716266e803" class="dropdown-content select-dropdown "><li class=""><span>Mayo</span></li><li class=""><span>Abril</span></li><li class=""><span>Marzo</span></li></ul><select name="year_month" class="initialized">
+<option value="2022-05" selected="selected">Mayo</option>
+<option value="2022-04">Abril</option>
+<option value="2022-03">Marzo</option>
+</select></div>                                <label>Seleccione el mes a consultar</label>
+                            </div>
+                            <div class="input-field col s12 m6">
+                                <div class="input-field col s12 m12">
+                                    <button name="btn_submit" type="submit" class="btn submit_btn waves-effect waves-light blue darken-4">
+                                        Aceptar                                    </button>
+                                    <input type="hidden" name="list_type" value="transfer_detail">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="details" class="hide">
+    <ul class="collapsible" data-collapsible="accordion" id="accordion">
+        <li class="active">
+            <div class="collapsible-header active" id="first"><i class="mdi-action-view-list"></i> Resumen</div>
+            <div class="collapsible-body" id="summary" style="display: block; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;"></div>
+        </li>
+        <li>
+            <div class="collapsible-header" id="list-btn" href="">
+                <i class="mdi-action-list"></i> Detalles            </div>
+            <div class="collapsible-body" style=""><p id="list-content"></p></div>
+        </li>
+    </ul>
+</div>
+</div>    <div id="contact_info_box"></div>
+    <footer class="page-footer white grey-text text-darken-4">
+    <hr>
+    <div class="container">
+        <div class="row center">
+            <div class="col s12">
+                <p>© 2011 Empresa de Telecomunicaciones de Cuba S. A. (ETECSA). Todos los derechos reservados</p>
+                <p><a class="etecsa-blue-text" href="http://www.etecsa.cu/">www.etecsa.cu</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="hidden" id="ajax-messages" data-ajax-connection-error="Existe un error de conexión de red. Puede ser que usted se haya desconectado de la red o el servicio se haya caido."></div>
+</footer><script type="text/javascript" src="transfer_detail_files/jquery-2.js"></script><script type="text/javascript" src="transfer_detail_files/materialize.js"></script><script type="text/javascript" src="transfer_detail_files/jquery_002.js"></script><script type="text/javascript" src="transfer_detail_files/toastr.js"></script><script type="text/javascript" src="transfer_detail_files/jquery.js"></script><script type="text/javascript" src="transfer_detail_files/init.js"></script><script type="text/javascript" src="transfer_detail_files/msgpool.js"></script><script type="text/javascript" src="transfer_detail_files/service_detail.js"></script>    <script type="text/javascript">
+        window.toastr.options = {
+            timeOut: 10000
+        }
+        $(function(){
+            $('.contact_info, .help').on("click",function(e){
+                console.log($(this).attr('href'));
+                e.preventDefault();
+                $("#contact_info_box").load($(this).attr('href'));
+
+            });
+
+
+            $('.show_password').on("click",function(){
+                var target=$(this).attr('rel');
+                if ($(this).prop('checked')){
+                    $('#'+target).attr('type','text');
+                } else {
+                    $('#'+target).attr('type','password');
+                }
+            });
+
+            $('.submit_btn').on('click',function(){
+                $.blockUI({
+                    message:'<div class="preloader-wrapper active"><div class="spinner-layer spinner-red-only"> <div class="circle-clipper left"> <div class="circle"></div> </div><div class="gap-patch"> <div class="circle"></div> </div><div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div><div></div><div>Cargando...</div>',
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    } });
+            });
+
+            var options = ['nauta.com.cu','nauta.co.cu'];
+            $("input.user-domain").mailtip({
+                mails: options,
+                offsetTop: 2
+            });
+            
+        });
+    </script>
+        
+
+<div class="material-tooltip" id="38b89c8a-2f1f-88cb-9bd8-1564536822f4"><span>English</span><div class="backdrop" style="top: 0px; left: 0px;"></div></div><div class="material-tooltip" id="f6ad3504-22ac-48ba-5e47-36d47eff6919"><span>Información de contacto</span><div class="backdrop" style="top: 0px; left: 0px;"></div></div><div class="material-tooltip" id="80f9b02d-8cd1-c846-0911-14c6a533cd74"><span>Ayuda</span><div class="backdrop" style="top: 0px; left: 0px;"></div></div><div class="material-tooltip" id="884e240d-d2cb-541f-530f-938acaacd14b"><span>Salir</span><div class="backdrop" style="top: 0px; left: 0px;"></div></div><div class="hiddendiv common"></div><div class="drag-target" style="left: 0px; touch-action: pan-y;"></div></body></html>
