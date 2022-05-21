@@ -50,10 +50,15 @@ USER_CREDIT_HTML = read_asset("user_credit.html")
 
 
 def test_create_valid_session(patcher, nauta_cli):
-    mock_request = patcher.start()
-    mock_response_get = MagicMock(status_code=200, text=LANDING_HTML)
+    patcher_two = patch("PyLibSuitETECSA.core.protocol.requests")
+    mock_request_too = patcher_two.start()
+    mock_response = MagicMock(
+        status_code=200, text=LANDING_HTML, content=LANDING_HTML.encode("utf8")
+    )
     mock_response_post = MagicMock(status_code=200, text=LOGIN_HTML)
-    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+    mock_request_too.get = MagicMock(return_value=mock_response)
+    mock_request = patcher.start()
+    mock_request.Session().get = MagicMock(return_value=mock_response)
     mock_request.Session().post = MagicMock(return_value=mock_response_post)
 
     nauta_cli.init_session()
@@ -74,7 +79,7 @@ def test_create_session_raises_when_connected(nauta_cli):
     patcher = patch("PyLibSuitETECSA.core.protocol.requests")
     mock_request = patcher.start()
     mock_response_get = MagicMock(status_code=200, text="LALALA")
-    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+    mock_request.get = MagicMock(return_value=mock_response_get)
 
     with pytest.raises(PreLoginException) as e:
         nauta_cli.init_session()
