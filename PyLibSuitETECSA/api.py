@@ -17,11 +17,12 @@ from typing import List, Any, Union
 
 from requests import RequestException
 
-from libsuitetecsa.__about__ import __name__ as prog_name
-from libsuitetecsa.core.exception import LogoutException
-from libsuitetecsa.core.models import Connection, Recharge, Transfer, QuotePaid
-from libsuitetecsa.core.protocol import Nauta, UserPortal
-from libsuitetecsa.core.session import NautaSession
+from PyLibSuitETECSA.core.exception import LogoutException
+from PyLibSuitETECSA.core.models import Connection, Recharge, Transfer, \
+    QuotePaid
+from PyLibSuitETECSA.core.protocol import UserPortal, Nauta
+from PyLibSuitETECSA.core.session import NautaSession
+from PyLibSuitETECSA.core.utils import Action
 
 
 class UserPortalClient:
@@ -134,7 +135,7 @@ class UserPortalClient:
         )
 
     def get_lasts(
-            self, action: str = UserPortal.ACTION_CONNECTIONS,
+            self, action: str = Action.GET_CONNECTIONS,
             large: int = 5
     ) -> List[Any]:
         """
@@ -462,8 +463,7 @@ class NautaClient(object):
         except RequestException:
             raise LogoutException(
                 "Hay problemas en la red y no se puede cerrar la session.\n"
-                "Es posible que ya este desconectado. Intente con '{} down' "
-                "dentro de unos minutos".format(prog_name)
+                "Es posible que ya este desconectado."
             )
 
     def load_last_session(self):
