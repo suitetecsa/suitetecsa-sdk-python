@@ -17,11 +17,12 @@ from typing import List, Any, Union
 
 from requests import RequestException
 
-from libsuitetecsa.__about__ import __name__ as prog_name
-from libsuitetecsa.core.exception import LogoutException
-from libsuitetecsa.core.models import Connection, Recharge, Transfer, QuotePaid
-from libsuitetecsa.core.protocol import Nauta, UserPortal
-from libsuitetecsa.core.session import NautaSession
+from PyLibSuitETECSA.core.exception import LogoutException
+from PyLibSuitETECSA.core.models import Connection, Recharge, Transfer, \
+    QuotePaid
+from PyLibSuitETECSA.core.protocol import UserPortal, Nauta
+from PyLibSuitETECSA.core.session import NautaSession
+from PyLibSuitETECSA.core.utils import Action
 
 
 class UserPortalClient:
@@ -36,7 +37,6 @@ class UserPortalClient:
         :return:
         """
         self.session = UserPortal.create_session()
-        self.session.save()
 
     @property
     def captcha_as_bytes(self) -> bytes:
@@ -65,8 +65,6 @@ class UserPortalClient:
             captcha_code
         )
 
-        self.session.save()
-
         return self
 
     def recharge(self, recharge_code: str) -> None:
@@ -83,8 +81,6 @@ class UserPortalClient:
         UserPortal.load_user_info(
             self.session
         )
-
-        self.session.save()
 
     def transfer(
             self, mount_to_transfer: str,
@@ -106,8 +102,6 @@ class UserPortalClient:
         UserPortal.load_user_info(
             self.session
         )
-
-        self.session.save()
 
     def change_password(self, new_passwrd: str) -> None:
         """
@@ -134,7 +128,7 @@ class UserPortalClient:
         )
 
     def get_lasts(
-            self, action: str = UserPortal.ACTION_CONNECTIONS,
+            self, action: str = Action.GET_CONNECTIONS,
             large: int = 5
     ) -> List[Any]:
         """
@@ -377,14 +371,6 @@ class NautaClient(object):
         :return:
         """
         self.session = Nauta.create_session()
-        self.session.save()
-
-    @property
-    def is_logged_in(self):
-        """
-        :return: True si hay una sesión abierta.
-        """
-        return NautaSession.is_logged_in()
 
     def login(self):
         """
@@ -399,8 +385,6 @@ class NautaClient(object):
             self.user,
             self.password
         )
-
-        self.session.save()
 
         return self
 
@@ -430,20 +414,13 @@ class NautaClient(object):
         """
         :return: Tiempo disponible de la cuenta registrada.
         """
-        dispose_session = False
-        try:
-            if not self.session:
-                dispose_session = True
-                self.session = NautaSession()
+        if not self.session:
+            self.session = NautaSession()
 
-            return Nauta.get_user_time(
-                session=self.session,
-                username=self.user,
-            )
-        finally:
-            if self.session and dispose_session:
-                self.session.dispose()
-                self.session = None
+        return Nauta.get_user_time(
+            session=self.session,
+            username=self.user,
+        )
 
     def logout(self):
         """
@@ -462,16 +439,8 @@ class NautaClient(object):
         except RequestException:
             raise LogoutException(
                 "Hay problemas en la red y no se puede cerrar la session.\n"
-                "Es posible que ya este desconectado. Intente con '{} down' "
-                "dentro de unos minutos".format(prog_name)
+                "Es posible que ya este desconectado."
             )
-
-    def load_last_session(self):
-        """
-        Carga la última sesión.
-        :return:
-        """
-        self.session = NautaSession.load()
 
     def __enter__(self):
         pass

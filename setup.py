@@ -1,13 +1,22 @@
-from setuptools import setup, find_packages
+#  Copyright (c) 2022. MarilaSoft.
+#  #
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
+#  #
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  #
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from os import path
-from io import open
 
+from setuptools import setup
 
-def get_about():
-    scope = {}
-    with open("libsuitetecsa/__about__.py") as fp:
-        exec(fp.read(), scope)
-    return scope
+here = path.abspath(path.dirname(__file__))
 
 
 def get_readme():
@@ -19,19 +28,17 @@ def get_readme():
         return f.read()
 
 
-here = path.abspath(path.dirname(__file__))
-about = get_about()
-
 setup(
-    name=about["__name__"],
-    version=about["__version__"],
-    description=about["__description__"],
+    name='PyLibSuitETECSA',
+    version='0.1.3b2',
+    packages=['PyLibSuitETECSA', 'PyLibSuitETECSA.core'],
+    url='https://github.com/SuitETECSA/PyLibSuitETECSA',
+    license='GNU General Public License v3',
+    author='lesclaz',
+    author_email='lesclaz95@gmail.com',
+    description='Una API que interactúa con los servicios web de ETECSA. ',
     long_description=get_readme(),
     long_description_content_type="text/markdown",
-    url=about["__url__"],
-    author=about["__author__"],
-    author_email=about["__email__"],
-    license="GNU General Public License v3",
     platforms=["Unix"],
     classifiers=[
         "Topic :: Internet",
@@ -41,7 +48,11 @@ setup(
         "Development Status :: 4 - Beta",
         "Operating System :: Unix"
     ],
-    keywords=about["__keywords__"],
-    packages=find_packages(),
-    install_requires=["requests~=2.27.1", "beautifulsoup4~=4.10.0"],
+    keywords="ETECSA nauta tools",
+    install_requires=[
+        "requests~=2.27.1",
+        "beautifulsoup4~=4.10.0",
+        "pytest~=7.1.2",
+        "setuptools~=60.2.0"
+    ],
 )
