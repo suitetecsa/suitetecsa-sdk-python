@@ -16,7 +16,18 @@
 from datetime import datetime
 
 
-class Connection(object):
+class ActionObject:
+
+    @staticmethod
+    def __text_to_datetime(text: str) -> datetime:
+        date_, time_ = text.split(" ")
+        day, month, year = date_.split("/")
+        hours, minutes, seconds = time_.split(":")
+        return datetime(int(year), int(month), int(day),
+                        int(hours), int(minutes), int(seconds))
+
+
+class Connection(ActionObject):
 
     def __init__(self, **kwargs):
         self.start_session = None
@@ -30,22 +41,15 @@ class Connection(object):
     @property
     def start_session_as_dt(self):
         if self.start_session:
-            date_ = self.start_session.split(" ")[0]
-            time_ = self.start_session.split(" ")[1]
+            return self.__text_to_datetime(self.start_session)
 
-            day = date_.split("/")[0]
-            month = date_.split("/")[1]
-            year = date_.split("/")[2]
-
-            hours = time_.split(":")[0]
-            minutes = time_.split(":")[1]
-            seconds = time_.split(":")[2]
-
-            return datetime(int(year), int(month), int(day),
-                            int(hours), int(minutes), int(seconds))
+    @property
+    def end_session_as_dt(self):
+        if self.end_session:
+            return self.__text_to_datetime(self.end_session)
 
 
-class Recharge(object):
+class Recharge(ActionObject):
 
     def __init__(self, **kwargs):
         self.date = None
@@ -56,19 +60,8 @@ class Recharge(object):
 
     @property
     def date_as_dt(self):
-        date_ = self.date.split(" ")[0]
-        time_ = self.date.split(" ")[1]
-
-        day = date_.split("/")[0]
-        month = date_.split("/")[1]
-        year = date_.split("/")[2]
-
-        hours = time_.split(":")[0]
-        minutes = time_.split(":")[1]
-        seconds = time_.split(":")[2]
-
-        return datetime(int(year), int(month), int(day),
-                        int(hours), int(minutes), int(seconds))
+        if self.date:
+            return self.__text_to_datetime(self.date)
 
 
 class QuotePaid(Recharge):
@@ -79,29 +72,17 @@ class QuotePaid(Recharge):
         self.__dict__.update(kwargs)
 
 
-class Transfer(object):
+class Transfer(ActionObject):
 
     def __init__(self, **kwargs):
         self.date = None
         self.import_ = None
         self.destiny_account = None
-        self.__dict__.update(kwargs)
 
     @property
     def date_as_dt(self):
-        date_ = self.date.split(" ")[0]
-        time_ = self.date.split(" ")[1]
-
-        day = date_.split("/")[0]
-        month = date_.split("/")[1]
-        year = date_.split("/")[2]
-
-        hours = time_.split(":")[0]
-        minutes = time_.split(":")[1]
-        seconds = time_.split(":")[2]
-
-        return datetime(int(year), int(month), int(day),
-                        int(hours), int(minutes), int(seconds))
+        if self.date:
+            return self.__text_to_datetime(self.date)
 
 
 class User:
