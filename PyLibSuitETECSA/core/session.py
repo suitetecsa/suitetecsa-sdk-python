@@ -13,17 +13,10 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import json
-import os
-from http import cookiejar
-
 import requests
-
-from libsuitetecsa import appdata_path
 
 
 class SessionObject(object):
-    SESSION_FILE = None
     headers_ = {
         'Accept': 'text/html,application/xhtml+xml,'
                   'application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
@@ -39,46 +32,11 @@ class SessionObject(object):
     @classmethod
     def _create_requests_session(cls):
         requests_session = requests.Session()
-        requests_session.cookies = cookiejar.MozillaCookieJar(cls.SESSION_FILE)
         requests_session.headers = cls.headers_
         return requests_session
 
-    def save(self):
-        self.requests_session.cookies.save()
-
-        data = {**self.__dict__}
-        data.pop("requests_session")
-
-        with open(self.__class__.SESSION_FILE, "w") as fp:
-            json.dump(data, fp)
-
-    @classmethod
-    def load(cls):
-        inst = object.__new__(cls)
-        inst.requests_session = cls._create_requests_session()
-
-        with open(cls.SESSION_FILE, 'r') as fp:
-            inst.__dict__.update(
-                json.load(fp)
-            )
-
-        return inst
-
-    def dispose(self):
-        self.requests_session.cookies.clear()
-        self.requests_session.cookies.save()
-        try:
-            os.remove(self.__class__.SESSION_FILE)
-        except FileNotFoundError:
-            pass
-
-    @classmethod
-    def is_logged_in(cls):
-        return os.path.exists(cls.SESSION_FILE)
-
 
 class NautaSession(SessionObject):
-    SESSION_FILE = os.path.join(appdata_path, "nauta-session")
 
     def __init__(self, login_action=None, csrfhw=None, wlanuserip=None,
                  attribute_uuid=None):
@@ -90,7 +48,6 @@ class NautaSession(SessionObject):
 
 
 class UserPortalSession(SessionObject):
-    SESSION_FILE = os.path.join(appdata_path, "user-portal-session")
 
     def __init__(self, csrf=None):
         super().__init__()
@@ -123,26 +80,3 @@ class UserPortalSession(SessionObject):
     @property
     def is_nauta_home(self):
         return bool(self.offer)
-
-
-class ShopSession(SessionObject):
-    SESSION_FILE = os.path.join(appdata_path, "shop-session")
-    headers_ = {
-        "Host": "www.tienda.etecsa.cu",
-        "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:98.0) "
-                      "Gecko/20100101 Firefox/98.0",
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Language": "es-MX,es;q=0.8,en-US;q=0.5,en;q=0.3",
-        "Accept-Encoding": "gzip, deflate, br",
-        "Content-Type": "application/json;charset=utf-8",
-        "Origin": "https://www.tienda.etecsa.cu",
-        "Connection": "keep-alive",
-        "Sec-Fetch-Dest": "empty",
-        "Sec-Fetch-Mode": "cors",
-        "Sec-Fetch-Site": "same-origin",
-        "Cache-Control": "max-age=0",
-        "TE": "trailers"
-    }
-
-    def __init__(self):
-        super().__init__()
