@@ -15,9 +15,13 @@
 
 from typing import List, Any, Union
 
+from requests import RequestException
+
+from PyLibSuitETECSA.core.exception import LogoutException
 from PyLibSuitETECSA.core.models import Connection, Recharge, Transfer, \
     QuotePaid
-from PyLibSuitETECSA.core.protocol import UserPortal
+from PyLibSuitETECSA.core.protocol import UserPortal, Nauta
+from PyLibSuitETECSA.core.session import NautaSession
 from PyLibSuitETECSA.core.utils import Action
 
 
@@ -355,115 +359,91 @@ class UserPortalClient:
         return self.session.debt if self.session else None
 
 
-# class NautaClient(object):
-#     def __init__(self, user: str = None, password: str = None):
-#         self.user = user
-#         self.password = password
-#         self.session = None
-#
-#     def init_session(self):
-#         """
-#         Crea una sesión.
-#         :return:
-#         """
-#         self.session = Nauta.create_session()
-#         self.session.save()
-#
-#     @property
-#     def is_logged_in(self):
-#         """
-#         :return: True si hay una sesión abierta.
-#         """
-#         return NautaSession.is_logged_in()
-#
-#     def login(self):
-#         """
-#         Inicia sesión en internet.
-#         :return: Instancia de esta clase.
-#         """
-#         if not self.session:
-#             self.init_session()
-#
-#         self.session.attribute_uuid = Nauta.login(
-#             self.session,
-#             self.user,
-#             self.password
-#         )
-#
-#         self.session.save()
-#
-#         return self
-#
-#     @property
-#     def user_credit(self):
-#         """
-#         :return: Saldo disponible de la cuenta.
-#         """
-#         dispose_session = False
-#         try:
-#             if not self.session:
-#                 dispose_session = True
-#                 self.init_session()
-#
-#             return Nauta.get_user_credit(
-#                 session=self.session,
-#                 username=self.user,
-#                 password=self.password
-#             )
-#         finally:
-#             if self.session and dispose_session:
-#                 self.session.dispose()
-#                 self.session = None
-#
-#     @property
-#     def remaining_time(self):
-#         """
-#         :return: Tiempo disponible de la cuenta registrada.
-#         """
-#         dispose_session = False
-#         try:
-#             if not self.session:
-#                 dispose_session = True
-#                 self.session = NautaSession()
-#
-#             return Nauta.get_user_time(
-#                 session=self.session,
-#                 username=self.user,
-#             )
-#         finally:
-#             if self.session and dispose_session:
-#                 self.session.dispose()
-#                 self.session = None
-#
-#     def logout(self):
-#         """
-#         Cierra la sesión abierta.
-#         :return:
-#         """
-#         try:
-#             Nauta.logout(
-#                 session=self.session,
-#                 username=self.user,
-#             )
-#             self.session.dispose()
-#             self.session = None
-#
-#             return
-#         except RequestException:
-#             raise LogoutException(
-#                 "Hay problemas en la red y no se puede cerrar la session.\n"
-#                 "Es posible que ya este desconectado."
-#             )
-#
-#     def load_last_session(self):
-#         """
-#         Carga la última sesión.
-#         :return:
-#         """
-#         self.session = NautaSession.load()
-#
-#     def __enter__(self):
-#         pass
-#
-#     def __exit__(self, exc_type, exc_val, exc_tb):
-#         self.logout()
+class NautaClient(object):
+    def __init__(self, user: str = None, password: str = None):
+        self.user = user
+        self.password = password
+        self.session = None
+
+    def init_session(self):
+        """
+        Crea una sesión.
+        :return:
+        """
+        self.session = Nauta.create_session()
+
+    def login(self):
+        """
+        Inicia sesión en internet.
+        :return: Instancia de esta clase.
+        """
+        if not self.session:
+            self.init_session()
+
+        self.session.attribute_uuid = Nauta.login(
+            self.session,
+            self.user,
+            self.password
+        )
+
+        return self
+
+    @property
+    def user_credit(self):
+        """
+        :return: Saldo disponible de la cuenta.
+        """
+        dispose_session = False
+        try:
+            if not self.session:
+                dispose_session = True
+                self.init_session()
+
+            return Nauta.get_user_credit(
+                session=self.session,
+                username=self.user,
+                password=self.password
+            )
+        finally:
+            if self.session and dispose_session:
+                self.session.dispose()
+                self.session = None
+
+    @property
+    def remaining_time(self):
+        """
+        :return: Tiempo disponible de la cuenta registrada.
+        """
+        if not self.session:
+            self.session = NautaSession()
+
+        return Nauta.get_user_time(
+            session=self.session,
+            username=self.user,
+        )
+
+    def logout(self):
+        """
+        Cierra la sesión abierta.
+        :return:
+        """
+        try:
+            Nauta.logout(
+                session=self.session,
+                username=self.user,
+            )
+            self.session.dispose()
+            self.session = None
+
+            return
+        except RequestException:
+            raise LogoutException(
+                "Hay problemas en la red y no se puede cerrar la session.\n"
+                "Es posible que ya este desconectado."
+            )
+
+    def __enter__(self):
+        pass
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.logout()

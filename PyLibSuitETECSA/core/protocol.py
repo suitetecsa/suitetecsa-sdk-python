@@ -12,6 +12,7 @@
 #  #
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import re
 from datetime import date
 from typing import List, Any, Union
 
@@ -20,10 +21,11 @@ import requests
 
 from PyLibSuitETECSA.core.exception import GetInfoException, \
     TransferException, ChangePasswordException, LoginException, \
-    RechargeException, PreLoginException, NotNautaHomeAccount
+    RechargeException, PreLoginException, NotNautaHomeAccount, \
+    LogoutException, NautaException
 from PyLibSuitETECSA.core.models import Connection, Recharge, Transfer, \
     QuotePaid
-from PyLibSuitETECSA.core.session import UserPortalSession
+from PyLibSuitETECSA.core.session import UserPortalSession, NautaSession
 from PyLibSuitETECSA.core.utils import Action, find_errors, Portal
 
 
@@ -627,168 +629,162 @@ class UserPortal:
                 return div.find("p").text
 
 
-# class Nauta(object):
-#
-#     CHECK_PAGE = "http://www.cubadebate.cu"
-#     LOGIN_DOMAIN = b"secure.etecsa.net"
-#
-#     @classmethod
-#     def _get_inputs(cls, form_soup):
-#         return {
-#             _["name"]: _.get("value", default=None)
-#             for _ in form_soup.select("input[name]")
-#         }
-#
-#     @classmethod
-#     def is_connected(cls):
-#         r = requests.get(cls.CHECK_PAGE)
-#         return cls.LOGIN_DOMAIN not in r.content
-#
-#     @classmethod
-#     def create_session(cls) -> NautaSession:
-#         if cls.is_connected():
-#             raise PreLoginException("Hay una conexión activa")
-#
-#         session = NautaSession()
-#
-#         resp = session.requests_session.get(cls.CHECK_PAGE)
-#         if not resp.ok:
-#             raise PreLoginException("Failed to create session")
-#
-#         soup = bs4.BeautifulSoup(resp.text, 'html.parser')
-#         action = soup.form["action"]
-#         data = cls._get_inputs(soup)
-#
-#         # Now go to the login page
-#         resp = session.requests_session.post(action, data)
-#         soup = bs4.BeautifulSoup(resp.text, 'html.parser')
-#         form_soup = soup.find("form", id="formulario")
-#
-#         session.login_action = form_soup["action"]
-#         data = cls._get_inputs(form_soup)
-#
-#         session.csrfhw = data['CSRFHW']
-#         session.wlanuserip = data['wlanuserip']
-#
-#         return session
-#
-#     @classmethod
-#     def login(cls, session, username, password):
-#
-#         r = session.requests_session.post(
-#             session.login_action,
-#             {
-#                 "CSRFHW": session.csrfhw,
-#                 "wlanuserip": session.wlanuserip,
-#                 "username": username,
-#                 "password": password
-#             }
-#         )
-#
-#         if not r.ok:
-#             raise LoginException(
-#                 "Fallo el inicio de sesión: {} - {}".format(
-#                     r.status_code,
-#                     r.reason
-#                 )
-#             )
-#
-#         if "online.do" not in r.url:
-#             soup = bs4.BeautifulSoup(r.text, "html.parser")
-#             error = find_errors(soup, Portal.NAUTA)
-#             if error:
-#                 raise LoginException(error)
-#
-#         m = re.search(r'ATTRIBUTE_UUID=(\w+)&CSRFHW=', r.text)
-#
-#         return m.group(1) if m \
-#             else None
-#
-#     @classmethod
-#     def logout(cls, session, username=None):
-#         logout_url = \
-#             (
-#                     "https://secure.etecsa.net:8443/LogoutServlet?" +
-#                     "CSRFHW={}&" +
-#                     "username={}&" +
-#                     "ATTRIBUTE_UUID={}&" +
-#                     "wlanuserip={}"
-#             ).format(
-#                 session.csrfhw,
-#                 username,
-#                 session.attribute_uuid,
-#                 session.wlanuserip
-#             )
-#
-#         response = session.requests_session.get(logout_url)
-#         if not response.ok:
-#             raise LogoutException(
-#                 "Fallo al cerrar la sesión: {} - {}".format(
-#                     response.status_code,
-#                     response.reason
-#                 )
-#             )
-#
-#         if "SUCCESS" not in response.text.upper():
-#             raise LogoutException(
-#                 "Fallo al cerrar la sesión: {}".format(
-#                     response.text[:100]
-#                 )
-#             )
-#
-#     @classmethod
-#     def get_user_time(cls, session, username):
-#
-#         r = session.requests_session.post(
-#             "https://secure.etecsa.net:8443/EtecsaQueryServlet",
-#             {
-#                 "op": "getLeftTime",
-#                 "ATTRIBUTE_UUID": session.attribute_uuid,
-#                 "CSRFHW": session.csrfhw,
-#                 "wlanuserip": session.wlanuserip,
-#                 "username": username,
-#             }
-#         )
-#
-#         return r.text
-#
-#     @classmethod
-#     def get_user_credit(cls, session, username, password):
-#
-#         r = session.requests_session.post(
-#             "https://secure.etecsa.net:8443/EtecsaQueryServlet",
-#             {
-#                 "CSRFHW": session.csrfhw,
-#                 "wlanuserip": session.wlanuserip,
-#                 "username": username,
-#                 "password": password
-#             }
-#         )
-#
-#         if not r.ok:
-#             raise NautaException(
-#                 "Fallo al obtener la información del usuario: {} - {}"
-#                 .format(
-#                     r.status_code,
-#                     r.reason
-#                 )
-#             )
-#
-#         if "secure.etecsa.net" not in r.url:
-#             raise NautaException(
-#                 "No se puede obtener el crédito del usuario mientras esta "
-#                 "online"
-#             )
-#
-#         soup = bs4.BeautifulSoup(r.text, "html.parser")
-#         credit_tag = soup.select_one(
-#             "#sessioninfo > tbody:nth-child(1) > tr:nth-child(2) > "
-#             "td:nth-child(2)")
-#
-#         if not credit_tag:
-#             raise NautaException(
-#                 "Fallo al obtener el crédito del usuario: no se encontró la "
-#                 "información"
-#             )
-#
-#         return credit_tag.get_text().strip()
+class Nauta:
+
+    CHECK_PAGE = "http://www.cubadebate.cu"
+    LOGIN_DOMAIN = b"secure.etecsa.net"
+
+    @classmethod
+    def _get_inputs(cls, form_soup):
+        return {
+            _["name"]: _.get("value", default=None)
+            for _ in form_soup.select("input[name]")
+        }
+
+    @classmethod
+    def is_connected(cls):
+        r = requests.get(cls.CHECK_PAGE)
+        return cls.LOGIN_DOMAIN not in r.content
+
+    @classmethod
+    def create_session(cls) -> NautaSession:
+        if cls.is_connected():
+            raise PreLoginException("Hay una conexión activa")
+
+        session = NautaSession()
+
+        resp = session.requests_session.get(cls.CHECK_PAGE)
+        if not resp.ok:
+            raise PreLoginException("Failed to create session")
+
+        soup = bs4.BeautifulSoup(resp.text, 'html.parser')
+        action = soup.form["action"]
+        data = cls._get_inputs(soup)
+
+        # Now go to the login page
+        resp = session.requests_session.post(action, data)
+        soup = bs4.BeautifulSoup(resp.text, 'html.parser')
+        form_soup = soup.find("form", id="formulario")
+
+        session.login_action = form_soup["action"]
+        data = cls._get_inputs(form_soup)
+
+        session.csrfhw = data['CSRFHW']
+        session.wlanuserip = data['wlanuserip']
+
+        return session
+
+    @classmethod
+    def login(cls, session, username, password):
+
+        r = session.requests_session.post(
+            session.login_action,
+            {
+                "CSRFHW": session.csrfhw,
+                "wlanuserip": session.wlanuserip,
+                "username": username,
+                "password": password
+            }
+        )
+
+        if not r.ok:
+            raise LoginException(
+                "Fallo el inicio de sesión: {} - {}".format(
+                    r.status_code,
+                    r.reason
+                )
+            )
+
+        if "online.do" not in r.url:
+            soup = bs4.BeautifulSoup(r.text, "html.parser")
+            error = find_errors(soup, Portal.NAUTA)
+            if error:
+                raise LoginException(error)
+
+        m = re.search(r'ATTRIBUTE_UUID=(\w+)&CSRFHW=', r.text)
+
+        return m.group(1) if m \
+            else None
+
+    @classmethod
+    def logout(cls, session, username=None):
+        response = session.requests_session.get(
+            "https://secure.etecsa.net:8443/LogoutServlet",
+            {
+                "CSRFHW": session.csrfhw,
+                "username": username,
+                "ATTRIBUTE_UUID": session.attribute_uuid,
+                "wlanuserip": session.wlanuserip
+            }
+        )
+        if not response.ok:
+            raise LogoutException(
+                "Fallo al cerrar la sesión: {} - {}".format(
+                    response.status_code,
+                    response.reason
+                )
+            )
+
+        if "SUCCESS" not in response.text.upper():
+            raise LogoutException(
+                "Fallo al cerrar la sesión: {}".format(
+                    response.text[:100]
+                )
+            )
+
+    @classmethod
+    def get_user_time(cls, session, username):
+
+        r = session.requests_session.post(
+            "https://secure.etecsa.net:8443/EtecsaQueryServlet",
+            {
+                "op": "getLeftTime",
+                "ATTRIBUTE_UUID": session.attribute_uuid,
+                "CSRFHW": session.csrfhw,
+                "wlanuserip": session.wlanuserip,
+                "username": username,
+            }
+        )
+
+        return r.text
+
+    @classmethod
+    def get_user_credit(cls, session, username, password):
+
+        r = session.requests_session.post(
+            "https://secure.etecsa.net:8443/EtecsaQueryServlet",
+            {
+                "CSRFHW": session.csrfhw,
+                "wlanuserip": session.wlanuserip,
+                "username": username,
+                "password": password
+            }
+        )
+
+        if not r.ok:
+            raise NautaException(
+                "Fallo al obtener la información del usuario: {} - {}"
+                .format(
+                    r.status_code,
+                    r.reason
+                )
+            )
+
+        if "secure.etecsa.net" not in r.url:
+            raise NautaException(
+                "No se puede obtener el crédito del usuario mientras esta "
+                "online"
+            )
+
+        soup = bs4.BeautifulSoup(r.text, "html.parser")
+        credit_tag = soup.select_one(
+            "#sessioninfo > tbody:nth-child(1) > tr:nth-child(2) > "
+            "td:nth-child(2)")
+
+        if not credit_tag:
+            raise NautaException(
+                "Fallo al obtener el crédito del usuario: no se encontró la "
+                "información"
+            )
+
+        return credit_tag.get_text().strip()
