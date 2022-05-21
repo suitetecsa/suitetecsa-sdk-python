@@ -137,8 +137,8 @@ class UserPortal:
             action: str
     ):
         """
-        Comprueba si la solicitud fue exitosa, si la sesión se agotó y si hay
-        algún error en la respuesta.
+        Comprueba si la solicitud fue exitosa y si hay algún error en la
+        respuesta.
 
         :param cls: La clase a la que se llama el método
         :param r: solicitudes.Respuesta
@@ -171,8 +171,9 @@ class UserPortal:
     @classmethod
     def create_session(cls) -> UserPortalSession:
         """
-        > Cree una nueva sesión haciendo una solicitud GET a la página de
-        inicio de sesión y luego extraiga el token CSRF de la respuesta
+        Cree una nueva sesión haciendo una solicitud GET a la página de
+        inicio de sesión, luego extrae el token CSRF de la respuesta y
+        lo agrega a la nueva sesión
 
         :param cls: La clase que está llamando al método
         :return: Un objeto UserPortalSession
@@ -267,7 +268,7 @@ class UserPortal:
     @classmethod
     def recharge(cls, session: UserPortalSession, recharge_code: str) -> None:
         """
-        Se necesita una sesión, un código de recarga y se recarga la cuenta
+        Recarga la cuenta
 
         :param cls: La clase en sí
         :param session: El objeto de sesión que creó anteriormente
@@ -343,8 +344,8 @@ class UserPortal:
             new_password: str
     ) -> None:
         """
-        `change_email_password` cambia la contraseña de la cuenta de correo
-        electrónico asociada con la cuenta del usuario
+        Cambia la contraseña de la cuenta de correo electrónico asociada con la
+        cuenta del usuario
 
         :param cls: La clase desde la que se llama al método
         :param session: El objeto de sesión que creó cuando inició sesión
@@ -371,9 +372,8 @@ class UserPortal:
             url: str = None
     ) -> requests.Response:
         """
-        Toma una sesión, un diccionario de parámetros, una acción y una URL
-        opcional, y luego publica los parámetros en la URL, y luego genera un
-        error si la respuesta no es 200.
+        Realiza una petición POST y devuelve la respuesta o genera un
+        error si la respuesta no es correcta.
 
         :param cls: la clase desde la que se llama al método
         :param session: Sesión de portal de usuario
@@ -402,8 +402,9 @@ class UserPortal:
             action: str = Action.GET_CONNECTIONS, large: int = 5
     ) -> List[Any]:
         """
-        Obtiene las últimas 5 acciones de un determinado tipo (conexiones,
-        recargas, transferencias, cotizaciones_fondo) del portal del usuario
+        Obtiene las últimas (large) acciones de un determinado tipo
+        (conexiones, recargas, transferencias, cotizaciones_fondo) del portal
+        del usuario
 
         :param cls: la clase que está llamando al método
         :param session: Sesión de portal de usuario
@@ -446,7 +447,9 @@ class UserPortal:
             cls, session: UserPortalSession, year: int, month: int, action: str
     ):
         """
-        Obtiene las filas de la tabla de la respuesta HTML
+        Según el valor del parámetro (action) recupera las filas de una tabla
+        html de (conexiones, recargas, transferencias, cotizaciones_fondo) y
+        la devuelve si existe
 
         :param cls: la clase que está llamando al método
         :param session: Sesión de portal de usuario
@@ -498,8 +501,7 @@ class UserPortal:
             cls, session: UserPortalSession, year: int, month: int
     ) -> Union[List[Connection], None]:
         """
-        > Esta función toma un objeto UserPortalSession, un año y un mes, y
-        devuelve una lista de objetos Connection
+        Obtiene las conexiones del usuario en un mes y año dado
 
         :param cls: La clase en sí
         :param session: Sesión de portal de usuario
@@ -525,7 +527,7 @@ class UserPortal:
             cls, session: UserPortalSession, year: int, month: int
     ) -> Union[List[Recharge], None]:
         """
-        Obtiene las recargas de un usuario en un mes y año determinado
+        Obtiene las recargas del usuario en un mes y año dado
 
         :param cls: la clase misma
         :param session: Sesión de portal de usuario
@@ -548,7 +550,7 @@ class UserPortal:
             cls, session: UserPortalSession, year: int, month: int
     ) -> Union[List[Transfer], None]:
         """
-        Obtiene las transferencias desde el portal de usuario
+        Obtiene las transferencias del usuario en un mes y año dado
 
         :param cls: la clase misma
         :param session: Sesión de portal de usuario
@@ -573,7 +575,7 @@ class UserPortal:
             cls, session: UserPortalSession, year: int, month: int
     ) -> Union[List[QuotePaid], None]:
         """
-        > Esta función devuelve una lista de objetos QuotePaid, que son las
+        Esta función devuelve una lista de objetos QuotePaid, que son las
         cotizaciones pagadas por el usuario en el mes y año dados
 
         :param cls: La clase en sí
@@ -603,8 +605,7 @@ class UserPortal:
     @classmethod
     def __get_attr__(cls, attr: str, soup: bs4.BeautifulSoup) -> str:
         """
-        Toma una clase, un atributo y un objeto BeautifulSoup, y devuelve el
-        valor del atributo
+        Extrae el atributo pedido del html proporcionado
 
         :param cls: La clase desde la que se llama al método
         :param attr: El atributo que queremos obtener de la página

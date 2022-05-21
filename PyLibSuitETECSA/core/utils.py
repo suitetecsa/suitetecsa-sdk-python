@@ -40,9 +40,9 @@ class Portal:
 
 VARIOUS_ERRORS = "Se han detectado algunos errores."
 
-# A dictionary that contains two regular expressions. The first one is used to
-# find the error message in the user portal, and the second one is used to find
-# the error message in the Nauta portal.
+# Un diccionario que contiene dos expresiones regulares. El primero se usa para
+# encontrar el mensaje de error en el portal de usuario, y el segundo se usa
+# para encontrar el mensaje de error en el portal Nauta.
 re_fail_reason = {
     Portal.USER_PORTAL: re.compile(r"toastr\.error\('(?P<reason>[^']*?)'\)"),
     Portal.NAUTA: re.compile(r'alert\("(?P<reason>[^"]*?)"\)')
@@ -50,18 +50,17 @@ re_fail_reason = {
 
 
 def find_errors(
-        soup: bs4.BeautifulSoup,
-        portal: str = Portal.USER_PORTAL
+        soup: bs4.BeautifulSoup, portal: str = Portal.USER_PORTAL
 ) -> Union[list, str, None]:
     """
-    It takes the last script tag in the HTML, extracts the text, and then uses
-    a regular expression to find the error message
-
-    :param soup: bs4.BeautifulSoup
+    Toma la última etiqueta de script en el HTML, extrae el texto y luego usa
+    una expresión regular para encontrar el mensaje de error.
+    
+    :param soup: bs4.hermosa sopa
     :type soup: bs4.BeautifulSoup
-    :param portal: The portal to search for errors in
+    :param portal: El portal para buscar errores en
     :type portal: str
-    :return: A list of errors.
+    :return: Una lista de errores.
     """
     script_text = soup.find_all("script")[-1].get_text().strip()
 
@@ -76,12 +75,12 @@ def find_errors(
 
 def __find_in_user_portal(soup: bs4.BeautifulSoup) -> Union[list, str, None]:
     """
-    It returns a list of error messages if the error message starts with a
-    certain string, otherwise it returns the error message
-
-    :param soup: bs4.BeautifulSoup
+    Devuelve una lista de mensajes de error si el error es un error de "varios
+    errores", de lo contrario, devuelve el mensaje de error
+    
+    :param soup: bs4.hermosa sopa
     :type soup: bs4.BeautifulSoup
-    :return: A list of strings or a string.
+    :return: Una lista de errores o una cadena de un error.
     """
     error = soup.find("li", {"class": "msg_error"})
     if error:
