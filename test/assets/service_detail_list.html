@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0">
+    <!-- CSS  -->
+
+    <link rel="shortcut icon" type="images/x-icon" href="https://www.portal.nauta.cu/media/img/nauta.gif">
+    <title>nauta. Conexiones</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="copyright" content="">
+    <script type="text/javascript">
+        var url_base = 'https://www.portal.nauta.cu/';
+    </script>
+    <link type="text/css" href="service_detail_list_files/icon.css" rel="stylesheet" media=""><link type="text/css" href="service_detail_list_files/materialize.css" rel="stylesheet" media="screen,projection"><link type="text/css" href="service_detail_list_files/toastr.css" rel="stylesheet" media="screen,projection"><link type="text/css" href="service_detail_list_files/mailtip.css" rel="stylesheet" media="screen,projection"><link type="text/css" href="service_detail_list_files/style.css" rel="stylesheet" media="screen,projection"></head>
+<body>
+    <header>
+    <div class="navbar-fixed">
+        <nav class="orange" role="navigation">
+            <div class="nav-wrapper">
+                <div class="left paralelogramo hide-on-med-and-down"><img class="etecsa-logo responsive-img" src="service_detail_list_files/etecsa-logo-blanco50x50.png">
+                </div>
+                <a id="logo-container" href="#" class="brand-logo"><img class="nauta-logo" src="service_detail_list_files/logo-nauta-45.png">
+                </a>
+                <span class="hide-on-med-and-down title-blue title-portal">Portal de usuario</span>
+
+                <ul class="right hide-on-med-and-down">
+                    <li>
+                        <a class="tooltipped" data-position="bottom" data-delay="50" href="https://www.portal.nauta.cu/nauta/change_lang/en-en" data-tooltip="English" data-tooltip-id="e24849ac-752e-9f68-efc1-baff85d9dcd6"><i class="mdi-action-language small"></i></a>                    </li>
+                    <li>
+                        <a class="tooltipped contact_info" data-position="bottom" data-delay="50" data-tooltip="Información de contacto" href="https://www.portal.nauta.cu/nauta/contact_info" data-tooltip-id="544246c9-ed74-f83d-9840-ca607806fd0f">
+                            <i class="mdi-communication-quick-contacts-dialer"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="help tooltipped" data-position="bottom" data-delay="50" href="https://www.portal.nauta.cu/help/general" data-tooltip="Ayuda" data-tooltip-id="f87db2d8-24c2-fefa-f76d-681c1f0191a5">
+                            <i class="mdi-action-help"></i>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.portal.nauta.cu/user/logout" class="tooltipped" data-position="bottom" data-delay="50" data-tooltip="Salir" data-tooltip-id="1ece528e-86f3-df5c-5013-735f0e08773d"><i class="mdi-content-clear"></i></a>
+                    </li>
+                </ul>
+                                <ul id="nav-mobile" class="side-nav" style="left: -250px;">
+                    <li class="center-align etecsa-grey"><img src="service_detail_list_files/logo-etecsa_2.png" class="responsive-img etecsa-logo-2"></li>
+                    <li class="no-padding "><a class="collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/useraaa/user_info"><i class="mdi-action-account-circle"></i><span>Mi cuenta</span></a></li><li class="no-padding "><a class="collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/useraaa/recharge_account"><i class="mdi-maps-local-atm"></i><span>Recargar cuenta</span></a></li><li class="no-padding ">
+                        <ul class="collapsible collapsible-accordion etecsa-blue-text">
+                            <li>
+                                <a class="collapsible-header etecsa-blue-text" href="#">Cambiar contraseña<i class="mdi-action-lock-open"></i></a>
+                                <div class="collapsible-body" style="">
+                                    <ul><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/change_password">Cuenta de acceso</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/email/change_password">Cuenta de correo</a></li></ul></div></li></ul></li><li class="no-padding active">
+                        <ul class="collapsible collapsible-accordion etecsa-blue-text">
+                            <li>
+                                <a class="collapsible-header etecsa-blue-text" href="#">Detalle de operaciones<i class="mdi-action-view-list"></i></a>
+                                <div class="collapsible-body" style="">
+                                    <ul><li class="etecsa-blue-text active"><a href="https://www.portal.nauta.cu/useraaa/service_detail">Conexiones</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/recharge_detail">Recargas</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/transfer_detail">Transferencias</a></li></ul></div></li></ul></li><li class="no-padding ">
+                        <ul class="collapsible collapsible-accordion etecsa-blue-text">
+                            <li>
+                                <a class="collapsible-header etecsa-blue-text" href="#">Transferir saldo<i class="mdi-action-input"></i></a>
+                                <div class="collapsible-body" style="">
+                                    <ul><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/transfer_balance">A otra cuenta nauta</a></li></ul></div></li></ul></li>                    <li class="separator etecsa-blue-text"></li>
+                    <li class="no-padding etecsa-blue-text"><a class="collapsible-header" href="https://www.portal.nauta.cu/nauta/change_lang/en-en"><i class="mdi-action-language small"></i><span>English</span></a></li>
+                    <li class="no-padding"><a class="contact_info collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/nauta/contact_info"><i class="mdi-communication-quick-contacts-dialer small"></i><span>Información de contacto</span></a>
+                    </li>
+                    <li class="no-padding"><a class="help collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/help/general"><i class="mdi-action-help small"></i><span>Ayuda</span></a></li>
+                    <li class="no-padding"><a class="collapsible-header etecsa-blue-text" href="https://www.portal.nauta.cu/user/logout"><i class="mdi-content-clear small"></i><span>Salir</span></a></li>
+                </ul>
+                <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+            </div>
+        </nav>
+        <nav class="white hide-on-med-and-down" id="icon-nav">
+            <div class="nav-wrapper">
+                <ul class="right hide-on-med-and-down">
+                    <li class=""><a href="https://www.portal.nauta.cu/useraaa/user_info" class="etecsa-blue-text"><i class="mdi-action-account-circle"></i><span>Mi cuenta</span></a></li><li class=""><a href="https://www.portal.nauta.cu/useraaa/recharge_account" class="etecsa-blue-text"><i class="mdi-maps-local-atm"></i><span>Recargar cuenta</span></a></li><li class="">
+                        <a class="etecsa-blue-text dropdown-button" data-beloworigin="true" href="#" data-activates="dropdown_useraaa_change_password_group"><i class="mdi-action-lock-open"></i><span>Cambiar contraseña<i class="mdi-navigation-arrow-drop-down right"></i></span></a><ul id="dropdown_useraaa_change_password_group" class="dropdown-content etecsa-blue-text"><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/change_password">Cuenta de acceso</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/email/change_password">Cuenta de correo</a></li></ul>
+                        </li><li class="active">
+                        <a class="etecsa-blue-text dropdown-button" data-beloworigin="true" href="#" data-activates="dropdown_useraaa_detail"><i class="mdi-action-view-list"></i><span>Detalle de operaciones<i class="mdi-navigation-arrow-drop-down right"></i></span></a><ul id="dropdown_useraaa_detail" class="dropdown-content etecsa-blue-text"><li class="etecsa-blue-text active"><a href="https://www.portal.nauta.cu/useraaa/service_detail">Conexiones</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/recharge_detail">Recargas</a></li><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/transfer_detail">Transferencias</a></li></ul>
+                        </li><li class="">
+                        <a class="etecsa-blue-text dropdown-button" data-beloworigin="true" href="#" data-activates="dropdown_useraaa_transfer"><i class="mdi-action-input"></i><span>Transferir saldo<i class="mdi-navigation-arrow-drop-down right"></i></span></a><ul id="dropdown_useraaa_transfer" class="dropdown-content etecsa-blue-text"><li class="etecsa-blue-text "><a href="https://www.portal.nauta.cu/useraaa/transfer_balance">A otra cuenta nauta</a></li></ul>
+                        </li>                </ul>
+            </div>
+        </nav>
+    </div>
+
+</header>
+    <div id="content" class="container"><div>
+		<table style="width:100%" class="striped bordered highlight responsive-table" cellspacing="0" cellpadding="3">
+<thead>
+	<tr>
+		<th>Inicio de sesión</th>
+		<th>Fin de sesión</th>
+		<th>Tiempo consumido</th>
+		<th>Subida</th>
+		<th>Descarga</th>
+		<th>Importe</th>
+	</tr>
+</thead>
+
+	<tbody><tr>
+		<td>30/04/2022 22:06:07</td>
+		<td>01/05/2022 02:16:05</td>
+		<td>04:09:58</td>
+		<td>116,35 MB</td>
+		<td>1,28 GB</td>
+		<td>$50,00</td>
+	</tr>
+	<tr>
+		<td>30/04/2022 02:32:01</td>
+		<td>30/04/2022 04:27:22</td>
+		<td>01:55:21</td>
+		<td>815,37 MB</td>
+		<td>189,80 MB</td>
+		<td>$23,07</td>
+	</tr>
+	<tr>
+		<td>28/04/2022 20:05:27</td>
+		<td>28/04/2022 20:43:57</td>
+		<td>00:38:30</td>
+		<td>8,43 MB</td>
+		<td>42,06 MB</td>
+		<td>$7,70</td>
+	</tr>
+	<tr>
+		<td>27/04/2022 20:06:15</td>
+		<td>27/04/2022 20:44:20</td>
+		<td>00:38:05</td>
+		<td>7,59 MB</td>
+		<td>54,80 MB</td>
+		<td>$7,62</td>
+	</tr>
+	<tr>
+		<td>27/04/2022 17:26:22</td>
+		<td>27/04/2022 18:26:22</td>
+		<td>01:00:00</td>
+		<td>11,72 MB</td>
+		<td>128,86 MB</td>
+		<td>$12,00</td>
+	</tr>
+	<tr>
+		<td>27/04/2022 15:26:58</td>
+		<td>27/04/2022 15:29:37</td>
+		<td>00:02:39</td>
+		<td>965,00 KB</td>
+		<td>5,32 MB</td>
+		<td>$0,53</td>
+	</tr>
+	<tr>
+		<td>27/04/2022 15:18:28</td>
+		<td>27/04/2022 15:25:16</td>
+		<td>00:06:48</td>
+		<td>2,44 MB</td>
+		<td>16,88 MB</td>
+		<td>$0,76</td>
+	</tr>
+	<tr>
+		<td>25/04/2022 14:05:09</td>
+		<td>25/04/2022 14:17:41</td>
+		<td>00:12:32</td>
+		<td>265,00 KB</td>
+		<td>1,04 MB</td>
+		<td>$2,51</td>
+	</tr>
+	<tr>
+		<td>23/04/2022 03:01:40</td>
+		<td>23/04/2022 03:03:44</td>
+		<td>00:02:04</td>
+		<td>965,00 KB</td>
+		<td>10,82 MB</td>
+		<td>$0,42</td>
+	</tr>
+	<tr>
+		<td>23/04/2022 02:08:50</td>
+		<td>23/04/2022 02:14:06</td>
+		<td>00:05:16</td>
+		<td>3,53 MB</td>
+		<td>61,75 MB</td>
+		<td>$1,06</td>
+	</tr>
+	<tr>
+		<td>22/04/2022 21:43:26</td>
+		<td>22/04/2022 22:51:08</td>
+		<td>01:07:42</td>
+		<td>31,92 MB</td>
+		<td>347,32 MB</td>
+		<td>$13,54</td>
+	</tr>
+	<tr>
+		<td>22/04/2022 21:14:57</td>
+		<td>22/04/2022 21:40:18</td>
+		<td>00:25:21</td>
+		<td>10,07 MB</td>
+		<td>212,18 MB</td>
+		<td>$5,07</td>
+	</tr>
+	<tr>
+		<td>22/04/2022 17:49:38</td>
+		<td>22/04/2022 19:11:36</td>
+		<td>01:21:58</td>
+		<td>165,36 MB</td>
+		<td>270,33 MB</td>
+		<td>$16,40</td>
+	</tr>
+	<tr>
+		<td>21/04/2022 17:41:54</td>
+		<td>21/04/2022 18:28:29</td>
+		<td>00:46:35</td>
+		<td>18,63 MB</td>
+		<td>226,75 MB</td>
+		<td>$9,32</td>
+	</tr>
+
+</tbody></table>
+<div class="right-align"><ul class="pagination">
+    <li class="disabled hide-on-small-only icon">
+        <a href="https://www.portal.nauta.cu/useraaa/service_detail_list/2022-04/53" class="pagination-link"><i class="mdi-navigation-arrow-back small"></i></a>
+    </li>
+    <li class="disabled hide-on-small-only icon">
+        <a href="https://www.portal.nauta.cu/useraaa/service_detail_list/2022-04/53" class="pagination-link"><i class="mdi-navigation-chevron-left small"></i></a>
+    </li>
+    <li class="active"><a href="https://www.portal.nauta.cu/useraaa/service_detail_list/2022-04/53" class="pagination-link">1</a></li><li class="waves-effect"><a href="https://www.portal.nauta.cu/useraaa/service_detail_list/2022-04/53/2" class="pagination-link">2</a></li><li class="waves-effect"><a href="https://www.portal.nauta.cu/useraaa/service_detail_list/2022-04/53/3" class="pagination-link">3</a></li><li class="waves-effect"><a href="https://www.portal.nauta.cu/useraaa/service_detail_list/2022-04/53/4" class="pagination-link">4</a></li>    <li class="waves-effect hide-on-small-only icon">
+        <a href="https://www.portal.nauta.cu/useraaa/service_detail_list/2022-04/53/2" class="pagination-link"><i class="mdi-navigation-chevron-right small"></i></a>
+    </li>
+    <li class="waves-effect  hide-on-small-only icon">
+        <a href="https://www.portal.nauta.cu/useraaa/service_detail_list/2022-04/53/4" class="pagination-link"><i class="mdi-navigation-arrow-forward small"></i></a>
+    </li>
+    <li class="hide-on-med-and-down"><span class="">53 Registros</span></li>
+    <li class="hide-on-med-and-down"><span class="">4 Páginas</span></li>
+</ul></div></div>
+</div>    <div id="contact_info_box"></div>
+    <footer class="page-footer white grey-text text-darken-4">
+    <hr>
+    <div class="container">
+        <div class="row center">
+            <div class="col s12">
+                <p>© 2011 Empresa de Telecomunicaciones de Cuba S. A. (ETECSA). Todos los derechos reservados</p>
+                <p><a class="etecsa-blue-text" href="http://www.etecsa.cu/">www.etecsa.cu</a></p>
+            </div>
+        </div>
+    </div>
+    <div class="hidden" id="ajax-messages" data-ajax-connection-error="Existe un error de conexión de red. Puede ser que usted se haya desconectado de la red o el servicio se haya caido."></div>
+</footer><script type="text/javascript" src="service_detail_list_files/jquery-2.js"></script><script type="text/javascript" src="service_detail_list_files/materialize.js"></script><script type="text/javascript" src="service_detail_list_files/jquery_002.js"></script><script type="text/javascript" src="service_detail_list_files/toastr.js"></script><script type="text/javascript" src="service_detail_list_files/jquery.js"></script><script type="text/javascript" src="service_detail_list_files/init.js"></script><script type="text/javascript" src="service_detail_list_files/msgpool.js"></script><script type="text/javascript" src="service_detail_list_files/service_detail.js"></script>    <script type="text/javascript">
+        window.toastr.options = {
+            timeOut: 10000
+        }
+        $(function(){
+            $('.contact_info, .help').on("click",function(e){
+                console.log($(this).attr('href'));
+                e.preventDefault();
+                $("#contact_info_box").load($(this).attr('href'));
+
+            });
+
+
+            $('.show_password').on("click",function(){
+                var target=$(this).attr('rel');
+                if ($(this).prop('checked')){
+                    $('#'+target).attr('type','text');
+                } else {
+                    $('#'+target).attr('type','password');
+                }
+            });
+
+            $('.submit_btn').on('click',function(){
+                $.blockUI({
+                    message:'<div class="preloader-wrapper active"><div class="spinner-layer spinner-red-only"> <div class="circle-clipper left"> <div class="circle"></div> </div><div class="gap-patch"> <div class="circle"></div> </div><div class="circle-clipper right"> <div class="circle"></div> </div> </div> </div><div></div><div>Cargando...</div>',
+                    css: {
+                        border: 'none',
+                        padding: '15px',
+                        backgroundColor: '#000',
+                        '-webkit-border-radius': '10px',
+                        '-moz-border-radius': '10px',
+                        opacity: .5,
+                        color: '#fff'
+                    } });
+            });
+
+            var options = ['nauta.com.cu','nauta.co.cu'];
+            $("input.user-domain").mailtip({
+                mails: options,
+                offsetTop: 2
+            });
+            
+        });
+    </script>
+        
+
+<div class="material-tooltip" id="e24849ac-752e-9f68-efc1-baff85d9dcd6"><span>English</span><div class="backdrop" style="top: 0px; left: 0px;"></div></div><div class="material-tooltip" id="544246c9-ed74-f83d-9840-ca607806fd0f"><span>Información de contacto</span><div class="backdrop" style="top: 0px; left: 0px;"></div></div><div class="material-tooltip" id="f87db2d8-24c2-fefa-f76d-681c1f0191a5"><span>Ayuda</span><div class="backdrop" style="top: 0px; left: 0px;"></div></div><div class="material-tooltip" id="1ece528e-86f3-df5c-5013-735f0e08773d"><span>Salir</span><div class="backdrop" style="top: 0px; left: 0px;"></div></div><div class="hiddendiv common"></div><div class="drag-target" style="left: 0px; touch-action: pan-y;"></div></body></html>
