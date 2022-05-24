@@ -67,13 +67,13 @@ class UserPortalClient:
 
         return self
 
-    def recharge(self, recharge_code: str) -> None:
+    def recharge(self, recharge_code: str) -> bool:
         """
         Recarga el saldo de la cuenta registrada.
         :param recharge_code: Código de recarga.
         :return:
         """
-        UserPortal.recharge(
+        is_confirmed = UserPortal.recharge(
             self.session,
             recharge_code
         )
@@ -81,6 +81,7 @@ class UserPortalClient:
         UserPortal.load_user_info(
             self.session
         )
+        return is_confirmed
 
     def transfer(
             self, mount_to_transfer: str,
@@ -92,7 +93,7 @@ class UserPortalClient:
         :param account_to_transfer: Cuenta de destino.
         :return:
         """
-        UserPortal.transfer(
+        is_confirmed = UserPortal.transfer(
             self.session,
             mount_to_transfer,
             account_to_transfer,
@@ -102,26 +103,27 @@ class UserPortalClient:
         UserPortal.load_user_info(
             self.session
         )
+        return is_confirmed
 
-    def change_password(self, new_passwrd: str) -> None:
+    def change_password(self, new_passwrd: str) -> bool:
         """
         Cambia la contraseña de acceso a internet de la cuenta registrada.
         :param new_passwrd: Nueva contraseña.
         :return:
         """
-        UserPortal.change_password(
+        return UserPortal.change_password(
             self.session,
             self.password,
             new_passwrd
         )
 
-    def change_email_password(self, new_passwrd: str) -> None:
+    def change_email_password(self, new_passwrd: str) -> bool:
         """
         Cambia la contraseña de la cuenta de correo asociada.
         :param new_passwrd: Nueva contraseña.
         :return:
         """
-        UserPortal.change_email_password(
+        return UserPortal.change_email_password(
             self.session,
             self.password,
             new_passwrd

@@ -52,6 +52,8 @@ LOGIN_ACTION_FAIL_BAD_ACCOUNT_HTML = read_asset(
 SERVICE_DETAIL_HTML = read_asset("service_detail.html")
 SERVICE_DETAIL_LIST_HTML = read_asset("service_detail_list.html")
 USER_INFO_HTML = read_asset("user_info.html")
+RECHARGE_SUCCESS_HTML = read_asset("recharge_action_successful.html")
+RECHARGE_HTML = read_asset("recharge_action.html")
 
 
 def test_create_valid_session(patcher, user_portal_cli):
@@ -188,6 +190,18 @@ def test_get_valid_user_info(patcher):
     patcher.stop()
 
     assert user_info == user_info_expected
+
+
+def test_recharge_action_successful(patcher, user_portal_cli):
+    mock_request = patcher.start()
+    mock_response = MagicMock(status_code=200, text=RECHARGE_SUCCESS_HTML)
+    mock_response_get = MagicMock(status_code=200, text=RECHARGE_HTML)
+    mock_request.Session().post = MagicMock(return_value=mock_response)
+    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+
+    user_portal_cli.session = UserPortalSession()
+    is_confirmed = user_portal_cli.recharge("01234567890123456")
+    assert is_confirmed
 
 
 def test_get_valid_connections(patcher, user_portal_cli):

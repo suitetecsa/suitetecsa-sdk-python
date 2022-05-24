@@ -268,7 +268,7 @@ class UserPortal:
         )
 
     @classmethod
-    def recharge(cls, session: UserPortalSession, recharge_code: str) -> None:
+    def recharge(cls, session: UserPortalSession, recharge_code: str) -> bool:
         """
         Recarga la cuenta
 
@@ -284,13 +284,16 @@ class UserPortal:
             "recharge_code": recharge_code,
             "btn_submit": ""
         }
-        cls.__post_action(session, data, action)
+        response = cls.__post_action(session, data, action)
+        return cls.__is_confirmed(
+            bs4.BeautifulSoup(response.text, 'html.parser')
+        )
 
     @classmethod
     def transfer(
             cls, session: UserPortalSession, mount_to_transfer: str,
             account_to_transfer: str, password: str
-    ) -> None:
+    ) -> bool:
         """
         Transfiere una cantidad de dinero de una cuenta a otra
 
@@ -312,13 +315,16 @@ class UserPortal:
             "id_cuenta": account_to_transfer,
             "action": "checkdata"
         }
-        cls.__post_action(session, data, action)
+        response = cls.__post_action(session, data, action)
+        return cls.__is_confirmed(
+            bs4.BeautifulSoup(response.text, 'html.parser')
+        )
 
     @classmethod
     def change_password(
             cls, session: UserPortalSession, old_password: str,
             new_password: str
-    ) -> None:
+    ) -> bool:
         """
         Cambia la contraseña del usuario
 
@@ -338,13 +344,16 @@ class UserPortal:
             "repeat_new_password": new_password,
             "btn_submit": ""
         }
-        cls.__post_action(session, data, action)
+        response = cls.__post_action(session, data, action)
+        return cls.__is_confirmed(
+            bs4.BeautifulSoup(response.text, 'html.parser')
+        )
 
     @classmethod
     def change_email_password(
             cls, session: UserPortalSession, old_password: str,
             new_password: str
-    ) -> None:
+    ) -> bool:
         """
         Cambia la contraseña de la cuenta de correo electrónico asociada con la
         cuenta del usuario
@@ -366,7 +375,10 @@ class UserPortal:
             "repeat_new_password": new_password,
             "btn_submit": ""
         }
-        cls.__post_action(session, data, action)
+        response = cls.__post_action(session, data, action)
+        return cls.__is_confirmed(
+            bs4.BeautifulSoup(response.text, 'html.parser')
+        )
 
     @classmethod
     def __post_action(
@@ -497,6 +509,15 @@ class UserPortal:
             trs = soup.find_all("tr")
             trs.pop(0)
             return trs
+
+    @classmethod
+    def __is_confirmed(cls, soup: bs4.BeautifulSoup):
+        script_text = soup.find_all("script")[-1].get_text().strip()
+        re_success = re.compile(r"toastr\.success\('(?P<reason>[^']*?)'\)")
+        match = re_success.match(script_text)
+        if match:
+            soup = bs4.BeautifulSoup(match.group("reason"), "html.parser")
+            return soup.find("li", {"class": "msg_message"}).text is not None
 
     @classmethod
     def get_connections(
