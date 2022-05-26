@@ -86,7 +86,7 @@ class UserPortalClient:
     def transfer(
             self, mount_to_transfer: str,
             account_to_transfer: str
-    ) -> None:
+    ) -> bool:
         """
         Transfiere saldo a otra cuenta nauta.
         :param mount_to_transfer: Monto a transferir.

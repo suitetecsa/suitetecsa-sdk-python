@@ -18,7 +18,8 @@ from unittest.mock import patch, MagicMock
 import pytest
 from PyLibSuitETECSA.api import UserPortalClient
 
-from PyLibSuitETECSA.core.exception import LoginException
+from PyLibSuitETECSA.core.exception import LoginException, RechargeException, \
+    TransferException, ChangePasswordException
 from PyLibSuitETECSA.core.protocol import UserPortal
 from PyLibSuitETECSA.core.session import UserPortalSession
 
@@ -52,8 +53,17 @@ LOGIN_ACTION_FAIL_BAD_ACCOUNT_HTML = read_asset(
 SERVICE_DETAIL_HTML = read_asset("service_detail.html")
 SERVICE_DETAIL_LIST_HTML = read_asset("service_detail_list.html")
 USER_INFO_HTML = read_asset("user_info.html")
-RECHARGE_SUCCESS_HTML = read_asset("recharge_action_successful.html")
 RECHARGE_HTML = read_asset("recharge_action.html")
+RECHARGE_SUCCESS_HTML = read_asset("recharge_action_successful.html")
+RECHARGE_FAIL_HTML = read_asset("recharge_action_fail.html")
+TRANSFER_HTML = read_asset("transfer_action.html")
+TRANSFER_SUCCESS_HTML = read_asset("transfer_action_success.html")
+TRANSFER_FAIL_HTML = read_asset("transfer_action_fail.html")
+CHANGE_PASSWORD_HTML = read_asset("change_password_action.html")
+CHANGE_PASSWORD_SUCCESS_HTML = read_asset(
+    "change_password_action_success.html"
+)
+CHANGE_PASSWORD_FAIL_HTML = read_asset("change_password_action_fail.html")
 
 
 def test_create_valid_session(patcher, user_portal_cli):
@@ -202,6 +212,121 @@ def test_recharge_action_successful(patcher, user_portal_cli):
     user_portal_cli.session = UserPortalSession()
     is_confirmed = user_portal_cli.recharge("01234567890123456")
     assert is_confirmed
+
+
+def test_recharge_action_fail(patcher, user_portal_cli):
+    mock_request = patcher.start()
+    mock_response = MagicMock(status_code=200, text=RECHARGE_FAIL_HTML)
+    mock_response_get = MagicMock(status_code=200, text=RECHARGE_HTML)
+    mock_request.Session().post = MagicMock(return_value=mock_response)
+    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+
+    user_portal_cli.session = UserPortalSession()
+    with pytest.raises(RechargeException) as e:
+        user_portal_cli.recharge("01234567890123456")
+
+    patcher.stop()
+
+    assert "El código de recarga es incorrecto." == str(e.value)
+
+
+def test_transfer_action_successful(patcher, user_portal_cli):
+    mock_request = patcher.start()
+    mock_response = MagicMock(status_code=200, text=TRANSFER_SUCCESS_HTML)
+    mock_response_get = MagicMock(status_code=200, text=TRANSFER_HTML)
+    mock_request.Session().post = MagicMock(return_value=mock_response)
+    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+
+    user_portal_cli.session = UserPortalSession()
+    is_confirmed = user_portal_cli.transfer("24", "pepita@nauta.com.cu")
+    assert is_confirmed
+
+
+def test_transfer_action_fail(patcher, user_portal_cli):
+    mock_request = patcher.start()
+    mock_response = MagicMock(status_code=200, text=TRANSFER_FAIL_HTML)
+    mock_response_get = MagicMock(status_code=200, text=TRANSFER_HTML)
+    mock_request.Session().post = MagicMock(return_value=mock_response)
+    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+
+    user_portal_cli.session = UserPortalSession()
+    with pytest.raises(TransferException) as e:
+        user_portal_cli.transfer("24", "pepita@nauta.com.cu")
+
+    patcher.stop()
+
+    assert "['El campo saldo a transferir debe ser menor o igual que 1318']" \
+           == str(e.value)
+
+
+def test_change_password_action_successful(patcher, user_portal_cli):
+    mock_request = patcher.start()
+    mock_response = MagicMock(
+        status_code=200,
+        text=CHANGE_PASSWORD_SUCCESS_HTML
+    )
+    mock_response_get = MagicMock(status_code=200, text=CHANGE_PASSWORD_HTML)
+    mock_request.Session().post = MagicMock(return_value=mock_response)
+    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+
+    user_portal_cli.session = UserPortalSession()
+    is_confirmed = user_portal_cli.change_password("some_password")
+    assert is_confirmed
+
+
+def test_change_password_action_fail(patcher, user_portal_cli):
+    mock_request = patcher.start()
+    mock_response = MagicMock(status_code=200, text=CHANGE_PASSWORD_FAIL_HTML)
+    mock_response_get = MagicMock(status_code=200, text=CHANGE_PASSWORD_HTML)
+    mock_request.Session().post = MagicMock(return_value=mock_response)
+    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+
+    user_portal_cli.session = UserPortalSession()
+    with pytest.raises(ChangePasswordException) as e:
+        user_portal_cli.change_password("some_password")
+
+    patcher.stop()
+
+    assert "Se han detectado algunos errores de validación de la " \
+           "información.El campo nueva contraseña no es una contraseña " \
+           "fuerte. Debe tener números, caracteres especiales, mayúsculas, " \
+           "minúsculas y una longitud mínima de 8 caracteres y máxima de 20." \
+           == str(e.value)
+
+
+def test_change_email_password_action_successful(patcher, user_portal_cli):
+    mock_request = patcher.start()
+    mock_response = MagicMock(
+        status_code=200,
+        text=CHANGE_PASSWORD_SUCCESS_HTML
+    )
+    mock_response_get = MagicMock(status_code=200, text=CHANGE_PASSWORD_HTML)
+    mock_request.Session().post = MagicMock(return_value=mock_response)
+    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+
+    user_portal_cli.session = UserPortalSession()
+    is_confirmed = user_portal_cli.change_email_password("some_password")
+    assert is_confirmed
+
+
+def test_change_email_password_action_fail(patcher, user_portal_cli):
+    mock_request = patcher.start()
+    mock_response = MagicMock(status_code=200, text=CHANGE_PASSWORD_FAIL_HTML)
+    mock_response_get = MagicMock(status_code=200, text=CHANGE_PASSWORD_HTML)
+    mock_request.Session().post = MagicMock(return_value=mock_response)
+    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+
+    user_portal_cli.session = UserPortalSession()
+    with pytest.raises(ChangePasswordException) as e:
+        user_portal_cli.change_email_password("some_password")
+
+    patcher.stop()
+
+    assert "Se han detectado algunos errores de validación de la " \
+           "información.El campo nueva contraseña no es una contraseña " \
+           "fuerte. Debe tener números, caracteres especiales, mayúsculas, " \
+           "minúsculas y una longitud mínima de 8 caracteres y máxima de 20." \
+           == str(e.value)
 
 
 def test_get_valid_connections(patcher, user_portal_cli):

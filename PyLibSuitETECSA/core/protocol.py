@@ -39,6 +39,7 @@ class UserPortal:
         Action.LOGIN: f"{BASE_URL}user/login/es-es",
         Action.LOAD_USER_INFO: f"{BASE_URL}useraaa/user_info",
         Action.RECHARGE: f"{BASE_URL}useraaa/recharge_account",
+        Action.TRANSFER: f"{BASE_URL}useraaa/transfer_balance",
         Action.CHANGE_PASSWORD: f"{BASE_URL}useraaa/change_password",
         Action.CHANGE_EMAIL_PASSWORD: f"{BASE_URL}email/change_password",
         Action.GET_CONNECTIONS: {
