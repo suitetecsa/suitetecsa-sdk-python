@@ -30,7 +30,7 @@ def get_readme():
 
 setup(
     name='PyLibSuitETECSA',
-    version='0.1.3b2',
+    version='0.1.3b3',
     packages=['PyLibSuitETECSA', 'PyLibSuitETECSA.core'],
     url='https://github.com/SuitETECSA/PyLibSuitETECSA',
     license='GNU General Public License v3',
