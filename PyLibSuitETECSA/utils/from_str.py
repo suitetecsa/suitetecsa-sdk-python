@@ -21,13 +21,39 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# Una lista que contiene las claves de los atributos de la cuenta
-# proporcionados por el portal de usuario.
-USER_PORTAL_ATTRS = [
-    "username", "blocking_date", "date_of_elimination", "account_type",
-    "service_type", "credit", "time", "mail_account", "offer",
-    "monthly_fee", "download_speeds", "upload_speeds", "phone",
-    "link_identifiers", "link_status", "activation_date",
-    "blocking_date_home", "date_of_elimination_home", "quota_fund",
-    "voucher", "debt"
-]
+
+from datetime import datetime
+
+
+def to_seconds(string: str) -> int:
+    hours, minutes, seconds = string.split(':')
+    return int(hours) * 3600 + int(minutes) * 60 + int(seconds)
+
+
+def to_float(string: str) -> int:
+    return float(string.replace('$', '').replace(',', '.'))
+
+
+def to_bytes(string: str) -> int:
+    units = {
+        "TB": 4,
+        "GB": 3,
+        "MB": 2,
+        "KB": 1
+    }
+    import_, unit = string.replace(',', '.').split(' ')
+    to_multiply = 1024 ** units[unit] if unit != "bytes" else 1
+    return int(float(import_) * to_multiply)
+
+
+def to_datetime(string: str) -> datetime:
+    if string != datetime.strptime(
+        string,
+        "%d/%m/%Y %H:%M:%S"
+    ).strftime("%d/%m/%Y %H:%M:%S"):
+        raise ValueError
+    else:
+        return datetime.strptime(
+            string,
+            "%d/%m/%Y %H:%M:%S"
+        )

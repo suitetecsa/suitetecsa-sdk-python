@@ -18,12 +18,13 @@ import requests
 
 class SessionObject(object):
     headers_ = {
-        'Accept': 'text/html,application/xhtml+xml,'
-                  'application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,'
+        'image/avif,image/webp,image/apng,*/*;q=0.8',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Accept-Language': 'es-MX,es;q=0.8,en-US;q=0.5,en;q=0.3',
-        'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; '
-                      'rv:97.0) Gecko/20100101 Firefox/97.0'
+        'Accept-Language': 'es-419,es;q=0.6',
+        'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) '
+        'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     }
 
     def __init__(self):

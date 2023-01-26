@@ -1,32 +1,45 @@
-#  Copyright (c) 2022. MarilaSoft.
-#  #
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#  #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  #
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2023 Lesly Cintra Laza <a.k.a. lesclaz>
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
 import re
 from datetime import date
 from typing import List, Any, Union
 
 import bs4
 import requests
+from PyLibSuitETECSA.core import USER_PORTAL_ATTRS
 
 from PyLibSuitETECSA.core.exception import GetInfoException, \
     TransferException, ChangePasswordException, LoginException, \
     RechargeException, PreLoginException, NotNautaHomeAccount, \
-    LogoutException, NautaException
-from PyLibSuitETECSA.core.models import Connection, Recharge, Transfer, \
-    QuotePaid
+    LogoutException, NautaException, ConnectionException
+from PyLibSuitETECSA.core.models import Connection, ConnectionsSummary, \
+    QuoteFund, QuotesFundSummary, Recharge, RechargesSummary, Transfer, \
+    ActionResponse, TransfersSummary
 from PyLibSuitETECSA.core.session import UserPortalSession, NautaSession
-from PyLibSuitETECSA.core.utils import Action, find_errors, Portal
+from PyLibSuitETECSA.utils import RE_SUCCESS_ACTION, Action, Portal
+from PyLibSuitETECSA.utils.parser import parse_errors
 
 
 class UserPortal:
@@ -36,82 +49,70 @@ class UserPortal:
     # Un diccionario que contiene las URL de las acciones que se pueden
     # realizar en el portal.
     __url = {
-        Action.LOGIN: f"{BASE_URL}user/login/es-es",
-        Action.LOAD_USER_INFO: f"{BASE_URL}useraaa/user_info",
-        Action.RECHARGE: f"{BASE_URL}useraaa/recharge_account",
-        Action.TRANSFER: f"{BASE_URL}useraaa/transfer_balance",
-        Action.CHANGE_PASSWORD: f"{BASE_URL}useraaa/change_password",
-        Action.CHANGE_EMAIL_PASSWORD: f"{BASE_URL}email/change_password",
+        Action.LOGIN: f"user/login/es-es",
+        Action.LOAD_USER_INFO: f"useraaa/user_info",
+        Action.RECHARGE: f"useraaa/recharge_account",
+        Action.TRANSFER: f"useraaa/transfer_balance",
+        Action.NAUTA_HOGAR_PAID: f"useraaa/transfer_nautahogarpaid",
+        Action.CHANGE_PASSWORD: f"useraaa/change_password",
+        Action.CHANGE_EMAIL_PASSWORD: f"mail/change_password",
         Action.GET_CONNECTIONS: {
-            "base": f"{BASE_URL}useraaa/service_detail/",
-            "summary": f"{BASE_URL}useraaa/service_detail_summary/",
-            "list": f"{BASE_URL}useraaa/service_detail_list/"
+            "base": f"useraaa/service_detail/",
+            "summary": f"useraaa/service_detail_summary/",
+            "list": f"useraaa/service_detail_list/"
         },
         Action.GET_RECHARGES: {
-            "base": f"{BASE_URL}useraaa/recharge_detail/",
-            "summary": f"{BASE_URL}useraaa/recharge_detail_summary/",
-            "list": f"{BASE_URL}useraaa/recharge_detail_list/"
+            "base": f"useraaa/recharge_detail/",
+            "summary": f"useraaa/recharge_detail_summary/",
+            "list": f"useraaa/recharge_detail_list/"
         },
         Action.GET_TRANSFERS: {
-            "base": f"{BASE_URL}useraaa/transfer_detail/",
-            "summary": f"{BASE_URL}useraaa/transfer_detail_summary/",
-            "list": f"{BASE_URL}useraaa/transfer_detail_list/",
+            "base": f"useraaa/transfer_detail/",
+            "summary": f"useraaa/transfer_detail_summary/",
+            "list": f"useraaa/transfer_detail_list/",
         },
         Action.GET_QUOTES_FUND: {
-            "base": f"{BASE_URL}useraaa/nautahogarpaid_detail/",
-            "summary": f"{BASE_URL}useraaa/nautahogarpaid_detail_summary/",
-            "list": f"{BASE_URL}useraaa/nautahogarpaid_detail_list/"
+            "base": f"useraaa/nautahogarpaid_detail/",
+            "summary": f"useraaa/nautahogarpaid_detail_summary/",
+            "list": f"useraaa/nautahogarpaid_detail_list/"
         },
-        Action.LOGOUT: f"{BASE_URL}user/logout"
-    }
-
-    # Un diccionario que contiene las excepciones que se pueden generar
-    # cuando se produce un error en el portal.
-    __up_exceptions = {
-        Action.LOAD_USER_INFO: GetInfoException,
-        Action.RECHARGE: RechargeException,
-        Action.TRANSFER: TransferException,
-        Action.GET_CONNECTIONS: GetInfoException,
-        Action.GET_RECHARGES: GetInfoException,
-        Action.GET_QUOTES_FUND: GetInfoException,
-        Action.GET_TRANSFERS: GetInfoException,
-        Action.CHANGE_PASSWORD: ChangePasswordException,
-        Action.CHANGE_EMAIL_PASSWORD: ChangePasswordException,
-        Action.LOGIN: LoginException
-    }
-
-    # Un diccionario que contiene los atributos de la cuenta del usuario.
-    __attrs = {
-        "username": "usuario",
-        "account_type": "tipo de cuenta",
-        "service_type": "tipo de servicio",
-        "credit": "saldo disponible",
-        "time": "tiempo disponible de la cuenta",
-        "mail_account": "cuenta de correo",
-        "offer": "oferta",
-        "monthly_fee": "cuota mensual",
-        "download_speeds": "velocidad de bajada",
-        "upload_speeds": "velocidad de subida",
-        "phone": "teléfono",
-        "link_identifiers": "identificador del enlace",
-        "link_status": "estado del enlace",
-        "activation_date": "fecha de activación",
-        "blocking_date": "fecha de bloqueo",
-        "date_of_elimination": "fecha de eliminación",
-        "blocking_date_home": "fecha de bloqueo",
-        "date_of_elimination_home": "fecha de eliminación",
-        "quota_fund": "fondo de cuota",
-        "voucher": "bono",
-        "debt": "deuda"
+        Action.LOGOUT: f"user/logout"
     }
 
     @classmethod
+    def __build_url(
+        cls, action: str,
+        get_action: bool = False,
+        sub_action: str = None,
+        year_month_selected: str = None,
+        count_or_page: int = None
+    ) -> (str | None):
+        if not get_action:
+            return f'{cls.BASE_URL}{cls.__url[action]}'
+        elif get_action and sub_action:
+            url = f'{cls.BASE_URL}{cls.__url[action][sub_action]}'
+            match sub_action:
+                case "base" | "summary":
+                    return url
+                case "list":
+                    if not year_month_selected:
+                        raise AttributeError(
+                            'Atributo year_month_selected mp definido'
+                        )
+                    if not count_or_page:
+                        raise AttributeError(
+                            'Atributo count_or_page mp definido'
+                        )
+                    else:
+                        return f'{url}{year_month_selected}/{count_or_page}'
+
+    @classmethod
     def __get_csrf(
-            cls, action: str,
+            cls, action: Action,
             session: UserPortalSession = None,
             url: str = None,
             soup: bs4.BeautifulSoup = None
-    ):
+    ) -> str:
         """
         Obtiene el token CSRF de la página
 
@@ -130,15 +131,20 @@ class UserPortal:
             if not url:
                 url = cls.__url[action]
             r = session.requests_session.get(url)
-            cls.__raise_if_error(r, action)
-            soup = bs4.BeautifulSoup(r.text, 'html.parser')
-        return soup.find("input", {"name": "csrf"}).attrs["value"]
+            soup = cls.__raise_if_error(
+                r,
+                ConnectionException,
+                "Error al obtener el token 'csrf'"
+            )
+        return soup.select_one('input[name=csrf]').attrs["value"]
 
     @classmethod
     def __raise_if_error(
             cls, r: requests.Response,
-            action: str
-    ):
+            exception: Exception,
+            message: str,
+            find_error: bool = True
+    ) -> bs4.BeautifulSoup:
         """
         Comprueba si la solicitud fue exitosa y si hay algún error en la
         respuesta.
@@ -150,14 +156,35 @@ class UserPortal:
         :type action: str
         """
         if not r.ok:
-            raise cls.__up_exceptions[action](
-                f"Fallo al realizar la operación: {r.status_code} - {r.reason}"
+            raise exception(
+                f"{message}: {r.status_code} :: {r.reason}"
             )
 
-        soup = bs4.BeautifulSoup(r.text, 'html.parser')
-        errors = find_errors(soup, Portal.USER_PORTAL)
-        if errors:
-            raise cls.__up_exceptions[action](errors)
+        if find_error:
+            soup = bs4.BeautifulSoup(r.text, 'html5lib')
+            error = parse_errors(soup, Portal.USER_PORTAL)
+            if error:
+                raise exception(error)
+            else:
+                return soup
+
+    @classmethod
+    def __update_session_parameters(
+        cls, session: UserPortalSession,
+        soup: bs4.BeautifulSoup
+    ) -> None:
+
+        parameters = soup.select_one('.z-depth-1').select('.m6')
+
+        session.__dict__.update(
+            **{
+                USER_PORTAL_ATTRS[_]: parameter.select_one(
+                    'p'
+                ).text.strip() for _, parameter in enumerate(
+                    parameters
+                )
+            }
+        )
 
     @staticmethod
     def get_captcha(session: UserPortalSession) -> bytes:
@@ -168,8 +195,16 @@ class UserPortal:
         :type session: UserPortalSession
         :return: La imagen captcha.
         """
-        return session.requests_session.get(
-            "https://www.portal.nauta.cu/captcha/?").content
+        r = session.requests_session.get(
+            "https://www.portal.nauta.cu/captcha/?"
+        )
+        UserPortal.__raise_if_error(
+            r,
+            ConnectionException,
+            "Error al Obtener la imagen Captcha",
+            find_error=False
+        )
+        return r.content
 
     @classmethod
     def create_session(cls) -> UserPortalSession:
@@ -183,14 +218,16 @@ class UserPortal:
         """
         session = UserPortalSession()
 
-        resp = session.requests_session.get(
-            cls.__url[Action.LOGIN]
+        r = session.requests_session.get(
+            cls.__build_url(Action.LOGIN)
         )
 
-        if not resp.ok:
-            raise PreLoginException("Failed to create session")
+        soup = cls.__raise_if_error(
+            r,
+            PreLoginException,
+            "Fallo al crear la sesión"
+        )
 
-        soup = bs4.BeautifulSoup(resp.text, 'html.parser')
         session.csrf = cls.__get_csrf(Action.LOGIN, soup=soup)
 
         return session
@@ -226,21 +263,13 @@ class UserPortal:
             Action.LOGIN
         )
 
-        if not r.ok:
-            raise LoginException(
-                f"Fallo el inicio de sesión: {r.status_code} - {r.reason}")
-        cls.__raise_if_error(r, Action.LOGIN)
-
-        soup = bs4.BeautifulSoup(r.text, "html.parser")
-
-        session.__dict__.update(
-            **{
-                key: cls.__get_attr__(
-                    key,
-                    soup
-                )
-                for key in cls.__attrs.keys()}
+        soup = cls.__raise_if_error(
+            r,
+            LoginException,
+            "Falló el inicio de sesión"
         )
+
+        cls.__update_session_parameters(session, soup)
 
     @classmethod
     def load_user_info(cls, session: UserPortalSession) -> None:
@@ -252,24 +281,23 @@ class UserPortal:
         :param session: Sesión de portal de usuario
         :type session: UserPortalSession
         """
-        action = Action.LOAD_USER_INFO
         r = session.requests_session.get(
-            cls.__url[action]
+            cls.__build_url(Action.LOAD_USER_INFO)
         )
-        cls.__raise_if_error(r, action)
 
-        soup = bs4.BeautifulSoup(r.text, 'html.parser')
-        session.__dict__.update(
-            **{
-                key: cls.__get_attr__(
-                    key,
-                    soup
-                )
-                for key in cls.__attrs.keys()}
+        soup = cls.__raise_if_error(
+            r,
+            GetInfoException,
+            "Fallo al recuperar la info de la cuenta"
         )
+
+        cls.__update_session_parameters(session, soup)
 
     @classmethod
-    def recharge(cls, session: UserPortalSession, recharge_code: str) -> bool:
+    def recharge(
+        cls, session: UserPortalSession,
+        recharge_code: str
+    ) -> ActionResponse:
         """
         Recarga la cuenta
 
@@ -285,16 +313,23 @@ class UserPortal:
             "recharge_code": recharge_code,
             "btn_submit": ""
         }
-        response = cls.__post_action(session, data, action)
-        return cls.__is_confirmed(
-            bs4.BeautifulSoup(response.text, 'html.parser')
+
+        r = cls.__post_action(session, data, action)
+
+        soup = cls.__raise_if_error(
+            r,
+            RechargeException,
+            "Error al recargar la cuenta"
         )
+
+        return cls.__get_response(soup)
 
     @classmethod
     def transfer(
-            cls, session: UserPortalSession, mount_to_transfer: str,
-            account_to_transfer: str, password: str
-    ) -> bool:
+            cls, session: UserPortalSession, mount_to_transfer: float,
+            account_to_transfer: str, password: str,
+            nauta_hogar_paid: bool = False
+    ) -> ActionResponse:
         """
         Transfiere una cantidad de dinero de una cuenta a otra
 
@@ -308,24 +343,32 @@ class UserPortal:
         :param password: La contraseña de la cuenta para transferir el monto
         :type password: str
         """
-        action = Action.TRANSFER
+        action = Action.TRANSFER if not nauta_hogar_paid \
+            else Action.NAUTA_HOGAR_PAID
         data = {
             "csrf": cls.__get_csrf(action, session),
-            "transfer": mount_to_transfer,
+            "transfer": f'{mount_to_transfer:.2f}'.replace('.', ','),
             "password_user": password,
-            "id_cuenta": account_to_transfer,
             "action": "checkdata"
         }
-        response = cls.__post_action(session, data, action)
-        return cls.__is_confirmed(
-            bs4.BeautifulSoup(response.text, 'html.parser')
+        if not nauta_hogar_paid:
+            data["id_cuenta"] = account_to_transfer
+
+        r = cls.__post_action(session, data, action)
+
+        soup = cls.__raise_if_error(
+            r,
+            TransferException,
+            "Error al transferir el saldo"
         )
+
+        return cls.__get_response(soup)
 
     @classmethod
     def change_password(
             cls, session: UserPortalSession, old_password: str,
             new_password: str
-    ) -> bool:
+    ) -> ActionResponse:
         """
         Cambia la contraseña del usuario
 
@@ -345,16 +388,22 @@ class UserPortal:
             "repeat_new_password": new_password,
             "btn_submit": ""
         }
-        response = cls.__post_action(session, data, action)
-        return cls.__is_confirmed(
-            bs4.BeautifulSoup(response.text, 'html.parser')
+
+        r = cls.__post_action(session, data, action)
+
+        soup = cls.__raise_if_error(
+            r,
+            ChangePasswordException,
+            "Error al cambiar la contraseña"
         )
+
+        return cls.__get_response(soup)
 
     @classmethod
     def change_email_password(
             cls, session: UserPortalSession, old_password: str,
             new_password: str
-    ) -> bool:
+    ) -> ActionResponse:
         """
         Cambia la contraseña de la cuenta de correo electrónico asociada con la
         cuenta del usuario
@@ -376,10 +425,16 @@ class UserPortal:
             "repeat_new_password": new_password,
             "btn_submit": ""
         }
-        response = cls.__post_action(session, data, action)
-        return cls.__is_confirmed(
-            bs4.BeautifulSoup(response.text, 'html.parser')
+
+        r = cls.__post_action(session, data, action)
+
+        soup = cls.__raise_if_error(
+            r,
+            ChangePasswordException,
+            "Error al cambiar la contraseña"
         )
+
+        return cls.__get_response(soup)
 
     @classmethod
     def __post_action(
@@ -402,12 +457,11 @@ class UserPortal:
         :return: Un objeto de respuesta.
         """
         if not url:
-            url = cls.__url[action]
+            url = cls.__build_url(action)
         r = session.requests_session.post(
             url,
             param
         )
-        cls.__raise_if_error(r, action)
 
         return r
 
@@ -484,6 +538,17 @@ class UserPortal:
             Action.GET_TRANSFERS: "transfer_detail"
         }
 
+        message_action = {
+            Action.GET_CONNECTIONS:
+            "Error al obtener la lista de conexiones",
+            Action.GET_RECHARGES:
+            "Error al obtener la lista de recargas",
+            Action.GET_QUOTES_FUND:
+            "Error al obtener la lista de fondos de cuotas",
+            Action.GET_TRANSFERS:
+            "Error al obtener la lista de transferencias"
+        }
+
         year_month = f'{year}-{month:02}'
         r = cls.__post_action(
             session,
@@ -491,38 +556,69 @@ class UserPortal:
                 "csrf": cls.__get_csrf(
                     action,
                     session,
-                    cls.__url[action]["base"]
+                    cls.__build_url(
+                        action,
+                        True,
+                        "base"
+                    )
                 ),
                 "year_month": year_month,
                 "list_type": list_type[action]
             },
             action,
-            cls.__url[action]["list"]
+            cls.__build_url(
+                action,
+                True,
+                "summary"
+            )
         )
-        soup = bs4.BeautifulSoup(r.text, 'html.parser')
-        table = soup.find(
-            "table",
-            {
-                "class": "striped bordered highlight responsive-table"
-            }
+        soup = cls.__raise_if_error(
+            r,
+            GetInfoException,
+            message_action[action]
         )
-        if table:
-            trs = soup.find_all("tr")
-            trs.pop(0)
-            return trs
+
+        return soup.select_one('#content').select('.card-content')
 
     @classmethod
-    def __is_confirmed(cls, soup: bs4.BeautifulSoup):
-        script_text = soup.find_all("script")[-1].get_text().strip()
-        re_success = re.compile(r"toastr\.success\('(?P<reason>[^']*?)'\)")
-        match = re_success.match(script_text)
-        if match:
-            soup = bs4.BeautifulSoup(match.group("reason"), "html.parser")
-            return soup.find("li", {"class": "msg_message"}).text is not None
+    def __get_response(cls, soup: bs4.BeautifulSoup):
+        script_text = soup.find_all("script")[-1].contents[0].strip()
+        match_ = RE_SUCCESS_ACTION.match(script_text)
+        if match_:
+            soup = bs4.BeautifulSoup(match_.group("reason"), "html5lib")
+            return ActionResponse(
+                "success",
+                soup.select_one('li:is(.msg_message)').text
+            )
+
+    @classmethod
+    def get_connections_summary(
+        cls, session: UserPortalSession, year: int, month: int
+    ) -> ConnectionsSummary:
+        [
+            connections,
+            total_time,
+            total_import,
+            uploaded,
+            downloaded,
+            total_traffic
+        ] = cls.__get_action(session, year, month, Action.GET_CONNECTIONS)
+        return ConnectionsSummary(
+            count=connections.select_one('input[name=count]').attrs['value'],
+            year_month_selected=connections.select_one(
+                'input[name=year_month_selected]'
+            ).attrs['value'],
+            total_time=total_time.select_one('.card-stats-number').text,
+            total_import=total_import.select_one('.card-stats-number').text,
+            uploaded=uploaded.select_one('.card-stats-number').text,
+            downloaded=downloaded.select_one('.card-stats-number').text,
+            total_traffic=total_traffic.select_one('.card-stats-number').text
+        )
 
     @classmethod
     def get_connections(
-            cls, session: UserPortalSession, year: int, month: int
+            cls, session: UserPortalSession,
+            connections_summary: ConnectionsSummary
     ) -> Union[List[Connection], None]:
         """
         Obtiene las conexiones del usuario en un mes y año dado
@@ -536,19 +632,57 @@ class UserPortal:
         :type month: int
         :return: Una lista de objetos de conexión.
         """
-        trs = cls.__get_action(session, year, month, Action.GET_CONNECTIONS)
-        if trs:
-            return [Connection(start_session=tr.find_all("td")[0].text,
-                               end_session=tr.find_all("td")[1].text,
-                               duration=tr.find_all("td")[2].text,
-                               upload=tr.find_all("td")[3].text,
-                               download=tr.find_all("td")[4].text,
-                               import_=tr.find_all("td")[5].text) for tr in
-                    trs]
+
+        rows = cls.__parse_action_rows(
+            session,
+            Action.GET_CONNECTIONS,
+            connections_summary.year_month_selected,
+            connections_summary.count
+        )
+
+        if rows:
+            connections_list = []
+            for row in rows:
+                [
+                    start_session_tag,
+                    end_session_tag,
+                    duration_tag,
+                    upload_tag,
+                    download_tag,
+                    import_tag
+                ] = row.select('td')
+                connections_list.append(
+                    Connection(
+                        start_session=start_session_tag.text,
+                        end_session=end_session_tag.text,
+                        duration=duration_tag.text,
+                        uploaded=upload_tag.text,
+                        downloaded=download_tag.text,
+                        import_=import_tag.text
+                    )
+                )
+            return connections_list
+
+    @classmethod
+    def get_recharges_summary(
+        cls, session: UserPortalSession, year: int, month: int
+    ) -> RechargesSummary:
+        recharges, total_import = cls.__get_action(
+            session, year, month, Action.GET_RECHARGES
+        )
+        return RechargesSummary(
+            count=recharges.select_one('input[name=count]').attrs['value'],
+            year_month_selected=recharges.select_one(
+                'input[name=year_month_selected]'
+            ).attrs['value'],
+            total_import=total_import.select_one('.card-stats-number').text
+        )
 
     @classmethod
     def get_recharges(
-            cls, session: UserPortalSession, year: int, month: int
+            cls,
+            session: UserPortalSession,
+            recharges_summary: RechargesSummary
     ) -> Union[List[Recharge], None]:
         """
         Obtiene las recargas del usuario en un mes y año dado
@@ -562,17 +696,49 @@ class UserPortal:
         :type month: int
         :return: Una lista de objetos de recarga.
         """
-        trs = cls.__get_action(session, year, month, Action.GET_RECHARGES)
-        if trs:
-            return [Recharge(date=tr.find_all("td")[0].text,
-                             import_=tr.find_all("td")[1].text,
-                             channel=tr.find_all("td")[2].text,
-                             type_=tr.find_all("td")[3].text) for tr in trs]
+
+        rows = cls.__parse_action_rows(
+            session,
+            Action.GET_RECHARGES,
+            recharges_summary.year_month_selected,
+            recharges_summary.count
+        )
+
+        if rows:
+            recharges_list = []
+            for row in rows:
+                date, import_, channel, type_ = row
+
+                recharges_list.append(
+                    Recharge(
+                        date=date.text,
+                        import_=import_.text,
+                        channel=channel.text,
+                        type_=type_.text
+                    )
+                )
+            return recharges_list
+
+    @classmethod
+    def get_transfers_summary(
+        cls, session: UserPortalSession, year: int, month: int
+    ) -> TransfersSummary:
+        transfers, total_import = cls.__get_action(
+            session, year, month, Action.GET_TRANSFERS
+        )
+        return TransfersSummary(
+            count=transfers.select_one('input[name=count]').attrs['value'],
+            year_month_selected=transfers.select_one(
+                'input[name=year_month_selected]'
+            ).attrs['value'],
+            total_import=total_import.select_one('.card-stats-number').text
+        )
 
     @classmethod
     def get_transfers(
-            cls, session: UserPortalSession, year: int, month: int
-    ) -> Union[List[Transfer], None]:
+            cls, session: UserPortalSession,
+            transfers_summary: TransfersSummary
+    ) -> list[Transfer] | None:
         """
         Obtiene las transferencias del usuario en un mes y año dado
 
@@ -585,19 +751,49 @@ class UserPortal:
         :type month: int
         :return: Una lista de objetos de transferencia.
         """
-        trs = cls.__get_action(session, year, month, Action.GET_TRANSFERS)
-        if trs:
-            return [
-                Transfer(date=tr.find_all("td")[0].text,
-                         import_=tr.find_all("td")[1].text,
-                         destiny_account=tr.find_all("td")[2].text)
-                for tr in trs
-            ]
+
+        rows = cls.__parse_action_rows(
+            session,
+            Action.GET_TRANSFERS,
+            transfers_summary.year_month_selected,
+            transfers_summary.count
+        )
+
+        if rows:
+            transfers_list = []
+            for row in rows:
+                date, import_, destiny_account = row
+
+                transfers_list.append(
+                    Transfer(
+                        date=date.text,
+                        import_=import_.text,
+                        destiny_account=destiny_account.text
+                    )
+                )
+            return transfers_list
+
+    @classmethod
+    def get_quotes_fund_summary(
+        cls, session: UserPortalSession,
+        year: int, month: int
+    ) -> QuotesFundSummary:
+        quotes_fund, total_import = cls.__get_action(
+            session, year, month, Action.GET_QUOTES_FUND
+        )
+        return QuotesFundSummary(
+            count=quotes_fund.select_one('input[name=count]').attrs['value'],
+            year_month_selected=quotes_fund.select_one(
+                'input[name=year_month_selected]'
+            ).attrs['value'],
+            total_import=total_import.select_one('.card-stats-number').text
+        )
 
     @classmethod
     def get_quotes_fund(
-            cls, session: UserPortalSession, year: int, month: int
-    ) -> Union[List[QuotePaid], None]:
+            cls, session: UserPortalSession,
+            quotes_fund_summary: QuotesFundSummary
+    ) -> list[QuoteFund] | None:
         """
         Esta función devuelve una lista de objetos QuotePaid, que son las
         cotizaciones pagadas por el usuario en el mes y año dados
@@ -616,39 +812,81 @@ class UserPortal:
                 "Esta cuenta no esta asociada al servicio Nauta Hogar."
             )
 
-        trs = cls.__get_action(session, year, month, Action.GET_QUOTES_FUND)
-        if trs:
-            return [
-                QuotePaid(date=tr.find_all("td")[0].text,
-                          import_=tr.find_all("td")[1].text,
-                          channel=tr.find_all("td")[2].text,
-                          office=tr.find_all("td")[3].text,
-                          type_=tr.find_all("td")[4].text) for tr in trs
-            ]
+        rows = cls.__parse_action_rows(
+            session,
+            Action.GET_QUOTES_FUND,
+            quotes_fund_summary.year_month_selected,
+            quotes_fund_summary.count
+        )
+
+        if rows:
+            quotes_fund_list = []
+            for row in rows:
+                date, import_, channel, type_, office = row
+
+                quotes_fund_list.append(
+                    QuoteFund(
+                        date=date.text,
+                        import_=import_.text,
+                        channel=channel.text,
+                        type_=type_.text,
+                        office=office.text
+                    )
+                )
+            return quotes_fund_list
 
     @classmethod
-    def __get_attr__(cls, attr: str, soup: bs4.BeautifulSoup) -> str:
-        """
-        Extrae el atributo pedido del html proporcionado
+    def __parse_action_rows(
+        cls,
+        session: UserPortalSession,
+        action: str,
+        year_month_selected: str,
+        count: int,
+    ) -> (list[bs4.Tag] | None):
+        rows_list = []
 
-        :param cls: La clase desde la que se llama al método
-        :param attr: El atributo que queremos obtener de la página
-        :type attr: str
-        :param soup: el objeto BeautifulSoup
-        :type soup: bs4.BeautifulSoup
-        :return: El valor del atributo.
-        """
-        if attr == "blocking_date_home" or attr == "date_of_elimination_home":
-            index = 1
-        else:
-            index = 0
-        count = 0
-        for div in soup.find_all("div", {"class": "col s12 m6"}):
-            if div.find("h5").text.strip().lower() == cls.__attrs[attr]:
-                if index == 1 and count == 0:
-                    count = 1
-                    continue
-                return div.find("p").text
+        pages = (
+            count // 14 + 1
+            if count / 14 > count // 14
+            else count // 14
+        ) if count > 14 else 1
+
+        for page in range(1, pages + 1):
+            suffix = page if page != 1 else count
+            url = cls.__build_url(
+                action,
+                True,
+                'list',
+                year_month_selected,
+                suffix
+            )
+            tbody = cls.__get_tbody(
+                session,
+                url
+            )
+            if tbody:
+                rows_list.extend(
+                    tbody.select("tr")
+                )
+        return rows_list
+
+    @classmethod
+    def __get_tbody(
+        cls,
+        session: UserPortalSession,
+        url: str
+    ) -> (bs4.Tag | None):
+        r = session.requests_session.get(
+            url
+        )
+        soup = cls.__raise_if_error(
+            r,
+            GetInfoException,
+            "Error al obtener la información."
+        )
+        return soup.select_one(
+            '.responsive-table > tbody'
+        )
 
 
 class Nauta:
@@ -719,7 +957,7 @@ class Nauta:
 
         if "online.do" not in r.url:
             soup = bs4.BeautifulSoup(r.text, "html.parser")
-            error = find_errors(soup, Portal.NAUTA)
+            error = parse_errors(soup, Portal.NAUTA)
             if error:
                 raise LoginException(error)
 
