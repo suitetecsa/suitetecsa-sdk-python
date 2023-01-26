@@ -228,7 +228,7 @@ def test_transfer_action_successful(patcher, user_portal_cli):
     mock_request.Session().get = MagicMock(return_value=mock_response_get)
 
     user_portal_cli.session = UserPortalSession()
-    is_confirmed = user_portal_cli.transfer("24", "pepita@nauta.com.cu")
+    is_confirmed = user_portal_cli.transfer(24, "pepita@nauta.com.cu")
     assert is_confirmed.status == 'success'
 
 
@@ -241,7 +241,7 @@ def test_transfer_action_fail(patcher, user_portal_cli):
 
     user_portal_cli.session = UserPortalSession()
     with pytest.raises(TransferException) as e:
-        user_portal_cli.transfer("24", "pepita@nauta.com.cu")
+        user_portal_cli.transfer(24, "pepita@nauta.com.cu")
 
     patcher.stop()
 
