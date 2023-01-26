@@ -1,4 +1,5 @@
-requests~=2.27.1
-beautifulsoup4~=4.10.0
-pytest~=7.1.2
-setuptools~=60.2.0
+requests
+beautifulsoup4
+pytest
+setuptools
+html5lib

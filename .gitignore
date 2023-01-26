@@ -2045,3 +2045,15 @@ venv/lib/python3.11/site-packages/webencodings-0.5.1.dist-info/RECORD
 venv/lib/python3.11/site-packages/webencodings-0.5.1.dist-info/top_level.txt
 venv/lib/python3.11/site-packages/webencodings-0.5.1.dist-info/WHEEL
 .vscode/settings.json
+test/__pycache__/test_nauta.cpython-311-pytest-7.2.1.pyc
+test/__pycache__/test_user_portal.cpython-311-pytest-7.2.1.pyc
+PyLibSuitETECSA/utils/__pycache__/__init__.cpython-311.pyc
+PyLibSuitETECSA/utils/__pycache__/from_str.cpython-311.pyc
+PyLibSuitETECSA/utils/__pycache__/parser.cpython-311.pyc
+PyLibSuitETECSA/core/__pycache__/__init__.cpython-311.pyc
+PyLibSuitETECSA/core/__pycache__/exception.cpython-311.pyc
+PyLibSuitETECSA/core/__pycache__/models.cpython-311.pyc
+PyLibSuitETECSA/core/__pycache__/protocol.cpython-311.pyc
+PyLibSuitETECSA/core/__pycache__/session.cpython-311.pyc
+PyLibSuitETECSA/__pycache__/__init__.cpython-311.pyc
+PyLibSuitETECSA/__pycache__/api.cpython-311.pyc
