@@ -347,7 +347,7 @@ class UserPortalClient:
         return self.session.activation_date if self.session else None
 
     @property
-    def blocking_date_home(self) -> str | None:
+    def blocking_date_home(self) -> datetime.datetime | None:
         """
         :return: valor fecha de bloqueo (`nauta hogar`).
         """
