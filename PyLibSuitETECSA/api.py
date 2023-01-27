@@ -340,7 +340,7 @@ class UserPortalClient:
         return self.session.link_status if self.session else None
 
     @property
-    def activation_date(self) -> str | None:
+    def activation_date(self) -> datetime.datetime| None:
         """
         :return: valor fecha de activacion.
         """
