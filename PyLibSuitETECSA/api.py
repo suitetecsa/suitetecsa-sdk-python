@@ -368,7 +368,7 @@ class UserPortalClient:
         return self.session.quota_fund if self.session else None
 
     @property
-    def voucher(self) -> str | None:
+    def voucher(self) -> float | None:
         """
         :return: valor bono.
         """
