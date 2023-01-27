@@ -319,7 +319,7 @@ class UserPortalClient:
         return self.session.upload_speeds if self.session else None
 
     @property
-    def phone(self) -> str | None:
+    def phone(self) -> int | None:
         """
         :return: valor teléfono.
         """
