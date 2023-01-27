@@ -270,7 +270,7 @@ class UserPortalClient:
         return self.session.service_type if self.session else None
 
     @property
-    def credit(self) -> str | None:
+    def credit(self) -> float | None:
         """
         :return: Saldo disponible de la cuenta registrada.
         """
