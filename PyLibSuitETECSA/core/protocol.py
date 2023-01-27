@@ -490,6 +490,12 @@ class UserPortal:
             Action.GET_TRANSFERS: cls.get_transfers,
             Action.GET_QUOTES_FUND: cls.get_quotes_fund
         }
+        actions_summary = {
+            Action.GET_CONNECTIONS: cls.get_connections_summary,
+            Action.GET_RECHARGES: cls.get_recharges_summary,
+            Action.GET_TRANSFERS: cls.get_transfers_summary,
+            Action.GET_QUOTES_FUND: cls.get_quotes_fund_summary
+        }
 
         year = date.today().year
         month = date.today().month
