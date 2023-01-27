@@ -277,7 +277,7 @@ class UserPortalClient:
         return self.session.credit if self.session else None
 
     @property
-    def time(self) -> str | None:
+    def time(self) -> int | None:
         """
         :return: Tiempo disponible de la cuenta registrada.
         """
