@@ -1,18 +1,32 @@
-#  Copyright (c) 2022. MarilaSoft.
-#  #
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#  #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  #
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-import os
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2023 Lesly Cintra Laza <a.k.a. lesclaz>
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import os, sys
+
+myPath = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, myPath + '/../')
+
+import datetime
 from unittest.mock import patch, MagicMock
 
 import pytest
@@ -51,7 +65,11 @@ LOGIN_ACTION_FAIL_BAD_ACCOUNT_HTML = read_asset(
     "login_action_fail_bad_account.html"
 )
 SERVICE_DETAIL_HTML = read_asset("service_detail.html")
-SERVICE_DETAIL_LIST_HTML = read_asset("service_detail_list.html")
+CONNECTONS_SUMMARY_HTML = read_asset("connections_summary.html")
+CONNECTONS_LIST_PAGE1_HTML = read_asset("connection_list_page1.html")
+CONNECTONS_LIST_PAGE2_HTML = read_asset("connection_list_page2.html")
+CONNECTONS_LIST_PAGE3_HTML = read_asset("connection_list_page3.html")
+CONNECTONS_LIST_PAGE4_HTML = read_asset("connection_list_page4.html")
 USER_INFO_HTML = read_asset("user_info.html")
 RECHARGE_HTML = read_asset("recharge_action.html")
 RECHARGE_SUCCESS_HTML = read_asset("recharge_action_successful.html")
@@ -72,23 +90,12 @@ def test_create_valid_session(patcher, user_portal_cli):
     mock_request.Session().get = MagicMock(return_value=mock_response)
 
     user_portal_cli.init_session()
-    session = user_portal_cli.session.__dict__
-    session.pop("requests_session")
+    session = user_portal_cli.session
 
-    session_expected = {
-        'csrf': 'security628645155dcb3', 'blocking_date': None,
-        'date_of_elimination': None, 'account_type': None,
-        'service_type': None, 'credit': None, 'time': None,
-        'mail_account': None, 'offer': None, 'monthly_fee': None,
-        'download_speeds': None, 'upload_speeds': None, 'phone': None,
-        'link_identifiers': None, 'link_status': None,
-        'activation_date': None, 'blocking_date_home': None,
-        'date_of_elimination_home': None, 'quota_fund': None, 'voucher': None,
-        'debt': None
-    }
+    csrf_token = 'security628645155dcb3'
 
     patcher.stop()
-    assert session == session_expected
+    assert session.csrf == csrf_token
 
 
 def test_login_successful(patcher, user_portal_cli):
@@ -102,28 +109,23 @@ def test_login_successful(patcher, user_portal_cli):
     user_portal_cli.password = "SomePassword"
 
     user_portal_cli.login("captcha")
-    user_info = user_portal_cli.session.__dict__
-    user_info.pop("requests_session")
-
-    user_info_expected = {
-        'csrf': None, 'blocking_date': '30/11/2037',
-        'date_of_elimination': '31/12/2037',
-        'account_type': 'Prepago recargable',
-        'service_type': 'Navegación Internacional con Correo Internacional',
-        'credit': '$0,00 CUP', 'time': '00:00:00',
-        'mail_account': 'pepito@nauta.cu', 'offer': None,
-        'monthly_fee': None, 'download_speeds': None,
-        'upload_speeds': None, 'phone': None,
-        'link_identifiers': None, 'link_status': None,
-        'activation_date': None, 'blocking_date_home': None,
-        'date_of_elimination_home': None, 'quota_fund': None,
-        'voucher': None, 'debt': None,
-        'username': 'pepito.perez@nauta.com.cu'
-    }
+    user_info = user_portal_cli.session
 
     patcher.stop()
 
-    assert user_info == user_info_expected
+    assert user_info.account_type == 'Prepago recargable'
+    assert user_info.date_of_elimination == datetime\
+        .datetime.strptime('31/12/2037', '%d/%m/%Y')
+    assert user_info.credit == 147.61
+    assert user_info.time == 42511
+    assert user_info.offer == 'NH RESIDENCIAL 1024/512 (40h) - RP'
+    assert user_info.upload_speeds == 524288
+    assert user_info.link_identifiers == 'H ED######'
+    assert user_info.activation_date == datetime\
+        .datetime.strptime('25/02/2021', '%d/%m/%Y')
+    assert user_info.date_of_elimination_home == datetime\
+        .datetime.strptime('07/03/2023', '%d/%m/%Y')
+    assert user_info.monthly_fee == 300.00
 
 
 def test_login_action_fail(patcher, user_portal_cli):
@@ -178,28 +180,23 @@ def test_get_valid_user_info(patcher):
 
     session = UserPortalSession()
     UserPortal.load_user_info(session)
-    user_info = session.__dict__
-    user_info.pop("requests_session")
-
-    user_info_expected = {
-        'csrf': None, 'blocking_date': '30/11/2037',
-        'date_of_elimination': '31/12/2037',
-        'account_type': 'Prepago recargable',
-        'service_type': 'Navegación Internacional con Correo Internacional',
-        'credit': '$0,00 CUP', 'time': '00:00:00',
-        'mail_account': 'pepito@nauta.cu', 'offer': None,
-        'monthly_fee': None, 'download_speeds': None,
-        'upload_speeds': None, 'phone': None,
-        'link_identifiers': None, 'link_status': None,
-        'activation_date': None, 'blocking_date_home': None,
-        'date_of_elimination_home': None, 'quota_fund': None,
-        'voucher': None, 'debt': None,
-        'username': 'pepito.perez@nauta.com.cu'
-    }
+    user_info = session
 
     patcher.stop()
 
-    assert user_info == user_info_expected
+    assert user_info.account_type == 'Prepago recargable'
+    assert user_info.date_of_elimination == datetime\
+        .datetime.strptime('31/12/2037', '%d/%m/%Y')
+    assert user_info.credit == 147.61
+    assert user_info.time == 42511
+    assert user_info.offer == 'NH RESIDENCIAL 1024/512 (40h) - RP'
+    assert user_info.upload_speeds == 524288
+    assert user_info.link_identifiers == 'H ED######'
+    assert user_info.activation_date == datetime\
+        .datetime.strptime('25/02/2021', '%d/%m/%Y')
+    assert user_info.date_of_elimination_home == datetime\
+        .datetime.strptime('07/03/2023', '%d/%m/%Y')
+    assert user_info.monthly_fee == 300.00
 
 
 def test_recharge_action_successful(patcher, user_portal_cli):
@@ -211,7 +208,7 @@ def test_recharge_action_successful(patcher, user_portal_cli):
 
     user_portal_cli.session = UserPortalSession()
     is_confirmed = user_portal_cli.recharge("01234567890123456")
-    assert is_confirmed
+    assert is_confirmed.status == 'success'
 
 
 def test_recharge_action_fail(patcher, user_portal_cli):
@@ -238,8 +235,8 @@ def test_transfer_action_successful(patcher, user_portal_cli):
     mock_request.Session().get = MagicMock(return_value=mock_response_get)
 
     user_portal_cli.session = UserPortalSession()
-    is_confirmed = user_portal_cli.transfer("24", "pepita@nauta.com.cu")
-    assert is_confirmed
+    is_confirmed = user_portal_cli.transfer(24, "pepita@nauta.com.cu")
+    assert is_confirmed.status == 'success'
 
 
 def test_transfer_action_fail(patcher, user_portal_cli):
@@ -251,7 +248,7 @@ def test_transfer_action_fail(patcher, user_portal_cli):
 
     user_portal_cli.session = UserPortalSession()
     with pytest.raises(TransferException) as e:
-        user_portal_cli.transfer("24", "pepita@nauta.com.cu")
+        user_portal_cli.transfer(24, "pepita@nauta.com.cu")
 
     patcher.stop()
 
@@ -271,7 +268,7 @@ def test_change_password_action_successful(patcher, user_portal_cli):
 
     user_portal_cli.session = UserPortalSession()
     is_confirmed = user_portal_cli.change_password("some_password")
-    assert is_confirmed
+    assert is_confirmed.status == 'success'
 
 
 def test_change_password_action_fail(patcher, user_portal_cli):
@@ -306,7 +303,7 @@ def test_change_email_password_action_successful(patcher, user_portal_cli):
 
     user_portal_cli.session = UserPortalSession()
     is_confirmed = user_portal_cli.change_email_password("some_password")
-    assert is_confirmed
+    assert is_confirmed.status == 'success'
 
 
 def test_change_email_password_action_fail(patcher, user_portal_cli):
@@ -330,29 +327,42 @@ def test_change_email_password_action_fail(patcher, user_portal_cli):
 
 
 def test_get_valid_connections(patcher, user_portal_cli):
+
+    texts = {
+        "https://www.portal.nauta.cu/useraaa/service_detail/":
+        SERVICE_DETAIL_HTML,
+        "https://www.portal.nauta.cu/useraaa/service_detail_list/2022-12/47":
+        CONNECTONS_LIST_PAGE1_HTML,
+        "https://www.portal.nauta.cu/useraaa/service_detail_list/2022-12/2":
+        CONNECTONS_LIST_PAGE2_HTML,
+        "https://www.portal.nauta.cu/useraaa/service_detail_list/2022-12/3":
+        CONNECTONS_LIST_PAGE3_HTML,
+        "https://www.portal.nauta.cu/useraaa/service_detail_list/2022-12/4":
+        CONNECTONS_LIST_PAGE4_HTML,
+    }
+
     mock_request = patcher.start()
     mock_response_get = MagicMock(
         status_code=200,
-        text=SERVICE_DETAIL_HTML,
-        url="https://www.portal.nauta.cu/useraaa/service_detail/"
+        text=""
     )
+
+    def side_effect(value: str):
+        mock_response_get.text = texts[value]
+        return mock_response_get
+
     mock_response_post = MagicMock(
         status_code=200,
-        text=SERVICE_DETAIL_LIST_HTML,
-        url="https://www.portal.nauta.cu/useraaa/service_detail_list/"
+        text=CONNECTONS_SUMMARY_HTML
     )
-    mock_request.Session().get = MagicMock(return_value=mock_response_get)
+    mock_request.Session().get = MagicMock(side_effect=side_effect)
     mock_request.Session().post = MagicMock(return_value=mock_response_post)
 
     user_portal_cli.session = UserPortalSession()
-    connection = user_portal_cli.get_connections(2022, 5)[0].__dict__
+    connection = user_portal_cli.get_connections(2022, 12)[-1]
 
-    connection_expected = {
-        'start_session': '30/04/2022 22:06:07',
-        'end_session': '01/05/2022 02:16:05', 'duration': '04:09:58',
-        'upload': '116,35 MB', 'download': '1,28 GB', 'import_': '$50,00'
-    }
+    print(connection.start_session)
 
     patcher.stop()
 
-    assert connection == connection_expected
+    assert type(connection.start_session) == datetime.datetime

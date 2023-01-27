@@ -1,28 +1,37 @@
-#  Copyright (c) 2022. MarilaSoft.
-#  #
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#  #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  #
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-from typing import List, Any, Union
+# Copyright (c) 2023 Lesly Cintra Laza <a.k.a. lesclaz>
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+import datetime
+from typing import Any
 
 from requests import RequestException
 
 from PyLibSuitETECSA.core.exception import LogoutException
-from PyLibSuitETECSA.core.models import Connection, Recharge, Transfer, \
-    QuotePaid
+from PyLibSuitETECSA.core.models import ActionResponse, Connection, Recharge, \
+    Transfer, QuoteFund
 from PyLibSuitETECSA.core.protocol import UserPortal, Nauta
 from PyLibSuitETECSA.core.session import NautaSession
-from PyLibSuitETECSA.core.utils import Action
+from PyLibSuitETECSA.utils import Action
 
 
 class UserPortalClient:
@@ -56,7 +65,9 @@ class UserPortalClient:
         :return: instancia de esta clase.
         """
         if not self.session:
-            self.init_session()
+            raise LogoutException(
+                'Debe crear una sesión antes de loguearte.'
+            )
 
         UserPortal.login(
             self.session,
@@ -67,7 +78,7 @@ class UserPortalClient:
 
         return self
 
-    def recharge(self, recharge_code: str) -> bool:
+    def recharge(self, recharge_code: str) -> ActionResponse:
         """
         Recarga el saldo de la cuenta registrada.
         :param recharge_code: Código de recarga.
@@ -77,35 +88,36 @@ class UserPortalClient:
             self.session,
             recharge_code
         )
-
-        UserPortal.load_user_info(
-            self.session
-        )
         return is_confirmed
 
     def transfer(
-            self, mount_to_transfer: str,
+            self, mount_to_transfer: float | int | str,
             account_to_transfer: str
-    ) -> bool:
+    ) -> ActionResponse:
         """
         Transfiere saldo a otra cuenta nauta.
         :param mount_to_transfer: Monto a transferir.
         :param account_to_transfer: Cuenta de destino.
         :return:
         """
-        is_confirmed = UserPortal.transfer(
+        return UserPortal.transfer(
             self.session,
             mount_to_transfer,
             account_to_transfer,
             self.password
         )
 
-        UserPortal.load_user_info(
-            self.session
+    def pay_nauta_home(
+        self, mount_to_transfer: float | int | str
+    ) -> ActionResponse:
+        return UserPortal.transfer(
+            session=self.session,
+            mount_to_transfer=mount_to_transfer,
+            password=self.password,
+            nauta_hogar_paid=True
         )
-        return is_confirmed
 
-    def change_password(self, new_passwrd: str) -> bool:
+    def change_password(self, new_passwrd: str) -> ActionResponse:
         """
         Cambia la contraseña de acceso a internet de la cuenta registrada.
         :param new_passwrd: Nueva contraseña.
@@ -117,7 +129,7 @@ class UserPortalClient:
             new_passwrd
         )
 
-    def change_email_password(self, new_passwrd: str) -> bool:
+    def change_email_password(self, new_passwrd: str) -> ActionResponse:
         """
         Cambia la contraseña de la cuenta de correo asociada.
         :param new_passwrd: Nueva contraseña.
@@ -132,7 +144,7 @@ class UserPortalClient:
     def get_lasts(
             self, action: str = Action.GET_CONNECTIONS,
             large: int = 5
-    ) -> List[Any]:
+    ) -> list[Connection | Recharge | Transfer | QuoteFund] | None:
         """
         Devuelve las últimas `large` `action` realizadas por la cuenta.
         :param action: Acciones u operaciones que se requieren.
@@ -149,39 +161,43 @@ class UserPortalClient:
     def get_connections(
             self, year: int,
             month: int
-    ) -> Union[List[Connection], None]:
+    ) -> list[Connection] | None:
         """
         Devuelve las conexiones realizadas en el periodo mes-año especificado.
         :param year: Año en el que buscar.
         :param month: Mes en el que buscar.
         :return: Lista de Connection en el periodo solicitado.
         """
+        connections_summary = UserPortal.get_connections_summary(
+            self.session, year, month
+        )
         return UserPortal.get_connections(
-            self.session,
-            year,
-            month
+            self.session, connections_summary
         )
 
     def get_recharges(
             self, year: int,
             month: int
-    ) -> Union[List[Recharge], None]:
+    ) -> list[Recharge] | None:
         """
         Devuelve las recargas realizadas en el periodo mes-año especificado.
         :param year: Año en el que buscar.
         :param month: Mes en el que buscar.
         :return: Lista de Recharge en el periodo solicitado.
         """
+
+        recharges_summary = UserPortal.get_recharges_summary(
+            self.session, year, month
+        )
         return UserPortal.get_recharges(
             self.session,
-            year,
-            month
+            recharges_summary
         )
 
     def get_transfers(
             self, year: int,
             month: int
-    ) -> Union[List[Transfer], None]:
+    ) -> list[Transfer] | None:
         """
         Devuelve las transferencias realizadas en el periodo mes-año
         especificado.
@@ -189,16 +205,19 @@ class UserPortalClient:
         :param month: Mes en el que buscar.
         :return: Lista de Transfer en el periodo solicitado.
         """
+
+        transfers_summary = UserPortal.get_transfers_summary(
+            self.session, year, month
+        )
         return UserPortal.get_transfers(
             self.session,
-            year,
-            month
+            transfers_summary
         )
 
     def get_quotes_fund(
             self, year: int,
             month: int
-    ) -> Union[List[QuotePaid], None]:
+    ) -> list[QuoteFund] | None:
         """
         Devuelve las recargas hechas al servicio nauta Hogar en el periodo
         mes-año especificado.
@@ -206,10 +225,13 @@ class UserPortalClient:
         :param month: Mes en el que buscar.
         :return: Lista de NautaHomePaid en el periodo solicitado.
         """
+
+        quotes_fund_summary = UserPortal.get_quotes_fund_summary(
+            self.session, year, month
+        )
         return UserPortal.get_quotes_fund(
             self.session,
-            year,
-            month
+            quotes_fund_summary
         )
 
     @property
@@ -221,140 +243,140 @@ class UserPortalClient:
         return self.session.is_nauta_home
 
     @property
-    def blocking_date(self) -> Union[str, None]:
+    def blocking_date(self) -> datetime.datetime | None:
         """
         :return: Fecha de bloqueo de la cuenta registrada.
         """
         return self.session.blocking_date if self.session else None
 
     @property
-    def date_of_elimination(self) -> Union[str, None]:
+    def date_of_elimination(self) -> datetime.datetime | None:
         """
         :return: Fecha de eliminación de la cuenta registrada.
         """
         return self.session.date_of_elimination if self.session else None
 
     @property
-    def account_type(self) -> Union[str, None]:
+    def account_type(self) -> str | None:
         """
         :return: Tipo de cuenta de la cuenta registrada.
         """
         return self.session.account_type if self.session else None
 
     @property
-    def service_type(self) -> Union[str, None]:
+    def service_type(self) -> str | None:
         """
         :return: Tipo de servicio de la cuenta registrada.
         """
         return self.session.service_type if self.session else None
 
     @property
-    def credit(self) -> Union[str, None]:
+    def credit(self) -> float | None:
         """
         :return: Saldo disponible de la cuenta registrada.
         """
         return self.session.credit if self.session else None
 
     @property
-    def time(self) -> Union[str, None]:
+    def time(self) -> int | None:
         """
         :return: Tiempo disponible de la cuenta registrada.
         """
         return self.session.time if self.session else None
 
     @property
-    def mail_account(self) -> Union[str, None]:
+    def mail_account(self) -> str | None:
         """
         :return: Cuenta de correo asociada a la cuenta registrada.
         """
         return self.session.mail_account if self.session else None
 
     @property
-    def offer(self) -> Union[str, None]:
+    def offer(self) -> str | None:
         """
         :return: valor de oferta.
         """
         return self.session.offer if self.session else None
 
     @property
-    def monthly_fee(self) -> Union[str, None]:
+    def monthly_fee(self) -> float | None:
         """
         :return: valor cuota mensual.
         """
         return self.session.monthly_fee if self.session else None
 
     @property
-    def download_speeds(self) -> Union[str, None]:
+    def download_speeds(self) -> int | None:
         """
         :return: valor velocidad de bajada.
         """
         return self.session.download_speeds if self.session else None
 
     @property
-    def upload_speeds(self) -> Union[str, None]:
+    def upload_speeds(self) -> int | None:
         """
         :return: valor velocidad de subida.
         """
         return self.session.upload_speeds if self.session else None
 
     @property
-    def phone(self) -> Union[str, None]:
+    def phone(self) -> int | None:
         """
         :return: valor teléfono.
         """
         return self.session.phone if self.session else None
 
     @property
-    def link_identifiers(self) -> Union[str, None]:
+    def link_identifiers(self) -> str | None:
         """
         :return: valor identificador del enlace.
         """
         return self.session.link_identifiers if self.session else None
 
     @property
-    def link_status(self) -> Union[str, None]:
+    def link_status(self) -> str | None:
         """
         :return: valor estado del enlace.
         """
         return self.session.link_status if self.session else None
 
     @property
-    def activation_date(self) -> Union[str, None]:
+    def activation_date(self) -> datetime.datetime| None:
         """
         :return: valor fecha de activacion.
         """
         return self.session.activation_date if self.session else None
 
     @property
-    def blocking_date_home(self) -> Union[str, None]:
+    def blocking_date_home(self) -> datetime.datetime | None:
         """
         :return: valor fecha de bloqueo (`nauta hogar`).
         """
         return self.session.blocking_date_home if self.session else None
 
     @property
-    def date_of_elimination_home(self) -> Union[str, None]:
+    def date_of_elimination_home(self) -> datetime.datetime | None:
         """
         :return: valor fecha de eliminacion (`nauta hogar`).
         """
         return self.session.date_of_elimination_home if self.session else None
 
     @property
-    def quota_fund(self) -> Union[str, None]:
+    def quota_fund(self) -> float | None:
         """
         :return: valor fondo de cuota.
         """
         return self.session.quota_fund if self.session else None
 
     @property
-    def voucher(self) -> Union[str, None]:
+    def voucher(self) -> float | None:
         """
         :return: valor bono.
         """
         return self.session.voucher if self.session else None
 
     @property
-    def debt(self) -> Union[str, None]:
+    def debt(self) -> float | None:
         """
         :return: valor deuda.
         """

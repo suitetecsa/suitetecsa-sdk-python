@@ -20,3 +20,44 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
+
+from datetime import datetime
+
+
+def to_seconds(string: str) -> int:
+    hours, minutes, seconds = string.split(':')
+    return int(hours) * 3600 + int(minutes) * 60 + int(seconds)
+
+
+def to_float(string: str) -> int:
+    return float(string.replace('$', '').replace(',', '.')\
+        .replace(' CUP', ''))
+
+
+def to_bytes(string: str) -> int:
+    units = {
+        "tb": 4,
+        "gb": 3,
+        "mb": 2,
+        "kb": 1
+    }
+    import_, unit = string.replace(',', '.')\
+        .replace('ps', '').lower().split(' ')
+    to_multiply = 1024 ** units[unit] if unit != "bytes" else 1
+    return int(float(import_) * to_multiply)
+
+
+def to_datetime(string: str) -> datetime:
+    _expression = "%d/%m/%Y %H:%M:%S" \
+        if len(string) == 19 else "%d/%m/%Y"
+    if string != datetime.strptime(
+        string,
+        _expression
+    ).strftime(_expression):
+        raise ValueError
+    else:
+        return datetime.strptime(
+            string,
+            _expression
+        )

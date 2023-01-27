@@ -1,99 +1,123 @@
-#  Copyright (c) 2022. MarilaSoft.
-#  #
-#  This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#  #
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-#  #
-#  You should have received a copy of the GNU General Public License
-#  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# Copyright (c) 2023 Lesly Cintra Laza <a.k.a. lesclaz>
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
 
 from datetime import datetime
 
+from dataclasses import dataclass
+from typing import Any
 
-class ActionObject:
-
-    @staticmethod
-    def __text_to_datetime(text: str) -> datetime:
-        date_, time_ = text.split(" ")
-        day, month, year = date_.split("/")
-        hours, minutes, seconds = time_.split(":")
-        return datetime(int(year), int(month), int(day),
-                        int(hours), int(minutes), int(seconds))
+from PyLibSuitETECSA.utils import ATTR_TYPE
+from PyLibSuitETECSA.utils.from_str import to_bytes, to_datetime, to_float, to_seconds
 
 
-class Connection(ActionObject):
+class DataModel:
 
-    def __init__(self, **kwargs):
-        self.start_session = None
-        self.end_session = None
-        self.duration = None
-        self.upload = None
-        self.download = None
-        self.import_ = None
-        self.__dict__.update(kwargs)
-
-    @property
-    def start_session_as_dt(self):
-        if self.start_session:
-            return self.__text_to_datetime(self.start_session)
-
-    @property
-    def end_session_as_dt(self):
-        if self.end_session:
-            return self.__text_to_datetime(self.end_session)
-
-
-class Recharge(ActionObject):
-
-    def __init__(self, **kwargs):
-        self.date = None
-        self.import_ = None
-        self.channel = None
-        self.type_ = None
-        self.__dict__.update(kwargs)
-
-    @property
-    def date_as_dt(self):
-        if self.date:
-            return self.__text_to_datetime(self.date)
+    def __setattr__(self, __name: str, __value: Any) -> None:
+        if type(__value) == str and __name in ATTR_TYPE:
+            match ATTR_TYPE[__name]:
+                case "str":
+                    self.__dict__[__name] = __value
+                case "int":
+                    self.__dict__[__name] = int(__value)
+                case "float":
+                    self.__dict__[__name] = to_float(__value)
+                case "seconds":
+                    self.__dict__[__name] = to_seconds(__value)
+                case "bytes":
+                    self.__dict__[__name] = to_bytes(__value)
+                case "datetime":
+                    self.__dict__[__name] = to_datetime(__value)
+                case _:
+                    raise AttributeError
 
 
-class QuotePaid(Recharge):
+@dataclass
+class ConnectionsSummary(DataModel):
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.office = None
-        self.__dict__.update(kwargs)
-
-
-class Transfer(ActionObject):
-
-    def __init__(self, **kwargs):
-        self.date = None
-        self.import_ = None
-        self.destiny_account = None
-
-    @property
-    def date_as_dt(self):
-        if self.date:
-            return self.__text_to_datetime(self.date)
+    count: (str | int)
+    year_month_selected: str
+    total_time: (str | int)
+    total_import: (str | float)
+    uploaded: (str | int)
+    downloaded: (str | int)
+    total_traffic: (str | int)
 
 
-class User:
+@dataclass
+class Connection(DataModel):
 
-    def __init__(self, **kwargs):
-        self.username = None
-        self.block_date = None
-        self.delete_date = None
-        self.account_type = None
-        self.service_type = None
-        self.credit = None
-        self.remaining_time = None
-        self.mail_account = None
-        self.__dict__.update(kwargs)
+    start_session: (str | datetime)
+    end_session: (str | datetime)
+    duration: (str | int)
+    uploaded: (str | int)
+    downloaded: (str | int)
+    import_: (str | float)
+
+
+@dataclass
+class RechargesSummary(DataModel):
+
+    count: (str | int)
+    year_month_selected: str
+    total_import: (str | float)
+
+
+@dataclass
+class Recharge(DataModel):
+
+    date: (str | datetime)
+    import_: (str | float)
+    channel: str
+    type_: str
+
+
+@dataclass
+class QuotesFundSummary(RechargesSummary):
+    pass
+
+
+@dataclass
+class QuoteFund(Recharge):
+
+    office: str
+
+
+@dataclass
+class TransfersSummary(RechargesSummary):
+    pass
+
+
+@dataclass
+class Transfer(DataModel):
+
+    date: (str | datetime)
+    import_: (str | float)
+    destiny_account: str
+
+
+@dataclass
+class ActionResponse:
+
+    status: str
+    message: str
