@@ -361,7 +361,7 @@ class UserPortalClient:
         return self.session.date_of_elimination_home if self.session else None
 
     @property
-    def quota_fund(self) -> str | None:
+    def quota_fund(self) -> float | None:
         """
         :return: valor fondo de cuota.
         """
