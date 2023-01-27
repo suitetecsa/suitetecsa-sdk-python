@@ -249,7 +249,7 @@ class UserPortalClient:
         return self.session.blocking_date if self.session else None
 
     @property
-    def date_of_elimination(self) -> str | None:
+    def date_of_elimination(self) -> datetime.datetime | None:
         """
         :return: Fecha de eliminación de la cuenta registrada.
         """
