@@ -298,7 +298,7 @@ class UserPortalClient:
         return self.session.offer if self.session else None
 
     @property
-    def monthly_fee(self) -> str | None:
+    def monthly_fee(self) -> float | None:
         """
         :return: valor cuota mensual.
         """
