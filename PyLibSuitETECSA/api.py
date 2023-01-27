@@ -312,7 +312,7 @@ class UserPortalClient:
         return self.session.download_speeds if self.session else None
 
     @property
-    def upload_speeds(self) -> str | None:
+    def upload_speeds(self) -> int | None:
         """
         :return: valor velocidad de subida.
         """
