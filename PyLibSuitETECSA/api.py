@@ -305,7 +305,7 @@ class UserPortalClient:
         return self.session.monthly_fee if self.session else None
 
     @property
-    def download_speeds(self) -> str | None:
+    def download_speeds(self) -> int | None:
         """
         :return: valor velocidad de bajada.
         """
