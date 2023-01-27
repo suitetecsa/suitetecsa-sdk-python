@@ -242,7 +242,7 @@ class UserPortalClient:
         return self.session.is_nauta_home
 
     @property
-    def blocking_date(self) -> str | None:
+    def blocking_date(self) -> datetime.datetime | None:
         """
         :return: Fecha de bloqueo de la cuenta registrada.
         """
