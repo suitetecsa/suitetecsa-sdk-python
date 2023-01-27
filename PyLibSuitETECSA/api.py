@@ -375,7 +375,7 @@ class UserPortalClient:
         return self.session.voucher if self.session else None
 
     @property
-    def debt(self) -> str | None:
+    def debt(self) -> float | None:
         """
         :return: valor deuda.
         """
