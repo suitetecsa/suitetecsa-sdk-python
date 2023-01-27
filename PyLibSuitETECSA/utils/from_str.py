@@ -31,29 +31,33 @@ def to_seconds(string: str) -> int:
 
 
 def to_float(string: str) -> int:
-    return float(string.replace('$', '').replace(',', '.'))
+    return float(string.replace('$', '').replace(',', '.')\
+        .replace(' CUP', ''))
 
 
 def to_bytes(string: str) -> int:
     units = {
-        "TB": 4,
-        "GB": 3,
-        "MB": 2,
-        "KB": 1
+        "tb": 4,
+        "gb": 3,
+        "mb": 2,
+        "kb": 1
     }
-    import_, unit = string.replace(',', '.').split(' ')
+    import_, unit = string.replace(',', '.')\
+        .replace('ps', '').lower().split(' ')
     to_multiply = 1024 ** units[unit] if unit != "bytes" else 1
     return int(float(import_) * to_multiply)
 
 
 def to_datetime(string: str) -> datetime:
+    _expression = "%d/%m/%Y %H:%M:%S" \
+        if len(string) == 19 else "%d/%m/%Y"
     if string != datetime.strptime(
         string,
-        "%d/%m/%Y %H:%M:%S"
-    ).strftime("%d/%m/%Y %H:%M:%S"):
+        _expression
+    ).strftime(_expression):
         raise ValueError
     else:
         return datetime.strptime(
             string,
-            "%d/%m/%Y %H:%M:%S"
+            _expression
         )

@@ -20,6 +20,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
+
 import os, sys
 
 myPath = os.path.dirname(os.path.abspath(__file__))
@@ -113,15 +114,18 @@ def test_login_successful(patcher, user_portal_cli):
     patcher.stop()
 
     assert user_info.account_type == 'Prepago recargable'
-    assert user_info.date_of_elimination == '31/12/2037'
-    assert user_info.credit == '$147,61 CUP'
-    assert user_info.time == '11:48:31'
+    assert user_info.date_of_elimination == datetime\
+        .datetime.strptime('31/12/2037', '%d/%m/%Y')
+    assert user_info.credit == 147.61
+    assert user_info.time == 42511
     assert user_info.offer == 'NH RESIDENCIAL 1024/512 (40h) - RP'
-    assert user_info.upload_speeds == '512 kbps'
+    assert user_info.upload_speeds == 524288
     assert user_info.link_identifiers == 'H ED######'
-    assert user_info.activation_date == '25/02/2021'
-    assert user_info.date_of_elimination_home == '07/03/2023'
-    assert user_info.monthly_fee == '$300,00 CUP'
+    assert user_info.activation_date == datetime\
+        .datetime.strptime('25/02/2021', '%d/%m/%Y')
+    assert user_info.date_of_elimination_home == datetime\
+        .datetime.strptime('07/03/2023', '%d/%m/%Y')
+    assert user_info.monthly_fee == 300.00
 
 
 def test_login_action_fail(patcher, user_portal_cli):
@@ -181,15 +185,18 @@ def test_get_valid_user_info(patcher):
     patcher.stop()
 
     assert user_info.account_type == 'Prepago recargable'
-    assert user_info.date_of_elimination == '31/12/2037'
-    assert user_info.credit == '$147,61 CUP'
-    assert user_info.time == '11:48:31'
+    assert user_info.date_of_elimination == datetime\
+        .datetime.strptime('31/12/2037', '%d/%m/%Y')
+    assert user_info.credit == 147.61
+    assert user_info.time == 42511
     assert user_info.offer == 'NH RESIDENCIAL 1024/512 (40h) - RP'
-    assert user_info.upload_speeds == '512 kbps'
+    assert user_info.upload_speeds == 524288
     assert user_info.link_identifiers == 'H ED######'
-    assert user_info.activation_date == '25/02/2021'
-    assert user_info.date_of_elimination_home == '07/03/2023'
-    assert user_info.monthly_fee == '$300,00 CUP'
+    assert user_info.activation_date == datetime\
+        .datetime.strptime('25/02/2021', '%d/%m/%Y')
+    assert user_info.date_of_elimination_home == datetime\
+        .datetime.strptime('07/03/2023', '%d/%m/%Y')
+    assert user_info.monthly_fee == 300.00
 
 
 def test_recharge_action_successful(patcher, user_portal_cli):

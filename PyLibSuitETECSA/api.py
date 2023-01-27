@@ -26,8 +26,8 @@ from typing import Any
 from requests import RequestException
 
 from PyLibSuitETECSA.core.exception import LogoutException
-from PyLibSuitETECSA.core.models import ActionResponse, Connection, Recharge, Transfer, \
-    QuoteFund
+from PyLibSuitETECSA.core.models import ActionResponse, Connection, Recharge, \
+    Transfer, QuoteFund
 from PyLibSuitETECSA.core.protocol import UserPortal, Nauta
 from PyLibSuitETECSA.core.session import NautaSession
 from PyLibSuitETECSA.utils import Action
@@ -143,7 +143,7 @@ class UserPortalClient:
     def get_lasts(
             self, action: str = Action.GET_CONNECTIONS,
             large: int = 5
-    ) -> list[Any] | None:
+    ) -> list[Connection | Recharge | Transfer | QuoteFund] | None:
         """
         Devuelve las últimas `large` `action` realizadas por la cuenta.
         :param action: Acciones u operaciones que se requieren.

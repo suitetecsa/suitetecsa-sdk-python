@@ -129,7 +129,7 @@ class UserPortal:
         """
         if session:
             if not url:
-                url = cls.__url[action]
+                url = cls.__build_url(action)
             r = session.requests_session.get(url)
             soup = cls.__raise_if_error(
                 r,
@@ -176,15 +176,11 @@ class UserPortal:
 
         parameters = soup.select_one('.z-depth-1').select('.m6')
 
-        session.__dict__.update(
-            **{
-                USER_PORTAL_ATTRS[_]: parameter.select_one(
-                    'p'
-                ).text.strip() for _, parameter in enumerate(
-                    parameters
-                )
-            }
-        )
+        for _, parameter in enumerate(parameters):
+            session.__setattr__(
+                USER_PORTAL_ATTRS[_],
+                parameter.select_one('p').text
+            )
 
     @staticmethod
     def get_captcha(session: UserPortalSession) -> bytes:
@@ -501,7 +497,10 @@ class UserPortal:
         month = date.today().month
 
         lasts = []
-        _actions = actions[action](session, year, month)
+        _action_summary = actions_summary[action](
+            session, year, month
+        )
+        _actions = actions[action](session, _action_summary)
         if _actions:
             lasts.extend(_actions)
 
