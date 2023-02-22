@@ -22,24 +22,27 @@
 # SOFTWARE.
 
 import re
+import enum
 
 
-class Action:
-    LOGIN = "login_action"
-    LOGOUT = "logout_action"
-    LOAD_USER_INFO = "load_user_info_action"
-    RECHARGE = "recharge_action"
-    TRANSFER = "transfer_action"
-    NAUTA_HOGAR_PAID = "nauta_hogar_paid"
-    CHANGE_PASSWORD = "change_password_action"
-    CHANGE_EMAIL_PASSWORD = "change_email_password_action"
-    GET_CONNECTIONS = "get_connections_action"
-    GET_RECHARGES = "get_recharges_action"
-    GET_TRANSFERS = "get_transfers_action"
-    GET_QUOTES_FUND = "get_quotes_fund_action"
+class Action(enum.Enum):
+
+    LOGIN = 8
+    LOGOUT = 12
+    LOAD_USER_INFO = 4
+    RECHARGE = 6
+    TRANSFER = 3
+    NAUTA_HOGAR_PAID = 5
+    CHANGE_PASSWORD = 2
+    CHANGE_EMAIL_PASSWORD = 6
+    GET_CONNECTIONS = 10
+    GET_RECHARGES = 9
+    GET_TRANSFERS = 11
+    GET_QUOTES_FUND = 7
 
 
-class Portal:
+class Portal(enum.Enum):
+
     USER_PORTAL = 0
     NAUTA = 1
 

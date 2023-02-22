@@ -28,7 +28,7 @@ from requests import RequestException
 
 from PyLibSuitETECSA.core.exception import LogoutException
 from PyLibSuitETECSA.core.models import ActionResponse, Connection, Recharge, \
-    Transfer, QuoteFund
+    Transfer, QuotePaid
 from PyLibSuitETECSA.core.protocol import UserPortal, Nauta
 from PyLibSuitETECSA.core.session import NautaSession
 from PyLibSuitETECSA.utils import Action
@@ -84,11 +84,10 @@ class UserPortalClient:
         :param recharge_code: Código de recarga.
         :return:
         """
-        is_confirmed = UserPortal.recharge(
+        return UserPortal.recharge(
             self.session,
             recharge_code
         )
-        return is_confirmed
 
     def transfer(
             self, mount_to_transfer: float | int | str,
@@ -108,11 +107,11 @@ class UserPortalClient:
         )
 
     def pay_nauta_home(
-        self, mount_to_transfer: float | int | str
+        self, mount_to_pay: float | int | str
     ) -> ActionResponse:
         return UserPortal.transfer(
             session=self.session,
-            mount_to_transfer=mount_to_transfer,
+            mount_to_transfer=mount_to_pay,
             password=self.password,
             nauta_hogar_paid=True
         )
@@ -144,7 +143,7 @@ class UserPortalClient:
     def get_lasts(
             self, action: str = Action.GET_CONNECTIONS,
             large: int = 5
-    ) -> list[Connection | Recharge | Transfer | QuoteFund] | None:
+    ) -> list[Connection | Recharge | Transfer | QuotePaid] | None:
         """
         Devuelve las últimas `large` `action` realizadas por la cuenta.
         :param action: Acciones u operaciones que se requieren.
@@ -214,10 +213,10 @@ class UserPortalClient:
             transfers_summary
         )
 
-    def get_quotes_fund(
+    def get_quotes_paid(
             self, year: int,
             month: int
-    ) -> list[QuoteFund] | None:
+    ) -> list[QuotePaid] | None:
         """
         Devuelve las recargas hechas al servicio nauta Hogar en el periodo
         mes-año especificado.
@@ -229,7 +228,7 @@ class UserPortalClient:
         quotes_fund_summary = UserPortal.get_quotes_fund_summary(
             self.session, year, month
         )
-        return UserPortal.get_quotes_fund(
+        return UserPortal.get_quotes_paid(
             self.session,
             quotes_fund_summary
         )

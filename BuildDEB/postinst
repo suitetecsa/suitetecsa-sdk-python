@@ -3,7 +3,7 @@ set -e
 
 # Automatically added by dh_python3:
 if which py3compile >/dev/null 2>&1; then
-	py3compile -p libsuitetecsa
+	py3compile -p PyLibSuitETECSA
 fi
 
 # End automatically added section
