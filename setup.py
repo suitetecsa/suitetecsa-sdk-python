@@ -39,10 +39,10 @@ def get_readme():
 
 setup(
     name='PyLibSuitETECSA',
-    version='0.1.3b3',
-    packages=['PyLibSuitETECSA', 'PyLibSuitETECSA.core'],
+    version='1.0.0b1',
+    packages=['PyLibSuitETECSA', 'PyLibSuitETECSA.core', 'PyLibSuitETECSA.utils'],
     url='https://github.com/SuitETECSA/PyLibSuitETECSA',
-    license='GNU General Public License v3',
+    license='MIT',
     author='lesclaz',
     author_email='lesclaz95@gmail.com',
     description='Una API que interactúa con los servicios web de ETECSA. ',
@@ -51,17 +51,16 @@ setup(
     platforms=["Unix"],
     classifiers=[
         "Topic :: Internet",
-        "License :: OSI Approved :: GNU General Public License v3 or later "
-        "(GPLv3+)",
+        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
         "Development Status :: 4 - Beta",
         "Operating System :: Unix"
     ],
     keywords="ETECSA nauta tools",
     install_requires=[
-        "requests~=2.27.1",
-        "beautifulsoup4~=4.10.0",
-        "pytest~=7.1.2",
-        "setuptools~=60.2.0"
+        'requests',
+        'beautifulsoup4',
+        'setuptools',
+        'html5lib'
     ],
 )

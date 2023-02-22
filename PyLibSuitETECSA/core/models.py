@@ -93,12 +93,12 @@ class Recharge(DataModel):
 
 
 @dataclass
-class QuotesFundSummary(RechargesSummary):
+class QuotesPaidSummary(RechargesSummary):
     pass
 
 
 @dataclass
-class QuoteFund(Recharge):
+class QuotePaid(Recharge):
 
     office: str
 

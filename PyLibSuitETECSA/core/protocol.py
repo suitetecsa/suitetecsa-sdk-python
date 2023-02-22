@@ -35,7 +35,7 @@ from PyLibSuitETECSA.core.exception import GetInfoException, \
     RechargeException, PreLoginException, NotNautaHomeAccount, \
     LogoutException, NautaException, ConnectionException
 from PyLibSuitETECSA.core.models import Connection, ConnectionsSummary, \
-    QuoteFund, QuotesFundSummary, Recharge, RechargesSummary, Transfer, \
+    QuotePaid, QuotesPaidSummary, Recharge, RechargesSummary, Transfer, \
     ActionResponse, TransfersSummary
 from PyLibSuitETECSA.core.session import UserPortalSession, NautaSession
 from PyLibSuitETECSA.utils import RE_SUCCESS_ACTION, Action, Portal
@@ -81,12 +81,29 @@ class UserPortal:
 
     @classmethod
     def __build_url(
-        cls, action: str,
+        cls, action: int,
         get_action: bool = False,
         sub_action: str = None,
         year_month_selected: str = None,
         count_or_page: int = None
-    ) -> (str | None):
+    ) -> str | None:
+        """
+        Construye una url en dependecia de los parametros pasados.
+
+        :param cls: la clase desde la que se llama el metodo.
+        :param action: La acción que desea realizar
+        :type action: int
+        :param get_action: confirma o no la recuperacion de una lista
+        :type get_action: bool
+        :param sub_action: paso en la recuperacion de la lista
+        :type sub_action: str
+        :param year_month_selected: mes-anno a consultar
+        :type year_month_selected: str
+        :param count_or_page: cantidad de resultados o paginas a consultar
+        :type count_or_page: int
+
+        :return: La url creada
+        """
         if not get_action:
             return f'{cls.BASE_URL}{cls.__url[action]}'
         elif get_action and sub_action:
@@ -97,11 +114,11 @@ class UserPortal:
                 case "list":
                     if not year_month_selected:
                         raise AttributeError(
-                            'Atributo year_month_selected mp definido'
+                            'Atributo year_month_selected no definido'
                         )
                     if not count_or_page:
                         raise AttributeError(
-                            'Atributo count_or_page mp definido'
+                            'Atributo count_or_page no definido'
                         )
                     else:
                         return f'{url}{year_month_selected}/{count_or_page}'
@@ -173,6 +190,15 @@ class UserPortal:
         cls, session: UserPortalSession,
         soup: bs4.BeautifulSoup
     ) -> None:
+        """
+        Actualiza la session con la informacion tomada del portal
+
+        :param cls: La clase a la que se llama el método
+        :param session: session actual
+        :type session: UserPortalSession
+        :param soup: pagina consultada
+        :type soup: bs4.BeautifulSoup
+        """
 
         parameters = soup.select_one('.z-depth-1').select('.m6')
 
@@ -270,7 +296,7 @@ class UserPortal:
     @classmethod
     def load_user_info(cls, session: UserPortalSession) -> None:
         """
-        Toma un objeto `UserPortalSession` y actualiza sus atributos con la
+        Toma el objeto `UserPortalSession` y actualiza sus atributos con la
         información del portal del usuario
 
         :param cls: la clase a la que se llama el método
@@ -295,7 +321,7 @@ class UserPortal:
         recharge_code: str
     ) -> ActionResponse:
         """
-        Recarga la cuenta
+        Recarga la cuenta asociada a la session
 
         :param cls: La clase en sí
         :param session: El objeto de sesión que creó anteriormente
@@ -468,7 +494,7 @@ class UserPortal:
     ) -> List[Any]:
         """
         Obtiene las últimas (large) acciones de un determinado tipo
-        (conexiones, recargas, transferencias, cotizaciones_fondo) del portal
+        (conexiones, recargas, transferencias, cuotas pagadas) del portal
         del usuario
 
         :param cls: la clase que está llamando al método
@@ -484,7 +510,7 @@ class UserPortal:
             Action.GET_CONNECTIONS: cls.get_connections,
             Action.GET_RECHARGES: cls.get_recharges,
             Action.GET_TRANSFERS: cls.get_transfers,
-            Action.GET_QUOTES_FUND: cls.get_quotes_fund
+            Action.GET_QUOTES_FUND: cls.get_quotes_paid
         }
         actions_summary = {
             Action.GET_CONNECTIONS: cls.get_connections_summary,
@@ -522,7 +548,7 @@ class UserPortal:
     ):
         """
         Según el valor del parámetro (action) recupera las filas de una tabla
-        html de (conexiones, recargas, transferencias, cotizaciones_fondo) y
+        html de (conexiones, recargas, transferencias, cuotas pagadas) y
         la devuelve si existe
 
         :param cls: la clase que está llamando al método
@@ -586,7 +612,17 @@ class UserPortal:
         return soup.select_one('#content').select('.card-content')
 
     @classmethod
-    def __get_response(cls, soup: bs4.BeautifulSoup):
+    def __get_response(cls, soup: bs4.BeautifulSoup) -> ActionResponse | None:
+        """
+        Busca un mensaje de accion exitosa y de existir, lo devuelve
+        junto a un estado success dentro de un objeto ActionResponse.
+
+        :param cls: la clase que está llamando al método
+        :param soup: html devuelto tras la accion realizada
+        :type soup: bs4.BeautifulSoup
+
+        :return: resultado de la accion realizada
+        """
         script_text = soup.find_all("script")[-1].contents[0].strip()
         match_ = RE_SUCCESS_ACTION.match(script_text)
         if match_:
@@ -600,6 +636,21 @@ class UserPortal:
     def get_connections_summary(
         cls, session: UserPortalSession, year: int, month: int
     ) -> ConnectionsSummary:
+        """
+        Obtiene los datos interesantes del sumario de conexiones
+
+        :param cls: la clase que está llamando al método
+        :param session: la sesion actual
+        :type session: UserPortalSession
+        :param year: anno a consultar
+        :type year: int
+        :param month: mes del anno a consultar
+        :type month: int
+
+        :return: objeto ConnectionsSummary con la informacion interesante
+        del sumario de conexiones
+        """
+
         [
             connections,
             total_time,
@@ -672,6 +723,22 @@ class UserPortal:
     def get_recharges_summary(
         cls, session: UserPortalSession, year: int, month: int
     ) -> RechargesSummary:
+
+        """
+        Obtiene los datos interesantes del sumario de recargas
+
+        :param cls: la clase que está llamando al método
+        :param session: la sesion actual
+        :type session: UserPortalSession
+        :param year: anno a consultar
+        :type year: int
+        :param month: mes del anno a consultar
+        :type month: int
+
+        :return: objeto RechargesSummary con la informacion interesante
+        del sumario de recargas
+        """
+
         recharges, total_import = cls.__get_action(
             session, year, month, Action.GET_RECHARGES
         )
@@ -728,6 +795,22 @@ class UserPortal:
     def get_transfers_summary(
         cls, session: UserPortalSession, year: int, month: int
     ) -> TransfersSummary:
+
+        """
+        Obtiene los datos interesantes del sumario de transferencias
+
+        :param cls: la clase que está llamando al método
+        :param session: la sesion actual
+        :type session: UserPortalSession
+        :param year: anno a consultar
+        :type year: int
+        :param month: mes del anno a consultar
+        :type month: int
+
+        :return: objeto TransfersSummary con la informacion interesante
+        del sumario de transferencias
+        """
+
         transfers, total_import = cls.__get_action(
             session, year, month, Action.GET_TRANSFERS
         )
@@ -782,11 +865,27 @@ class UserPortal:
     def get_quotes_fund_summary(
         cls, session: UserPortalSession,
         year: int, month: int
-    ) -> QuotesFundSummary:
+    ) -> QuotesPaidSummary:
+
+        """
+        Obtiene los datos interesantes del sumario de cuotas pagadas
+
+        :param cls: la clase que está llamando al método
+        :param session: la sesion actual
+        :type session: UserPortalSession
+        :param year: anno a consultar
+        :type year: int
+        :param month: mes del anno a consultar
+        :type month: int
+
+        :return: objeto QuotesPaidSummary con la informacion interesante
+        del sumario de cuotas pagadas
+        """
+
         quotes_fund, total_import = cls.__get_action(
             session, year, month, Action.GET_QUOTES_FUND
         )
-        return QuotesFundSummary(
+        return QuotesPaidSummary(
             count=quotes_fund.select_one('input[name=count]').attrs['value'],
             year_month_selected=quotes_fund.select_one(
                 'input[name=year_month_selected]'
@@ -795,10 +894,10 @@ class UserPortal:
         )
 
     @classmethod
-    def get_quotes_fund(
+    def get_quotes_paid(
             cls, session: UserPortalSession,
-            quotes_fund_summary: QuotesFundSummary
-    ) -> list[QuoteFund] | None:
+            quotes_fund_summary: QuotesPaidSummary
+    ) -> list[QuotePaid] | None:
         """
         Esta función devuelve una lista de objetos QuotePaid, que son las
         cotizaciones pagadas por el usuario en el mes y año dados
@@ -830,7 +929,7 @@ class UserPortal:
                 date, import_, channel, type_, office = row
 
                 quotes_fund_list.append(
-                    QuoteFund(
+                    QuotePaid(
                         date=date.text,
                         import_=import_.text,
                         channel=channel.text,
@@ -844,10 +943,28 @@ class UserPortal:
     def __parse_action_rows(
         cls,
         session: UserPortalSession,
-        action: str,
+        action: int,
         year_month_selected: str,
         count: int,
-    ) -> (list[bs4.Tag] | None):
+    ) -> list[bs4.Tag] | None:
+
+        """
+        obtiene una tabla y devuelve una lista de objetos bs4.Tag;
+        uno por cada fila de la tabla
+
+        :param cls: La clase en sí
+        :param session: Sesión de portal de usuario
+        :type session: UserPortalSession
+        :param action: acciones a consultar
+        :type action: int
+        :param year_month_selected: mes y anno seleccionados
+        :type year_month_selected: str
+        :param count: cantidad de acciones resultantes de la consulta
+        :type count: int
+
+        :return: lista de objetos bs4.Tag (filas de la tabla)
+        """
+
         rows_list = []
 
         pages = (
@@ -880,7 +997,20 @@ class UserPortal:
         cls,
         session: UserPortalSession,
         url: str
-    ) -> (bs4.Tag | None):
+    ) -> bs4.Tag | None:
+
+        """
+        obtiene y devuelve la seccion tbody de la tabla html
+
+        :param cls: La clase en sí
+        :param session: Sesión de portal de usuario
+        :type session: UserPortalSession
+        :param url: url de la consulta
+        :type url: str
+
+        :return: un objeto bs4.Tag (seccion tbody de la tabla)
+        """
+
         r = session.requests_session.get(
             url
         )
