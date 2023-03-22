@@ -27,8 +27,8 @@ import sys
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
 
-from py_suitetecsa_sdk.utils import Action, Portal
-from py_suitetecsa_sdk.core.session import NautaSession
+from suitetecsa_core.utils import Action, Portal
+from suitetecsa_core.nauta.session import NautaSession
 from unittest.mock import patch, MagicMock
 import pytest
 import json
@@ -47,7 +47,7 @@ def read_asset(asset_name):
 
 @pytest.fixture
 def patcher():
-    return patch("py_suitetecsa_sdk.core.session.Session")
+    return patch("suitetecsa_core.nauta.session.Session")
 
 
 @pytest.fixture

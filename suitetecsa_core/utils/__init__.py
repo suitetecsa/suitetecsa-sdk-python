@@ -2,7 +2,7 @@ from enum import Enum
 from requests.utils import dict_from_cookiejar
 import re
 
-from py_suitetecsa_sdk.utils.humanize import naturalize, to_bytes
+from suitetecsa_core.utils.humanize import naturalize, to_bytes
 
 
 class Portal(Enum):

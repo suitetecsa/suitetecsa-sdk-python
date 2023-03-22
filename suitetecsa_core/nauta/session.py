@@ -31,11 +31,11 @@ import logging
 from requests import Session
 from requests.utils import dict_from_cookiejar, cookiejar_from_dict
 from json import dump, load
-from py_suitetecsa_sdk.core.exceptions import ChangePasswordException, ConnectionException,\
+from suitetecsa_core.nauta.exceptions import ChangePasswordException, ConnectionException,\
     GetInfoException, LoginException, LogoutException, InvalidMethod, NotLoggedIn, PreLoginException, RechargeException, SessionLoadException, TransferException
 
-from py_suitetecsa_sdk.utils import Action, Portal, api_response, build_summary
-from py_suitetecsa_sdk.utils.parser import parse_errors
+from suitetecsa_core.utils import Action, Portal, api_response, build_summary
+from suitetecsa_core.utils.parser import parse_errors
 
 
 logging.basicConfig(

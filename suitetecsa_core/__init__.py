@@ -21,6 +21,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from py_suitetecsa_sdk.core.session import NautaSession
+from suitetecsa_core.nauta.session import NautaSession
 
 __all__ = ['NautaSession']
