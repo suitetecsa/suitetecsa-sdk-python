@@ -27,12 +27,11 @@ import sys
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + '/../')
 
-from suitetecsa_core.utils import Action, Portal
-from suitetecsa_core.nauta.session import NautaSession
+from suitetecsa_core import Action, Portal
+from suitetecsa_core.nauta import NautaSession
 from unittest.mock import patch, MagicMock
 import pytest
 import json
-
 
 _assets_dir = os.path.join(
     os.path.dirname(__file__),
@@ -47,7 +46,7 @@ def read_asset(asset_name):
 
 @pytest.fixture
 def patcher():
-    return patch("suitetecsa_core.nauta.session.Session")
+    return patch("suitetecsa_core.nauta.Session")
 
 
 @pytest.fixture
@@ -83,7 +82,6 @@ td_summary = read_asset('td_summary.html')
 
 qp_summary = read_asset('qp_summary.html')
 qpl_2023_03_1_html = read_asset('qpl_2023_03_1.html')
-
 
 get_responses = {
     'https://www.portal.nauta.cu/user/login/es-es':
@@ -176,7 +174,7 @@ def test_login_fail_for_user_or_password(patcher, user_session):
         assert user_information == json.load(file)
 
 
-def test_rechage_success(patcher, user_session):
+def test_recharge_success(patcher, user_session):
     mock_request = patcher.start()
     mock_response = MagicMock(status_code=200, text='<div id="success"></div>')
     mock_request().post = MagicMock(return_value=mock_response)
@@ -184,9 +182,11 @@ def test_rechage_success(patcher, user_session):
         status_code=200,
         text=""
     )
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
+
     mock_request().get = MagicMock(side_effect=side_effect)
 
     user_session.init()
@@ -196,7 +196,7 @@ def test_rechage_success(patcher, user_session):
         assert recharge_response == json.load(file)
 
 
-def test_rechage_fail(patcher, user_session):
+def test_recharge_fail(patcher, user_session):
     mock_request = patcher.start()
     mock_response = MagicMock(status_code=200, text=recharge_fail_html)
     mock_request().post = MagicMock(return_value=mock_response)
@@ -204,9 +204,11 @@ def test_rechage_fail(patcher, user_session):
         status_code=200,
         text=""
     )
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
+
     mock_request().get = MagicMock(side_effect=side_effect)
 
     user_session.init()
@@ -224,9 +226,11 @@ def test_transfer_success(patcher, user_session):
         status_code=200,
         text=""
     )
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
+
     mock_request().get = MagicMock(side_effect=side_effect)
 
     user_session.init()
@@ -248,9 +252,11 @@ def test_change_password_success(patcher, user_session):
         status_code=200,
         text=""
     )
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
+
     mock_request().get = MagicMock(side_effect=side_effect)
 
     user_session.init()
@@ -271,9 +277,11 @@ def test_change_password_fail(patcher, user_session):
         status_code=200,
         text=""
     )
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
+
     mock_request().get = MagicMock(side_effect=side_effect)
 
     user_session.init()
@@ -294,9 +302,11 @@ def test_change_email_password(patcher, user_session):
         status_code=200,
         text=""
     )
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
+
     mock_request().get = MagicMock(side_effect=side_effect)
 
     user_session.init()
@@ -317,8 +327,8 @@ def test_get_valid_connections(patcher, user_session):
         text=""
     )
 
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
 
     mock_response_post = MagicMock(
@@ -330,17 +340,17 @@ def test_get_valid_connections(patcher, user_session):
     mock_request().post = MagicMock(return_value=mock_response_post)
 
     user_session.init()
-    conncets = user_session.get_connections(year=2023, month=3)
-    lasts_conncet = user_session.get_lasts(
+    connects = user_session.get_connections(year=2023, month=3)
+    lasts_connect = user_session.get_lasts(
         action=Action.GET_CONNECTIONS,
         large=47
     )
     patcher.stop()
 
     with open(os.path.join(_assets_dir, 'connects_2023_03.json'), 'r') as file:
-        assert conncets == json.load(file)
+        assert connects == json.load(file)
     with open(os.path.join(_assets_dir, 'lasts_connects.json'), 'r') as file:
-        assert lasts_conncet == json.load(file)
+        assert lasts_connect == json.load(file)
 
 
 def test_get_valid_recharges(patcher, user_session):
@@ -350,8 +360,8 @@ def test_get_valid_recharges(patcher, user_session):
         text=""
     )
 
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
 
     mock_response_post = MagicMock(
@@ -383,8 +393,8 @@ def test_get_valid_transfers(patcher, user_session):
         text=""
     )
 
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
 
     mock_response_post = MagicMock(
@@ -410,8 +420,8 @@ def test_get_valid_quotes_paid(patcher, user_session):
         text=""
     )
 
-    def side_effect(value: str):
-        mock_response_get.text = get_responses[value]
+    def side_effect(url: str):
+        mock_response_get.text = get_responses[url]
         return mock_response_get
 
     mock_response_post = MagicMock(

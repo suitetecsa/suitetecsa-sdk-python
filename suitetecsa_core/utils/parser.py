@@ -24,7 +24,7 @@
 import re
 import bs4
 
-from suitetecsa_core.utils import Portal
+from suitetecsa_core import Portal
 
 
 __various_errors_text = "Se han detectado algunos errores."

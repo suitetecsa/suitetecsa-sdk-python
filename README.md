@@ -1,440 +1,225 @@
-# PyLibSuitETECSA
+# suitetecsa_core
 
-## Una librería escrita en Python para SuitETECSA
+`suitetecsa_core` es una librería de Python que permite interactuar de manera sencilla con algunos servicios ofrecidos por ETECSA, el proveedor de servicios de telecomunicaciones en Cuba. La librería incluye un conjunto de módulos y herramientas que facilitan el acceso a estos servicios a través de técnicas de scrapping.
 
-PyLibSuitETECSA es una API que interactúa con los servicios ofrecidos
-por [ETECSA](https://www.etecsa.cu/), para facilitar el desarrollo de aplicaciones
-Python dedicadas a la gestión de estos mediante los portales
-[de usuario](https://www.portal.nauta.cu/) y [cautivo](https://secure.etecsa.net:8443/)
-de nauta, ahorrándoles tiempo, esfuerzos y código a los desarrolladores.
+Con `suitetecsa_core`, puedes obtener datos de manera rápida y eficiente a partir de dos portales web: el [portal de acceso a internet](https://secure.etecsa.net:8443/) y el [portal de usuario](https://www.portal.nauta.cu/) de Nauta. La librería te permite devolver los datos en formato JSON como si fuera una API REST y realizar algunas operaciones comunes, como consultar el saldo de una cuenta Nauta o conectarte a internet.
 
-Hasta el momento PyLibSuitETECSA implementa funciones para:
+Además, `suitetecsa_core` incluye métodos que agregan funcionalidades útiles, como la generación de contraseñas y la compartición de sesión. Con `suitetecsa_core`, puedes automatizar tareas comunes y ahorrar tiempo al interactuar con los servicios de ETECSA.
 
-* En el caso del portal [de usuario](https://www.portal.nauta.cu/) de nauta:
-  * Iniciar sesión.
-  * Obtener información de la cuenta logueada.
-  * Recargar la cuenta logueada.
-  * Transferir saldo a otra cuenta nauta.
-  * Transferir saldo para pago de cuota (`solo para cuentas Nauta Hogar`).
-  * Cambiar la contraseña de la cuenta de acceso.
-  * Cambiar la contraseña de la cuenta de correo asociada.
-  * Obtener las conexiones realizadas en el periódo `año-mes` especificado.
-  * Obtener las recargas realizadas en el periódo `año-mes` especificado.
-  * Obtener las transferencias realizadas en el periódo `año-mes` especificado.
-  * Obtener los pagos de cuotas realizados en el periódo `año-mes` especificado (`solo para cuentas Nauta Hogar`).
-  * Obtener las útimas (`la cantidad puede ser definida por el desarrollador que use la librería; por defecto es 5`) operaciones (`las antes mencionadas`).
-* En el caso del portal [cautivo](https://secure.etecsa.net:8443/) de nauta:
-  * Inicia sesión.
-  * Cierra sesión.
-  * Obtiene el tiempo disponible en la cuenta.
-  * Obtiene el saldo de la cuenta.
+La librería es fácil de usar y está diseñada para ser extensible y personalizable, lo que te permite adaptarla a tus necesidades específicas. Además, se está trabajando para agregar más portales para agregar más servicios que se puedan gestionar con `suitetecsa_core`.
 
-## Interactuar con el portal [de usuario](https://www.portal.nauta.cu/) de nauta
+### Portales de ETECSA que gestiona `suitetecsa_core` y funciones implementadas
 
-Para interactuar con el portal [de usuario](https://www.portal.nauta.cu/) de nauta
-PyLibSuitETECSA proporciona dos clases; la más sencilla de usar es [UserPortalClient](#usando-userportalclient) ubicada en PyLibSuitETECSA.api y es la que se recomienda para
-la mayoria de apps. Igualmente PyLibSuitETECSA proporciona la clase [UserPortal](#usando-userportal)
-ubicada en PyLibSuitETECSA.core.protocol, un protocolo que permite a los desarrolladores
-tener "más control" a la hora de interactuar con el portal.
+- [x] [Secure Etecsa](https://secure.etecsa.net:8443/)
+  
+  - [x] Iniciar sesión.
+  - [x] Cerrar sesión.
+  - [x] Obtener el tiempo disponible en la cuenta.
+  - [x] Obtener la informacion de la cuenta.
 
-### **Usando UserPortalClient**
+- [x] [Portal de Usuario](https://www.portal.nauta.cu/)
+  
+  - [x] Iniciar sesión.
+  
+  - [x] Obtener información de la cuenta.
+  
+  - [x] Recargar la cuenta.
+  
+  - [x] Transferir saldo a otra cuenta nauta.
+  
+  - [x] Transferir saldo para pago de cuota (`solo para cuentas Nauta Hogar`).
+  
+  - [x] Cambiar la contraseña de la cuenta de acceso.
+  
+  - [x] Cambiar la contraseña de la cuenta de correo asociada.
+  
+  - [x] Obtener las conexiones realizadas en el periódo `año-mes` especificado.
+  
+  - [x] Obtener las recargas realizadas en el periódo `año-mes` especificado.
+  
+  - [x] Obtener las transferencias realizadas en el periódo `año-mes` especificado.
+  
+  - [x] Obtener los pagos de cuotas realizados en el periódo `año-mes` especificado (`solo para cuentas Nauta Hogar`).
+  
+  - [x] Obtener las útimas (`la cantidad puede ser definida por el desarrollador que use la librería; por defecto es 5`) operaciones (`las antes mencionadas`).
 
-Ejercicio donde:
+- [ ] [Portal Etecsa](https://www.etecsa.cu/)
 
-* Iniciamos sesión en el portal.
-* Tratamos de recargar la cuenta.
-* Tratamos de transferir saldo a otra cuenta.
-* Obtenemos las últimas 5 connexiones de la cuenta y las imprimimos en pantalla.
+- [ ] [Servicios en Linea](https://www.tienda.etecsa.cu/)
 
-```python
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+- [ ] [Portal Nauta](https://www.nauta.cu/)
 
-from PyLibSuitETECSA.api import UserPortalClient
-from PyLibSuitETECSA.core.exception import RechargeException,\
-    TransferException
-from PyLibSuitETECSA.utils import Action
 
-user_portal_cli = UserPortalClient(
-    "user.name@nauta.com.cu",   # Cambiar por una cuenta real
-    "password"                  # Cambiar por la contraseña de la cuenta
-)
 
-# Crea una sesión que se almacena en la variable
-# user_portal_cli.session
-user_portal_cli.init_session()
+# Uso
 
-# Obtiene la imagen captcha del portal y la guarda
-# en un archivo llamado 'captcha.png'
-with open('captcha.png', 'wb') as fp:
-    fp.write(
-        user_portal_cli.captcha_as_bytes
-    )
+### Gestiona los servicios `Nauta` con NautaSession
 
-# Loguea la cuenta en el portal
-user_portal_cli.login(
-    input('captcha code: ')
-)
-
-# Trata de recargar la cuenta y en caso de error
-# lo imprime en pantalla
-try:
-    user_portal_cli.recharge(
-        "1234567890123456"
-    )
-except RechargeException as ex:
-    print(f'Error al recargar :: {ex.args[0]}')
-
-# Trata de transferir saldo a otra cuenta y en caso
-# de errores los inprime en pantalla
-try:
-    user_portal_cli.transfer(
-        250.25,
-        "user.name@nauta.co.cu"
-    )
-except TransferException as ex:
-    print(f'Error al transferir :: {ex.args[0]}')
-
-# Obtiene las últimas 5 conexiones realizadas por la cuenta
-# y las imprime en pantalla en formato json
-connections = user_portal_cli.get_lasts(
-    Action.GET_CONNECTIONS
-)
-for connection in connections:
-    print(connection.__dict__)
-
-```
-
-Salida:
-
-```console
-captcha code: DCYTHZ
-Error al recargar :: El código de recarga es incorrecto.
-Error al transferir :: ['El campo saldo a transferir debe ser menor o igual que 14761']
-{'start_session': datetime.datetime(2023, 1, 22, 22, 19, 11), 'end_session': datetime.datetime(2023, 1, 22, 22, 24, 8), 'duration': 297, 'uploaded': 275456, 'downloaded': 1782579, 'import_': 0.99}
-{'start_session': datetime.datetime(2023, 1, 22, 11, 26, 8), 'end_session': datetime.datetime(2023, 1, 22, 14, 28, 13), 'duration': 10925, 'uploaded': 17637048, 'downloaded': 244454522, 'import_': 36.42}
-{'start_session': datetime.datetime(2023, 1, 21, 16, 53, 29), 'end_session': datetime.datetime(2023, 1, 22, 1, 36, 8), 'duration': 31359, 'uploaded': 152746065, 'downloaded': 2168958484, 'import_': 104.53}
-{'start_session': datetime.datetime(2023, 1, 20, 18, 19, 56), 'end_session': datetime.datetime(2023, 1, 20, 18, 25, 16), 'duration': 320, 'uploaded': 447488, 'downloaded': 8409579, 'import_': 1.07}
-{'start_session': datetime.datetime(2023, 1, 20, 17, 29, 40), 'end_session': datetime.datetime(2023, 1, 20, 18, 12, 5), 'duration': 2545, 'uploaded': 7140802, 'downloaded': 113592238, 'import_': 8.49}
-```
-
-## Métodos y propiedades de UserPortalClient
-
-### Métodos
-
-<details>
-    <summary>Nauta</summary>
-    <table>
-        <thead>
-            <tr>
-                <td>Método</td>
-                <td>Función</td>
-            </tr>
-        </thead>
-        <tr>
-            <td>init_session</td>
-            <td>Crea la sesión donde se guardan las cookies y datos</td>
-        </tr>
-        <tr>
-            <td>login</td>
-            <td>Loguea al usuario en el portal y carga la información de la cuenta</td>
-        </tr>
-        <tr>
-            <td>recharge</td>
-            <td>Recarga la cuenta logueada</td>
-        </tr>
-        <tr>
-            <td>transfer</td>
-            <td>Transfiere saldo a otra cuenta nauta</td>
-        </tr>
-        <tr>
-            <td>change_password</td>
-            <td>Cambia la contraseña de la cuenta logueada</td>
-        </tr>
-        <tr>
-            <td>change_email_password</td>
-            <td>Cambia la contraseña de la cuenta de correo asociada a la cuenta logueada</td>
-        </tr>
-        <tr>
-            <td>get_lasts</td>
-            <td>Devuelve las últimas <b>large</b> <b>action</b> realizadas, donde <b>large</b> es la cantidad Ex: 5 y <b>action</b> las operaciones realizadas Ex: <b>UserPortal.ACTION_CONNECTIONS</b> (las <b>action</b> disponibles son: <b>UserPortal.ACTION_CONNECTIONS</b>, <b>UserPortal.ACTION_RECHARGES</b>, <b>UserPortal.ACTION_TRANSFER</b> y <b>UserPortal.ACTION_QUOTE_FUNDS</b>, esta última solo para nauta hogar)</td>
-        </tr>
-        <tr>
-            <td>get_connections</td>
-            <td>Devuelve las conexiones realizadas en el mes especificado incluyendo el año (<b>año-mes</b>: 2022-03)</td>
-        </tr>
-        <tr>
-            <td>get_recharges</td>
-            <td>Devuelve las recargas realizadas en el mes especificado incluyendo el año (<b>año-mes</b>: 2022-03)</td>
-        </tr>
-        <tr>
-            <td>get_transfers</td>
-            <td>Devuelve las transferencias realizadas en el mes especificado incluyendo el año (<b>año-mes</b>: 2022-03)</td>
-        </tr>
-    </table>
-</details>
-
-<details>
-    <summary>Nauta Hogar</summary>
-    <table>
-        <thead>
-            <tr>
-                <td>Método</td>
-                <td>Función</td>
-            </tr>
-        </thead>
-    <tr>
-        <td>pay_nauta_home</td>
-        <td>Transfiere saldo a la cuota de nauta hogar.</td>
-    </tr>
-    <tr>
-        <td>get_quotes_fund</td>
-        <td>Devuelve los fondos de cuota realizados en el mes especificado incluyendo el año (<b>año-mes</b>: 2022-03)</td>
-    </tr>
-    </table>
-</details>
-
-### Propiedades
-
-<details>
-    <summary>Nauta</summary>
-    <table>
-        <thead>
-            <tr>
-                <td>Propiedad</td>
-                <td>Dato devuelto</td>
-            </tr>
-        </thead>
-        <tr>
-            <td>captcha_as_bytes</td>
-            <td>Imagen captcha en bytes.</td>
-        </tr>
-        <tr>
-            <td>blocking_date</td>
-            <td>Fecha de bloqueo.</td>
-        </tr>
-        <tr>
-            <td>date_of_elimination</td>
-            <td>Fecha de eliminación.</td>
-        </tr>
-        <tr>
-            <td>account_type</td>
-            <td>Tipo de cuenta.</td>
-        </tr>
-        <tr>
-            <td>service_type</td>
-            <td>Tipo de servicio.</td>
-        </tr>
-        <tr>
-            <td>credit</td>
-            <td>Saldo.</td>
-        </tr>
-        <tr>
-            <td>time</td>
-            <td>Tiempo disponible.</td>
-        </tr>
-        <tr>
-            <td>mail_account</td>
-            <td>Cuenta de correo asociada.</td>
-        </tr>
-    </table>
-</details>
-
-<details>
-    <summary>Nauta Hogar</summary>
-    <table>
-        <thead>
-            <tr>
-                <td>Propiedad</td>
-                <td>Dato devuelto</td>
-            </tr>
-        </thead>
-        <tr>
-            <td>offer</td>
-            <td>Oferta</td>
-        </tr>
-        <tr>
-            <td>monthly_fee</td>
-            <td>Cuota mensual</td>
-        </tr>
-        <tr>
-            <td>download_speeds</td>
-            <td>Velocidad de bajada</td>
-        </tr>
-        <tr>
-            <td>upload_speeds</td>
-            <td>Velocidad de subida</td>
-        </tr>
-        <tr>
-            <td>phone</td>
-            <td>Teléfono</td>
-        </tr>
-        <tr>
-            <td>link_identifiers</td>
-            <td>Identificador del enlace</td>
-        </tr>
-        <tr>
-            <td>link_status</td>
-            <td>Estado del enlace</td>
-        </tr>
-        <tr>
-            <td>activation_date</td>
-            <td>Fecha de activación</td>
-        </tr>
-        <tr>
-            <td>blocking_date_home</td>
-            <td>Fecha de bloqueo</td>
-        </tr>
-        <tr>
-            <td>date_of_elimination_home</td>
-            <td>Fecha de eliminación</td>
-        </tr>
-        <tr>
-            <td>quota_fund</td>
-            <td>Fondo de cuota</td>
-        </tr>
-        <tr>
-            <td>voucher</td>
-            <td>Bono</td>
-        </tr>
-        <tr>
-            <td>debt</td>
-            <td>Deuda</td>
-        </tr>
-    </table>
-</details>
-
-**Nota**: Los `métodos` y `propiedades` disponibles para `Nauta` también lo están para `Nauta Hogar`.
-
-### **Usando UserPortal**
-
-Mismo ejercicio que con la clase [UserPortalClient](#usando-nautaclient)
+NautaSession es la clase encargada de interactuar con los servicios de nauta que gestiona `suitetecsa_core`. Los portales con los que interactúa son: [Secure Etcsa](https://secure.etecsa.net:8443/) y [Portal de Usuario](https://www.portal.nauta.cu/). A continuación se muestra como iniciar una sesión con cuarquiera de estos dos portales.
 
 ```python
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+from suitetecsa_core import NautaSession, Portal
 
-from PyLibSuitETECSA.core.protocol import UserPortal
-from PyLibSuitETECSA.core.exception import RechargeException,\
-    TransferException
-from PyLibSuitETECSA.utils import Action
 
-# Crea una sesión que se almacena en la variable
-# session
-session = UserPortal.create_session()
-
-# Obtiene la imagen captcha del portal y la guarda
-# en un archivo llamado 'captcha.png'
-with open('captcha.png', 'wb') as fp:
-    fp.write(
-        UserPortal.get_captcha(session)
-    )
-
-# Loguea la cuenta en el portal
-UserPortal.login(
-    session=session,
-    username="user.name@nauta.com.cu",
-    password="password",
-    captcha_code=input('captcha code: ')
+# se instancia la clase nautasession, encargada de gestionar la sesión
+nauta_session = NautaSession(
+    portal_manager = Portal.CONNECT,
+    use_api_response = True
 )
-
-# Trata de recargar la cuenta y en caso de error
-# lo imprime en pantalla
-try:
-    UserPortal.recharge(
-        session=session,
-        recharge_code="1234567890123456"
-    )
-except RechargeException as ex:
-    print(f'Error al recargar :: {ex.args[0]}')
-
-# Trata de transferir saldo a otra cuenta y en caso
-# de errores los inprime en pantalla
-try:
-    UserPortal.transfer(
-        session=session,
-        mount_to_transfer=250.25,
-        account_to_transfer="lesly.cintra@nauta.co.cu"
-    )
-except TransferException as ex:
-    print(f'Error al transferir :: {ex.args[0]}')
-
-# Obtiene las últimas 5 conexiones realizadas por la cuenta
-# y las imprime en pantalla en formato json
-connections = UserPortal.get_lasts(
-    session=session,
-    action=Action.GET_CONNECTIONS
-)
-for connection in connections:
-    print(connection.__dict__)
-
 ```
 
-Salida:
-
-```console
-captcha code: 2GH9SV
-Error al recargar :: El código de recarga es incorrecto.
-Error al transferir :: ['El campo saldo a transferir debe ser menor o igual que 14761']
-{'start_session': datetime.datetime(2023, 1, 22, 22, 19, 11), 'end_session': datetime.datetime(2023, 1, 22, 22, 24, 8), 'duration': 297, 'uploaded': 275456, 'downloaded': 1782579, 'import_': 0.99}
-{'start_session': datetime.datetime(2023, 1, 22, 11, 26, 8), 'end_session': datetime.datetime(2023, 1, 22, 14, 28, 13), 'duration': 10925, 'uploaded': 17637048, 'downloaded': 244454522, 'import_': 36.42}
-{'start_session': datetime.datetime(2023, 1, 21, 16, 53, 29), 'end_session': datetime.datetime(2023, 1, 22, 1, 36, 8), 'duration': 31359, 'uploaded': 152746065, 'downloaded': 2168958484, 'import_': 104.53}
-{'start_session': datetime.datetime(2023, 1, 20, 18, 19, 56), 'end_session': datetime.datetime(2023, 1, 20, 18, 25, 16), 'duration': 320, 'uploaded': 447488, 'downloaded': 8409579, 'import_': 1.07}
-{'start_session': datetime.datetime(2023, 1, 20, 17, 29, 40), 'end_session': datetime.datetime(2023, 1, 20, 18, 12, 5), 'duration': 2545, 'uploaded': 7140802, 'downloaded': 113592238, 'import_': 8.49}
-```
-
-## Usando NautaClient
+Aquí lo que hicimos fue importar la clase NautaSession que es la encargada de gestionar la sesión que crearemos con el portal, luego instanciamos la clase pasándole dos parámetros, el primero hace referencia al portal que queremos gestionar, en este caso es Portal.CONNECT que hace referencia a [Secure Etcsa](https://secure.etecsa.net:8443/), la otra opción es Portal.USER que hace referencia a [Portal de Usuario](https://www.portal.nauta.cu/). El segundo parámetro que le pasamos a NautaSession afecta la forma en la que los métodos de la clase retorna los valores.
 
 ```python
-import time
-
-from PyLibSuitETECSA.api import NautaClient  # se importa el cliente para el portal cautivo de nauta
-
-nauta_ci = NautaClient(  # se instancia el cliente
-    "usuario@nauta.com.cu",
-    "Contraseña"
-)
-
-nauta_ci.init_session()  # se inicia la session donde se guardan las cookies y datos
-
-with nauta_ci.login():  # se inicia sesión en el portal y se mantiene abierta durante un minuto
-    print(nauta_ci.remaining_time)
-    time.sleep(60)
-
+# se inicializa la sesión en el portal
+session_data = nauta_session.init()
+print(session_data)
 ```
 
-## Funciones y propiedades de UserPortalClient
+__Salida por consola__
 
-### Funciones
-
-* init_session: Crea la session donde se guardan las cookies y datos
-* login: Loguea al usuario en el portal
-* logout: Cierra la sesión abierta
-* load_last_session: Carga la última session creada
-
-### Propiedades
-
-* is_logged_in: Si se está loagueado en el portal
-* user_credit: Saldo de la cuenta
-* remaining_time: Tiempo restante
-
-## Contribuir
-
-**IMPORTANTE**: PyLibSuitETESA necesita compatibilidad con nauta hogar.
-
-Todas las contribuciones son bienvenidas. Puedes ayudar trabajando en uno de los issues existentes.
-Clona el repo, crea una rama para el issue que estés trabajando y cuando estés listo crea un Pull Request.
-
-También puedes contribuir difundiendo esta herramienta entre tus amigos y en tus redes. Mientras
-más grande sea la comunidad más sólido será el proyecto.
-
-Si te gusta el proyecto dale una estrella para que otros lo encuentren más fácilmente.
-
-## Dependencias
-
-```text
-requests~=2.27.1
-beautifulsoup4~=4.10.0
-pytest~=7.1.2
-setuptools~=60.2.0
+```bash
+{
+    'status': 'success',
+    'login_action': 'https://secure.etecsa.net:8443//LoginServle',
+    'CSRFHW': '1fe3ee0634195096337177a0994723fb',
+    'wlanuserip': '10.190.20.96'
+}
 ```
+
+Como puedes ver, el método init nos ha devuelto un `diccionario Python` o `JSON` con los parámetros importantes de la sesión simulando a una verdadera API Rest, si el parémetro `use_api_response` fuera `False` (valor por defecto) el método no hubiese retornado nada. Y ya de paso; así es como se inicializa una sesión con los portales gestionados por `suitetecsa_core`.
+
+Ahora es necesario proporcionar las credenciales para poder gestionar nuestra cuenta de usuario en el portal. Hay dos maneras de hacerlo y da igual la que elijas ya que no refleja ningún cambio en el comportamiento de la clase o sus métodos.
+
+```python
+# la primera manera de proporcionarle las credenciales a la clase
+# es hacerlo por separado.
+nauta_session.username = "user.name@nauta.com.cu"
+nauta_session.password = "some_password"
+
+# la otra manera de hacerlo es pasandole las credenciales en un sol
+# linea de código
+nauta_session.credentials = "user.name@nauta.com.cu", "some_password"
+```
+
+Ya tenemos la sesión inicializada, ya le proporcionamos las credenciales a la clase, ahora toca iniciar sesión.
+
+```python
+# si a portal_manager de diste como valor Portal.COONECT
+login_data = nauta_session.login()
+
+# si el valor fue Portal.USER necesitas descargar la imagen captcha
+# para poder proporcionar el código que aparece en dicha imagen
+with open("captcha_image.png", "wb") as file:
+    file.write(nauta_session.get_captcha())
+login_data = nauta_session.login(input("Captcha code: "))
+```
+
+## Métodos de la clase NautaSession
+
+| Método                | Parámetros                                                                                | Secure Etecsa | Portal de Usuario | Descripción                                                        |
+| ---------------------:|:-----------------------------------------------------------------------------------------:|:-------------:|:-----------------:|:------------------------------------------------------------------ |
+| init                  | -                                                                                         | si            | si                | Inicializa la sesión en el portal..                                |
+| get_captcha           | -                                                                                         | no            | si                | devuelve la imagen captcha en formato de bytes.                    |
+| login                 | captcha_code: `str` (opcional)                                                            | si            | si                | loggea al usuario en el portal.                                    |
+| get_remaining_time    | -                                                                                         | si            | no                | obtiene el tiempo diponible de la cuenta.                          |
+| get_user_information  | -                                                                                         | si            | si                | obtine la informacion de la cuenta.                                |
+| recharge              | recharge_code: `str`                                                                      | no            | si                | recarga el saldo de la cuenta.                                     |
+| transfer              | mount_to_transfer: `int`, account_to_transfer: `str` (opcional), nauta_hogar_paid: `bool` | no            | si                | transfiere saldo a otra cuenta nauta o paga nauta hogar.           |
+| change_password       | new_password: `str`                                                                       | no            | si                | cambia la contrase;a de acceso.                                    |
+| change_email_password | old_password: `str`, new_password: `str`                                                  | no            | si                | cambia la contrase;a de la cuenta de correo asociada.              |
+| get_connections       | year: `int`, month: `int`                                                                 | no            | si                | obtiene las conecciones realizadas en el periodo `a;o-mes`.        |
+| get_recharges         | year: `int`, month: `int`                                                                 | no            | si                | obtiene las recargas realizadas en el periodo `a;o-mes`.           |
+| get_transfers         | year: `int`, month: `int`                                                                 | no            | si                | obtiene las transferencias realizadas en el periodo `a;o-mes`.     |
+| get_quotes_paid       | year: `int`, month: `int`                                                                 | no            | si                | obtiene los pagos realizado a nauta hogar en el periodo `a;o-mes`. |
+| get_lasts             | action: `Action`, large: `int` (Opcional)                                                 | no            | si                | obtiene las ultimas `large` `action`s.                             |
+| logout                | -                                                                                         | si            | si                | cierra la sesion del portal                                        |
+
+
+
+## Método get_lasts
+
+Ya que este es un método un poco confuso de usar sin documentación, decidí mostrar un ejemplo de su uso y dar una breve explicación.
+
+```python
+#importamos el enum Action
+from suitetecsa_core import Action
+
+# obtenemos las ultimas 2 recargas realizadas
+lasts_recharges = nauta_session.get_lasts(
+    action = Action.GET_RECHARGES,
+    large = 2
+) 
+print(lasts_recharges)
+```
+
+__Salida por consola__
+
+```bash
+{
+    "status": "success",
+    "recharges_summary": {
+        "count": 2,
+        "total_import": "$450,00"
+    },
+    "recharges": [
+        {
+            "date": "10/03/2023 12:12:33",
+            "import": "$200,00",
+            "channel": "PV ETECSA",
+            "type": "Efectivo"
+        },
+        {
+            "date": "16/03/2023 19:41:35",
+            "import": "$250,00",
+            "channel": "Transferm\u00f3vil",
+            "type": "Efectivo"
+        }
+    ]
+}
+```
+
+get_lasts obtiene y devuelve las últimas `large` `action`s, donde `large` es la cantidad y `action` que va a intentar obtener. Las `action`s que se le pueden pasar como parametro a get_lasts son: Action.**GET_CONNECTIONS**, Action.**GET_RECHARGES**, Action.**GET_TRANSFERS** y Action.**GET_QUOTES_PAID**, que hacen referencia a las **conexiones**, **recargas**, **transferencias** y **pagos de cuotas a nauta hogar** realizadas por la cuenta, respectivamente. Por otra parte, `large` es de tipo entero y es un parámetro opcional ya que tiene un valor asignado por defecto, este valor es 5, o sea, que si se hace una llamada al método get_lasts y unicamente se le pasa una Action como parámetro, este nos devuelve las últimas **5** `action`s realizadas por la cuenta en sesión.
+
+# Contribución
+
+¡Gracias por tu interés en colaborar con nuestro proyecto! Nos encanta recibir contribuciones de la comunidad y valoramos mucho tu tiempo y esfuerzo.  
+
+## Cómo contribuir
+
+Si estás interesado en contribuir, por favor sigue los siguientes pasos:  
+
+1. Revisa las issues abiertas para ver si hay alguna tarea en la que puedas ayudar.  
+2. Si no encuentras ninguna issue que te interese, por favor abre una nueva issue explicando el problema o la funcionalidad que te gustaría implementar. Asegúrate de incluir toda la información necesaria para que otros puedan entender el problema o la funcionalidad que estás proponiendo.  
+3. Si ya tienes una issue asignada o si has decidido trabajar en una tarea existente, por favor crea un fork del repositorio y trabaja en una nueva rama (`git checkout -b nombre-de-mi-rama`).  
+4. Cuando hayas terminado de trabajar en la tarea, crea un pull request explicando los cambios que has realizado y asegurándote de que el código cumple con nuestras directrices de estilo y calidad.  
+5. Espera a que uno de nuestros colaboradores revise el pull request y lo apruebe o sugiera cambios adicionales.  
+
+## Directrices de contribución
+
+Por favor, asegúrate de seguir nuestras directrices de contribución para que podamos revisar y aprobar tus cambios de manera efectiva:  
+
+- Sigue los estándares de codificación y estilo de nuestro proyecto.  
+- Asegúrate de que el código nuevo esté cubierto por pruebas unitarias.  
+- Documenta cualquier cambio que hagas en la documentación del proyecto.  
+
+¡Gracias de nuevo por tu interés en contribuir! Si tienes alguna pregunta o necesitas ayuda, no dudes en ponerte en contacto con nosotros en la sección de issues o enviándonos un mensaje directo.
+
+## Licencia
+
+Este proyecto está licenciado bajo la Licencia MIT. Esto significa que tienes permiso para utilizar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y/o vender copias del software, y para permitir que las personas a las que se les proporcione el software lo hagan, con sujeción a las siguientes condiciones:
+
+- Se debe incluir una copia de la licencia en todas las copias o partes sustanciales del software.
+- El software se proporciona "tal cual", sin garantía de ningún tipo, expresa o implícita, incluyendo pero no limitado a garantías de comerciabilidad, aptitud para un propósito particular y no infracción. En ningún caso los autores o titulares de la licencia serán responsables de cualquier reclamo, daño u otra responsabilidad, ya sea en una acción de contrato, agravio o de otra manera, que surja de, fuera de o en conexión con el software o el uso u otros tratos en el software.
+
+Puedes encontrar una copia completa de la Licencia MIT en el archivo LICENSE que se incluye en este repositorio.
+
+## Contacto
+
+Si tienes alguna pregunta o comentario sobre el proyecto, no dudes en ponerte en contacto conmigo a través de los siguientes medios:
+
+- Correo electrónico: lesclaz95@gmail.com
+- Twitter: [@lesclaz](https://twitter.com/lesclaz)
+- Telegram: [@lesclaz](https://t.me/lesclaz)
+
+Estaré encantado de escuchar tus comentarios y responder tus preguntas. ¡Gracias por tu interés en mi proyecto!

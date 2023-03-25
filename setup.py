@@ -38,10 +38,10 @@ def get_readme():
 
 
 setup(
-    name='PyLibSuitETECSA',
-    version='1.0.0b1',
-    packages=['PyLibSuitETECSA', 'PyLibSuitETECSA.core', 'PyLibSuitETECSA.utils'],
-    url='https://github.com/SuitETECSA/PyLibSuitETECSA',
+    name='suitetecsa_core',
+    version='1.1b1',
+    packages=['suitetecsa_core', 'suitetecsa_core.utils'],
+    url='https://github.com/SuitETECSA/suitetecsa-sdk-python',
     license='MIT',
     author='lesclaz',
     author_email='lesclaz95@gmail.com',
@@ -61,6 +61,7 @@ setup(
         'requests',
         'beautifulsoup4',
         'setuptools',
-        'html5lib'
+        'html5lib',
+        'netifaces'
     ],
 )

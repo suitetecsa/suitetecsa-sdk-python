@@ -21,6 +21,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from suitetecsa_core.nauta.session import NautaSession
+from enum import Enum
 
-__all__ = ['NautaSession']
+
+class Portal(Enum):
+    CONNECT = 0
+    USER = 1
+
+
+class Action(Enum):
+    LOGIN = 2
+    LOGOUT = 3
+    LOAD_USER_INFORMATION = 4
+    RECHARGE = 5
+    TRANSFER = 6
+    NAUTA_HOGAR_PAID = 7
+    CHANGE_PASSWORD = 8
+    CHANGE_EMAIL_PASSWORD = 9
+    GET_CONNECTIONS = "connections"
+    GET_RECHARGES = "recharges"
+    GET_TRANSFERS = "transfers"
+    GET_QUOTES_PAID = "quotes_paid"
+    CHECK_CONNECTION = 14
+
+
+from suitetecsa_core.nauta import NautaSession
+
+__all__ = ['NautaSession', 'Portal', 'Action']
