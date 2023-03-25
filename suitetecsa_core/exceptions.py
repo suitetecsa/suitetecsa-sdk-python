@@ -21,47 +21,54 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from os import path
 
-from setuptools import setup
-
-here = path.abspath(path.dirname(__file__))
+class PreLoginException(Exception):
+    pass
 
 
-def get_readme():
-    """
-        Get the long description from the README file
-        :return:
-        """
-    with open(path.join(here, "README.md"), encoding="utf-8") as f:
-        return f.read()
+class LoginException(Exception):
+    pass
 
 
-setup(
-    name='suitetecsa_core',
-    version='1.1b1',
-    packages=['suitetecsa_core', 'suitetecsa_core.utils'],
-    url='https://github.com/SuitETECSA/suitetecsa-sdk-python',
-    license='MIT',
-    author='lesclaz',
-    author_email='lesclaz95@gmail.com',
-    description='Una API que interactúa con los servicios web de ETECSA. ',
-    long_description=get_readme(),
-    long_description_content_type="text/markdown",
-    platforms=["Unix"],
-    classifiers=[
-        "Topic :: Internet",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3",
-        "Development Status :: 4 - Beta",
-        "Operating System :: Unix"
-    ],
-    keywords="ETECSA nauta tools",
-    install_requires=[
-        'requests',
-        'beautifulsoup4',
-        'setuptools',
-        'html5lib',
-        'netifaces'
-    ],
-)
+class LogoutException(Exception):
+    pass
+
+
+class RechargeException(Exception):
+    pass
+
+
+class TransferException(Exception):
+    pass
+
+
+class ConnectionException(Exception):
+    pass
+
+
+class ChangePasswordException(Exception):
+    pass
+
+
+class GetInfoException(Exception):
+    pass
+
+
+class NautaException(Exception):
+    pass
+
+
+class NotLoggedIn(Exception):
+    pass
+
+
+class InvalidMethod(Exception):
+    pass
+
+
+class SessionLoadException(Exception):
+    pass
+
+
+class NotNautaHomeAccount(Exception):
+    pass

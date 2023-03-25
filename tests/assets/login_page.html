@@ -1,0 +1,33 @@
+<form class="form" action="https://secure.etecsa.net:8443//LoginServlet" method="post" id="formulario">
+    <input type="hidden" name="wlanuserip" id="wlanuserip" value="10.190.20.96" />
+    <input type="hidden" name="wlanacname" id="wlanacname" value="" />
+    <input type="hidden" name="wlanmac" id="wlanmac" value="" />
+    <input type="hidden" name="firsturl" id="firsturl" value="notFound.jsp" />
+    <input type="hidden" name="ssid" id="ssid" value="" />
+    <input type="hidden" name="usertype" id="usertype" value="" />
+    <input type="hidden" name="gotopage" id="gotopage" value="/nauta_etecsa/LoginURL/pc_login.jsp" />
+    <input type="hidden" name="successpage" id="successpage" value="/nauta_etecsa/OnlineURL/pc_index.jsp" />
+    <input type="hidden" name="loggerId" id="loggerId" value="20191122040338386" />
+    <input type="hidden" name="lang" id="lang" value="es_ES" />
+    <label for="nombre">Usuario:</label> <input name="username" id="username" maxlength="253" class="input_text cred"
+        type="text">
+    <br class="clearfloat">
+    <!-- [false alarm:Privacy Violation: Password] -->
+    <label for="uri">Contraseña:</label> <input name="password" id="password" class="input_text cred" value=""
+        type="password" autocomplete="off">
+    <br class="clearfloat">
+
+    <label for=""></label>
+    <input class="btn" name="Enviar" value='Aceptar' type="button" onclick="checkLogin();">
+    <input class="btn" name="cancel" value='Cancelar' type="reset">
+    <input class="btn" name="ayuda" value='Ayuda' style="/*display:none;*/" onclick="help();" type="button">
+    <br class="clearfloat">
+
+    <div class="vnc" style="text-align: center;">
+        <a href="#" onclick="termsofuse()">Condiciones de uso</a>
+        <a href="https://www.portal.nauta.cu/user/login" target="_blank">Portal de Usuario</a>
+        <a onclick="sendUserInfoForm();" href="#">Información de usuario</a>
+    </div>
+    <br class="clearfloat">
+    <input type='hidden' name='CSRFHW' value='1fe3ee0634195096337177a0994723fb' />
+</form>
