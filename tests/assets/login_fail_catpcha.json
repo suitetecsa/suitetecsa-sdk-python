@@ -1,0 +1,5 @@
+{
+    "status": "error",
+    "exception": "LoginException",
+    "reason": "Fail to login :: ['El c\u00f3digo Captcha no coincide con el valor introducido']"
+}

@@ -1,0 +1,5 @@
+{
+    "status": "error",
+    "exception": "RechargeException",
+    "reason": "Fail to recharge the account credit :: El c\u00f3digo de recarga es incorrecto."
+}
