@@ -1,0 +1,390 @@
+{
+    "status": "success",
+    "connections_summary": {
+        "count": 47,
+        "year_month_selected": "2023-03",
+        "total_time": "78:29:08",
+        "total_import": "$461,40",
+        "uploaded": "1,57 GB",
+        "downloaded": "17,40 GB",
+        "total_traffic": "18,97 GB"
+    },
+    "connections": [
+        {
+            "start_session": "18/03/2023 12:58:10",
+            "end_session": "18/03/2023 13:04:28",
+            "duration": "00:06:18",
+            "uploaded": "918,00 KB",
+            "downloaded": "16,63 MB",
+            "import": "$1,26"
+        },
+        {
+            "start_session": "18/03/2023 12:24:48",
+            "end_session": "18/03/2023 12:51:59",
+            "duration": "00:27:11",
+            "uploaded": "5,43 MB",
+            "downloaded": "100,50 MB",
+            "import": "$5,44"
+        },
+        {
+            "start_session": "18/03/2023 11:47:10",
+            "end_session": "18/03/2023 12:06:32",
+            "duration": "00:19:22",
+            "uploaded": "3,46 MB",
+            "downloaded": "70,09 MB",
+            "import": "$3,88"
+        },
+        {
+            "start_session": "18/03/2023 10:38:33",
+            "end_session": "18/03/2023 11:23:43",
+            "duration": "00:45:10",
+            "uploaded": "8,67 MB",
+            "downloaded": "116,19 MB",
+            "import": "$9,04"
+        },
+        {
+            "start_session": "18/03/2023 09:55:04",
+            "end_session": "18/03/2023 10:34:17",
+            "duration": "00:39:13",
+            "uploaded": "9,20 MB",
+            "downloaded": "193,73 MB",
+            "import": "$7,85"
+        },
+        {
+            "start_session": "17/03/2023 22:04:36",
+            "end_session": "18/03/2023 02:07:50",
+            "duration": "04:03:14",
+            "uploaded": "194,76 MB",
+            "downloaded": "999,13 MB",
+            "import": "$48,65"
+        },
+        {
+            "start_session": "17/03/2023 21:23:27",
+            "end_session": "17/03/2023 21:31:43",
+            "duration": "00:08:16",
+            "uploaded": "1,33 MB",
+            "downloaded": "7,94 MB",
+            "import": "$1,66"
+        },
+        {
+            "start_session": "17/03/2023 21:03:07",
+            "end_session": "17/03/2023 21:17:05",
+            "duration": "00:13:58",
+            "uploaded": "2,17 MB",
+            "downloaded": "14,15 MB",
+            "import": "$2,80"
+        },
+        {
+            "start_session": "17/03/2023 20:31:52",
+            "end_session": "17/03/2023 21:00:21",
+            "duration": "00:28:29",
+            "uploaded": "5,29 MB",
+            "downloaded": "49,84 MB",
+            "import": "$5,70"
+        },
+        {
+            "start_session": "17/03/2023 19:18:07",
+            "end_session": "17/03/2023 19:52:21",
+            "duration": "00:34:14",
+            "uploaded": "584,00 KB",
+            "downloaded": "2,48 MB",
+            "import": "$6,85"
+        },
+        {
+            "start_session": "17/03/2023 18:58:53",
+            "end_session": "17/03/2023 19:10:25",
+            "duration": "00:11:32",
+            "uploaded": "1,51 MB",
+            "downloaded": "11,86 MB",
+            "import": "$2,31"
+        },
+        {
+            "start_session": "17/03/2023 10:46:37",
+            "end_session": "17/03/2023 11:56:45",
+            "duration": "01:10:08",
+            "uploaded": "35,83 MB",
+            "downloaded": "501,59 MB",
+            "import": "$14,03"
+        },
+        {
+            "start_session": "16/03/2023 19:49:45",
+            "end_session": "17/03/2023 03:33:39",
+            "duration": "07:43:54",
+            "uploaded": "168,83 MB",
+            "downloaded": "1,95 GB",
+            "import": "$92,78"
+        },
+        {
+            "start_session": "15/03/2023 18:07:44",
+            "end_session": "15/03/2023 19:57:28",
+            "duration": "01:49:44",
+            "uploaded": "28,11 MB",
+            "downloaded": "452,75 MB",
+            "import": "$21,95"
+        },
+        {
+            "start_session": "12/03/2023 20:23:04",
+            "end_session": "12/03/2023 23:49:24",
+            "duration": "03:26:20",
+            "uploaded": "67,00 MB",
+            "downloaded": "626,46 MB",
+            "import": "$41,27"
+        },
+        {
+            "start_session": "12/03/2023 16:07:25",
+            "end_session": "12/03/2023 16:29:28",
+            "duration": "00:22:03",
+            "uploaded": "9,56 MB",
+            "downloaded": "95,96 MB",
+            "import": "$4,41"
+        },
+        {
+            "start_session": "12/03/2023 13:58:56",
+            "end_session": "12/03/2023 16:03:54",
+            "duration": "02:04:58",
+            "uploaded": "67,11 MB",
+            "downloaded": "672,04 MB",
+            "import": "$25,00"
+        },
+        {
+            "start_session": "12/03/2023 13:26:16",
+            "end_session": "12/03/2023 13:52:13",
+            "duration": "00:25:57",
+            "uploaded": "39,57 MB",
+            "downloaded": "124,92 MB",
+            "import": "$5,19"
+        },
+        {
+            "start_session": "12/03/2023 11:57:38",
+            "end_session": "12/03/2023 13:01:18",
+            "duration": "01:03:40",
+            "uploaded": "37,98 MB",
+            "downloaded": "459,64 MB",
+            "import": "$12,74"
+        },
+        {
+            "start_session": "12/03/2023 11:10:28",
+            "end_session": "12/03/2023 11:41:06",
+            "duration": "00:30:38",
+            "uploaded": "24,48 MB",
+            "downloaded": "253,58 MB",
+            "import": "$6,13"
+        },
+        {
+            "start_session": "11/03/2023 22:38:16",
+            "end_session": "12/03/2023 02:58:14",
+            "duration": "03:19:58",
+            "uploaded": "91,83 MB",
+            "downloaded": "1,10 GB",
+            "import": "$40,00"
+        },
+        {
+            "start_session": "11/03/2023 21:00:50",
+            "end_session": "11/03/2023 22:33:38",
+            "duration": "01:32:48",
+            "uploaded": "45,80 MB",
+            "downloaded": "339,83 MB",
+            "import": "$18,56"
+        },
+        {
+            "start_session": "11/03/2023 19:15:14",
+            "end_session": "11/03/2023 20:53:57",
+            "duration": "01:38:43",
+            "uploaded": "40,93 MB",
+            "downloaded": "334,25 MB",
+            "import": "$19,75"
+        },
+        {
+            "start_session": "11/03/2023 17:19:10",
+            "end_session": "11/03/2023 19:08:33",
+            "duration": "01:49:23",
+            "uploaded": "30,10 MB",
+            "downloaded": "350,04 MB",
+            "import": "$21,88"
+        },
+        {
+            "start_session": "11/03/2023 16:28:35",
+            "end_session": "11/03/2023 17:02:54",
+            "duration": "00:34:19",
+            "uploaded": "6,84 MB",
+            "downloaded": "79,57 MB",
+            "import": "$6,87"
+        },
+        {
+            "start_session": "11/03/2023 14:00:46",
+            "end_session": "11/03/2023 15:31:14",
+            "duration": "01:30:28",
+            "uploaded": "35,38 MB",
+            "downloaded": "347,53 MB",
+            "import": "$18,10"
+        },
+        {
+            "start_session": "10/03/2023 21:02:45",
+            "end_session": "11/03/2023 04:28:15",
+            "duration": "07:25:30",
+            "uploaded": "143,62 MB",
+            "downloaded": "1,72 GB",
+            "import": "$17,30"
+        },
+        {
+            "start_session": "10/03/2023 20:30:25",
+            "end_session": "10/03/2023 20:57:14",
+            "duration": "00:26:49",
+            "uploaded": "9,87 MB",
+            "downloaded": "83,44 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "06/03/2023 18:04:26",
+            "end_session": "06/03/2023 20:04:13",
+            "duration": "01:59:47",
+            "uploaded": "21,94 MB",
+            "downloaded": "468,27 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "06/03/2023 17:54:40",
+            "end_session": "06/03/2023 18:00:45",
+            "duration": "00:06:05",
+            "uploaded": "2,33 MB",
+            "downloaded": "19,95 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "05/03/2023 21:49:51",
+            "end_session": "06/03/2023 00:00:24",
+            "duration": "02:10:33",
+            "uploaded": "29,17 MB",
+            "downloaded": "354,28 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "05/03/2023 17:38:56",
+            "end_session": "05/03/2023 21:41:29",
+            "duration": "04:02:33",
+            "uploaded": "33,15 MB",
+            "downloaded": "417,62 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "05/03/2023 16:53:08",
+            "end_session": "05/03/2023 17:31:42",
+            "duration": "00:38:34",
+            "uploaded": "7,33 MB",
+            "downloaded": "139,75 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "05/03/2023 14:00:15",
+            "end_session": "05/03/2023 14:59:57",
+            "duration": "00:59:42",
+            "uploaded": "14,85 MB",
+            "downloaded": "225,25 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "05/03/2023 12:50:55",
+            "end_session": "05/03/2023 13:48:37",
+            "duration": "00:57:42",
+            "uploaded": "15,08 MB",
+            "downloaded": "243,55 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "05/03/2023 09:06:58",
+            "end_session": "05/03/2023 12:34:32",
+            "duration": "03:27:34",
+            "uploaded": "82,81 MB",
+            "downloaded": "1,19 GB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 22:24:47",
+            "end_session": "05/03/2023 02:46:49",
+            "duration": "04:22:02",
+            "uploaded": "79,62 MB",
+            "downloaded": "1,08 GB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 21:12:31",
+            "end_session": "04/03/2023 22:10:26",
+            "duration": "00:57:55",
+            "uploaded": "27,27 MB",
+            "downloaded": "260,98 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 21:05:25",
+            "end_session": "04/03/2023 21:09:49",
+            "duration": "00:04:24",
+            "uploaded": "2,05 MB",
+            "downloaded": "20,70 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 19:05:15",
+            "end_session": "04/03/2023 21:01:40",
+            "duration": "01:56:25",
+            "uploaded": "27,17 MB",
+            "downloaded": "351,68 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 17:51:23",
+            "end_session": "04/03/2023 19:02:47",
+            "duration": "01:11:24",
+            "uploaded": "11,77 MB",
+            "downloaded": "173,08 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 16:48:12",
+            "end_session": "04/03/2023 17:26:11",
+            "duration": "00:37:59",
+            "uploaded": "16,24 MB",
+            "downloaded": "155,25 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 15:11:37",
+            "end_session": "04/03/2023 16:32:14",
+            "duration": "01:20:37",
+            "uploaded": "29,72 MB",
+            "downloaded": "362,88 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 13:09:24",
+            "end_session": "04/03/2023 13:25:34",
+            "duration": "00:16:10",
+            "uploaded": "8,88 MB",
+            "downloaded": "72,09 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 11:51:11",
+            "end_session": "04/03/2023 12:15:53",
+            "duration": "00:24:42",
+            "uploaded": "5,17 MB",
+            "downloaded": "73,73 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "04/03/2023 10:13:16",
+            "end_session": "04/03/2023 11:46:11",
+            "duration": "01:32:55",
+            "uploaded": "12,86 MB",
+            "downloaded": "169,00 MB",
+            "import": "$0,00"
+        },
+        {
+            "start_session": "03/03/2023 21:18:27",
+            "end_session": "04/03/2023 03:48:15",
+            "duration": "06:29:48",
+            "uploaded": "68,43 MB",
+            "downloaded": "800,17 MB",
+            "import": "$0,00"
+        }
+    ]
+}
