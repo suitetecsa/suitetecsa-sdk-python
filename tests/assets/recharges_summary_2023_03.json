@@ -1,22 +1,5 @@
 {
-    "status": "success",
-    "recharges_summary": {
-        "count": 2,
-        "year_month_selected": "2023-03",
-        "total_import": "$450,00"
-    },
-    "recharges": [
-        {
-            "date": "10/03/2023 12:12:33",
-            "import_": "$200,00",
-            "channel": "PV ETECSA",
-            "type": "Efectivo"
-        },
-        {
-            "date": "16/03/2023 19:41:35",
-            "import_": "$250,00",
-            "channel": "Transferm\u00f3vil",
-            "type": "Efectivo"
-        }
-    ]
+  "count": 2,
+  "year_month_selected": "2023-03",
+  "total_import": "$450,00"
 }

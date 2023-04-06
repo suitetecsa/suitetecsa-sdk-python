@@ -1,9 +1,1 @@
-{
-    "status": "success",
-    "transfers_summary": {
-        "count": 0,
-        "year_month_selected": "2023-03",
-        "total_import": "$0,00"
-    },
-    "transfers": []
-}
+[]
