@@ -7,9 +7,9 @@
     "quotes_paid": [
         {
             "date": "10/03/2023 12:11:36",
-            "import": "$300,00",
+            "import_": "$300,00",
             "channel": "Oficina Comercial",
-            "type": "PV Sala de Navegaci\u00f3n MTC",
+            "type_": "PV Sala de Navegaci\u00f3n MTC",
             "office": "Pago de Cuota"
         }
     ]

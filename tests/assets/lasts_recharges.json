@@ -7,15 +7,15 @@
     "recharges": [
         {
             "date": "10/03/2023 12:12:33",
-            "import": "$200,00",
+            "import_": "$200,00",
             "channel": "PV ETECSA",
-            "type": "Efectivo"
+            "type_": "Efectivo"
         },
         {
             "date": "16/03/2023 19:41:35",
-            "import": "$250,00",
+            "import_": "$250,00",
             "channel": "Transferm\u00f3vil",
-            "type": "Efectivo"
+            "type_": "Efectivo"
         }
     ]
 }

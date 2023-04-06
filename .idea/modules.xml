@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/PyLibSuitETECSA.iml" filepath="$PROJECT_DIR$/.idea/PyLibSuitETECSA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/suitetecsa-sdk-python.iml" filepath="$PROJECT_DIR$/.idea/suitetecsa-sdk-python.iml" />
     </modules>
   </component>
 </project>

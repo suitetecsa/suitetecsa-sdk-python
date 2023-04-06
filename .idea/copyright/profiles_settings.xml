@@ -1,9 +1,7 @@
 <component name="CopyrightManager">
-  <settings default="MarilaSoft">
-    <LanguageOptions name="Python">
-      <option name="fileTypeOverride" value="3" />
-      <option name="block" value="false" />
-    </LanguageOptions>
-    <LanguageOptions name="__TEMPLATE__" />
+  <settings default="MIT">
+    <module2copyright>
+      <element module="All" copyright="MIT" />
+    </module2copyright>
   </settings>
 </component>
