@@ -17,7 +17,7 @@ from requests import Response, Session
 from requests.utils import dict_from_cookiejar, cookiejar_from_dict
 
 from suitetecsa_core import Portal
-from suitetecsa_core.exceptions import ConnectionException
+from suitetecsa_core.core.exceptions import ConnectionException
 
 
 class NautaSession(metaclass=ABCMeta):
@@ -41,8 +41,6 @@ class NautaSession(metaclass=ABCMeta):
     _wlan_user_ip: str = None
     _csrf_hw: str = None
     _attribute_uuid: str = None
-    _is_logged_in: bool = False
-    _is_user_logged_in: bool = _username is not None
 
     @property
     @abstractmethod
@@ -121,11 +119,11 @@ class NautaSession(metaclass=ABCMeta):
 
     @property
     def is_logged_in(self):
-        return self._is_logged_in
+        return self._attribute_uuid is not None
 
     @property
     def is_user_logged_in(self) -> bool:
-        return self._is_user_logged_in
+        return self._username is not None
 
     @property
     def wlan_user_ip(self):
