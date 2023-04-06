@@ -11,9 +11,6 @@
 #  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 from enum import Enum
-from .domain.service.nauta_client import NautaClient
-from .repository.session_provider import DefaultNautaSession
-from .repository.scrapper_provider import DefaultNautaScrapper
 
 
 class Portal(Enum):
@@ -35,6 +32,11 @@ class Action(Enum):
     GET_TRANSFERS = "transfers"
     GET_QUOTES_PAID = "quotes_paid"
     CHECK_CONNECTION = 14
+
+
+from .domain.service.nauta_client import NautaClient
+from .repository.session_provider import DefaultNautaSession
+from .repository.scrapper_provider import DefaultNautaScrapper
 
 
 __all__ = ['Portal', 'Action', 'NautaClient', 'DefaultNautaSession', 'DefaultNautaScrapper']
