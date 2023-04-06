@@ -5,78 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f7a2bad7-cf31-4ffd-ab2f-06b877437600" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/copyright/MIT.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/suitetecsa-sdk-python.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.github/workflows/python-app.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/python-app.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/PyLibSuitETECSA.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copyright/MarilaSoft.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/copyright/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/setup.py" beforeDir="false" afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/core/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/core/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/connection.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/connection.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/connections_summary.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/connections_summary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/nauta_user.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/nauta_user.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/quote_paid.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/quote_paid.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/quotes_paid_summary.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/quotes_paid_summary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/recharge.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/recharge.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/recharges_summary.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/recharges_summary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/transfer.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/transfer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/model/transfers_summary.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/model/transfers_summary.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/domain/service/nauta_client.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/domain/service/nauta_client.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/repository/scrapper_provider.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/repository/scrapper_provider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/repository/session_provider.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/repository/session_provider.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/utils/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/utils/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/utils/nauta.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/utils/nauta.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/suitetecsa_core/utils/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/suitetecsa_core/utils/parser.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/change_password_fail.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/change_password_fail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/connects_2023_03.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/connects_2023_03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/connects_summary_2023_03.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/connects_summary_2023_03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/csrf_token.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/csrf_token.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/landing.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/landing.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/lasts_connects.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/lasts_connects.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/lasts_quotes_paid.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/lasts_quotes_paid.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/lasts_recharges.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/lasts_recharges.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/logged_in.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/logged_in.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/login_fail_captcha_code.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/login_fail_captcha_code.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/login_fail_user_or_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/login_fail_user_or_password.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/login_page.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/login_page.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/qp_summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/qp_summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/qpl_2023_03_1.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/qpl_2023_03_1.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/quotes_paid_2023_03.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/quotes_paid_2023_03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/quotes_paid_summary_2023_03.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/quotes_paid_summary_2023_03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/rd_summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/rd_summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/rdl_2023_03_2.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/rdl_2023_03_2.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/recharge_fail.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/recharge_fail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/recharges_2023_03.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/recharges_2023_03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/recharges_summary_2023_03.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/recharges_summary_2023_03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/sd_summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/sd_summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/sdl_2023-03_2.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/sdl_2023-03_2.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/sdl_2023-03_3.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/sdl_2023-03_3.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/sdl_2023-03_4.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/sdl_2023-03_4.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/sdl_2023-03_47.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/sdl_2023-03_47.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/td_summary.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/td_summary.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/transfers_2023_03.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/transfers_2023_03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/transfers_summary_2023_03.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/transfers_summary_2023_03.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/user_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/user_info.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/user_info.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/user_info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/user_info_connect.html" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/user_info_connect.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/assets/user_info_connect.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/assets/user_info_connect.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_default_nauta_scrapper.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_default_nauta_scrapper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,14 +36,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "release/1.1.0",
-    "last_opened_file_path": "/home/leclaz/Projects/Python/suitetecsa-sdk-python/tests/assets",
-    "settings.editor.selected.configurable": "copyright"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;develop&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/home/leclaz/Projects/Python/suitetecsa-sdk-python/tests/assets&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;copyright&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/tests/assets" />
