@@ -1,5 +1,5 @@
 requests~=2.32.2
 beautifulsoup4==4.13.4
-setuptools==80.7.1
+setuptools==80.8.0
 html5lib
 netifaces~=0.11.0
