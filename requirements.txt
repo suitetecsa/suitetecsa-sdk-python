@@ -1,4 +1,4 @@
-requests~=2.32.2
+requests~=2.33.0
 beautifulsoup4==4.14.3
 setuptools==82.0.1
 html5lib
